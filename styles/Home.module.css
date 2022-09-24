@@ -73,7 +73,15 @@
   max-width: 800px;
 }
 
+.flags {
+  display: grid;
+  place-content: center;
+  grid-template-columns: repeat(5, 200px);
+  gap: 1rem;
+}
+
 .card {
+  position: relative;
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
