@@ -95,6 +95,20 @@
   margin: 0.5rem 0;
 }
 
+.selected_flag_container {
+  border: none;
+  width: 60%;
+  height: 80%;
+  background-color: rgb(247, 247, 247);
+  color: black;
+  border-radius: 5px;
+  box-shadow: 0 0 30px -5px rgb(122, 122, 122);
+}
+
+.selected_flag_container::backdrop {
+  background: rgba(68, 211, 255, 0.212);
+}
+
 .card {
   position: relative;
   margin: 1rem;

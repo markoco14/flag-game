@@ -1,9 +1,43 @@
 import Image from "next/image";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
+import { useState, useRef, useEffect } from 'react';
 
 
 export default function FlagBoard() {
+    const [selectedFlag, setSelectedFlag] = useState< string | undefined >(undefined);
+    const selectedFlagModal = useRef<HTMLDialogElement | undefined | null>(undefined);
+
+    function displayFlag(id: number, country: string) {
+        setSelectedFlag(country);
+    }
+
+    function deselectFlag() {
+        selectedFlagModal?.current?.close();
+        // debugger;
+        setSelectedFlag(undefined);
+    }
+
+    function eliminateFlag() {
+        // TODO: 
+        // needs logic to:
+        // filter the gameFlags array
+        // setGameFlags array to new value
+        // either remove that flag from the DOM
+        // or grey it out
+        selectedFlagModal?.current?.close();
+        // debugger;
+        setSelectedFlag(undefined);
+    }
+
+    if (!selectedFlagModal) {
+        console.log(`There is no modal`)
+    } else {
+        useEffect(() => {
+            console.log(selectedFlagModal)
+            selectedFlagModal?.current?.showModal();
+        });
+    }
 
     const flags = [
         {
@@ -60,19 +94,36 @@ export default function FlagBoard() {
     ];
 
     return (
-        <div className={styles.flags}>
-            {flags.map((flag) => (
-                <div key={flag.id}>
-                    <div className={styles.flag_image_container}>
-                        <Image 
-                            src={flag.image}
-                            alt={`The flag of ${flag.country}`}
-                            layout='fill'
-                        />
+        <>
+            {selectedFlag && 
+                <dialog
+                    // open
+                    ref={selectedFlagModal}
+                    className={styles.selected_flag_container}
+                >
+                    <p>You selected {selectedFlag}</p>
+                    <button>Flip</button>
+                    <button onClick={eliminateFlag}>Eliminate</button>
+                    <button onClick={deselectFlag}>Back</button>
+                </dialog>
+            }
+            <div className={styles.flags}>
+                {flags.map((flag) => (
+                    <div 
+                        key={flag.id}
+                        onClick={() => {displayFlag(flag.id, flag.country)}}
+                    >
+                        <div className={styles.flag_image_container}>
+                            <Image 
+                                src={flag.image}
+                                alt={`The flag of ${flag.country}`}
+                                layout='fill'
+                            />
+                        </div>
+                        <p className={styles.flag_country_name}>{flag.country}</p>
                     </div>
-                    <p className={styles.flag_country_name}>{flag.country}</p>
-                </div>
-            ))}
-        </div>
+                ))}
+            </div>
+        </>
     );
 }
