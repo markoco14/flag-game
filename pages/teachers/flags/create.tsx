@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
+import FlagDetails from '../../../components/FlagDetails'
+import FlagQuestionsList from '../../../components/FlagQuestionsList'
 
 export default function PlayFlags() {
     return (
@@ -13,6 +15,7 @@ export default function PlayFlags() {
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Poppins"></link>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
         </Head>
         <header>
         <nav className={`${styles.primary_nav}`}>
@@ -21,48 +24,15 @@ export default function PlayFlags() {
         </header>
         <main className={`${styles.flex} ${styles.dashboard}`}>
             <DashboardNav></DashboardNav>
-            {/* <section className={`${styles.flex} ${styles.create_flags_container}`}> */}
-            <section>
-                <h1>Create New Flag Set</h1>
+            <section className={`${styles.flex} ${styles.create_flags_container}`}>
                 <div className={styles.create_flags_interface}>
+                    <h1>Create New Flag Set</h1>
                     <div className={`${styles.flex} ${styles.flex_between}`}>
                         <h2>New Flag Set</h2>
                         <span>Questions: 0</span>
                     </div>
-                    <div className={`${styles.flex} ${styles.flex_between}`}>
-                        <p>Flag Set Details</p>
-                        <button style={{ border: 'none', background: 'white', color: 'black'}}>X</button>
-                    </div>
+                    <FlagDetails></FlagDetails>
                     <article>
-                        <div>
-                            <label>Level</label>
-                            <input type="number" />
-                        </div>
-                        <div className={styles.flex}>
-                            <div>
-                                <label>Week (#)</label>
-                                <input type="number" />
-                            </div>
-                            <div>
-                                <label>Day (#)</label>
-                                <input type="number" />
-                            </div>
-                            <div>
-                                <label>Day (of Week)</label>
-                                <select>
-                                    <option>Monday</option>
-                                    <option>Wednesday</option>
-                                    <option>Thursday</option>
-                                    <option>Friday</option>
-                                </select>
-                            </div>
-                        </div>
-                    </article>
-                    <article>
-                        <div>
-                            <label>Title: </label>
-                            <span>Title made automatically</span>
-                        </div>
                         <p>There are no questions in this flag set.</p>
                     </article>
                     <article className={`${styles.flex} ${styles.create_flags_bar}`}>
@@ -71,25 +41,7 @@ export default function PlayFlags() {
                         <button className={styles.create_flags_button}>Prompt</button>
                     </article>
                 </div>
-                <div className={styles.choose_questions_interface}>
-                    <ul>
-                        <li 
-                            onClick={() => {console.log('You clicked the level button')}}
-                            className={styles.existing_questions_level}>Level 1</li>
-                        <li 
-                            onClick={() => {console.log('You clicked the level button')}}
-                            className={styles.existing_questions_level}>Level 2</li>
-                        <li 
-                            onClick={() => {console.log('You clicked the level button')}}
-                            className={styles.existing_questions_level}>Level 3</li>
-                        <li 
-                            onClick={() => {console.log('You clicked the level button')}}
-                            className={styles.existing_questions_level}>Level 4</li>
-                        <li 
-                            onClick={() => {console.log('You clicked the level button')}}
-                            className={styles.existing_questions_level}>Level 5</li>
-                    </ul>
-                </div>
+                <FlagQuestionsList></FlagQuestionsList>
             </section>
         </main>
     </div>

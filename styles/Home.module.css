@@ -10,6 +10,10 @@
   display: flex;
 }
 
+.flex_align_center {
+  align-items: center;
+}
+
 .flex_gap {
   gap: 0.5rem;
 }
@@ -32,7 +36,6 @@
 }
 
 .dashboard {
-  gap: 1rem;
   background-color: rgb(245, 254, 255);
 }
 
@@ -102,13 +105,11 @@
 
 /* Create Flags Styles */
 
-
 .create_flags_container {
-  padding: 1rem;
+  padding: 0 1rem;
   justify-content: space-between;
   gap: 1rem;
 }
-
 
 .create_flags_interface {
   min-height: 100vh;
