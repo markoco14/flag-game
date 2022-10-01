@@ -1,9 +1,6 @@
-import Image from "next/image";
+import Link from "next/link";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
-import { useState, useRef, useEffect } from 'react';
-import { Flag } from "../interfaces";
-
 
 export default function FlagCalendar() {
 
@@ -39,8 +36,8 @@ export default function FlagCalendar() {
                     <div key={day.id}>
                         <p>{day.day}</p>
                         <ul>
-                            <li>{day.flags[0]}</li>
-                            <li>{day.flags[1]}</li>
+                            <li><Link href="/teachers/flags/play"><a>{day.flags[0]}</a></Link></li>
+                            <li><Link href="/teachers/flags/play"><a>{day.flags[1]}</a></Link></li>
                         </ul>
                     </div>
                 ))}

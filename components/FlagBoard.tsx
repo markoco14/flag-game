@@ -52,6 +52,11 @@ export default function FlagBoard() {
     }
 
     if (selectedFlagModal) {
+        // this is no good
+        // I will just change to have the modal always rendered
+        // and research the conditional later
+        // AT used the condition to replace the content in their input form
+        // so maybe this isn't the best use case for adding/removing the element
         useEffect(() => {
             selectedFlagModal?.current?.showModal();
         });
