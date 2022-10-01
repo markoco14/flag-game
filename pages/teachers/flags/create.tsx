@@ -20,7 +20,7 @@ export default function PlayFlags() {
         </header>
         <main>
             <h1>Create New Flag Set</h1>
-        <div className={`${styles.flex} ${styles.create_flags_container}`}>
+            <div className={`${styles.flex} ${styles.create_flags_container}`}>
                 <nav className={ `${styles.flex} ${styles.flex_column} ${styles.dashboard_nav}` }>
                     <Link href="/teachers"><a>Dashboard</a></Link>
                     <Link href="/teachers/flags"><a>Flags</a></Link>
@@ -36,10 +36,6 @@ export default function PlayFlags() {
                     </div>
                     <article>
                         <div>
-                            <label>Title</label>
-                            <input type="text" />
-                        </div>
-                        <div>
                             <label>Level</label>
                             <input type="number" />
                         </div>
@@ -54,11 +50,20 @@ export default function PlayFlags() {
                             </div>
                             <div>
                                 <label>Day (of Week)</label>
-                                <input type="text" />
+                                <select>
+                                    <option>Monday</option>
+                                    <option>Wednesday</option>
+                                    <option>Thursday</option>
+                                    <option>Friday</option>
+                                </select>
                             </div>
                         </div>
                     </article>
                     <article>
+                        <div>
+                            <label>Title: </label>
+                            <span>Title made automatically</span>
+                        </div>
                         <p>There are no questions in this flag set.</p>
                     </article>
                     <article className={`${styles.flex} ${styles.create_flags_bar}`}>
