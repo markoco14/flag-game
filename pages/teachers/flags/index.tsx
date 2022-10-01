@@ -16,7 +16,7 @@ const FlagsHome: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <nav className={`${styles.primary_nav}`}style={{ backgroundColor: '#58C3FF', color: 'white'}}>
+        <nav className={`${styles.primary_nav}`}>
           <Link href="/teachers">
             <a className={`${styles.sm_scr_nav}`}>Dashboard</a>
           </Link>

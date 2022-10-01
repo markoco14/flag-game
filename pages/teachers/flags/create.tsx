@@ -2,6 +2,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../../../styles/Home.module.css'
+import DashboardNav from '../../../components/DashboardNav'
 
 export default function PlayFlags() {
     return (
@@ -14,17 +15,15 @@ export default function PlayFlags() {
           href="https://fonts.googleapis.com/css?family=Poppins"></link>
         </Head>
         <header>
-        <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}>
+        <nav className={`${styles.primary_nav}`}>
             <Link href="/"><a>Log Out</a></Link>
         </nav>
         </header>
-        <main>
-            <h1>Create New Flag Set</h1>
-            <div className={`${styles.flex} ${styles.create_flags_container}`}>
-                <nav className={ `${styles.flex} ${styles.flex_column} ${styles.dashboard_nav}` }>
-                    <Link href="/teachers"><a>Dashboard</a></Link>
-                    <Link href="/teachers/flags"><a>Flags</a></Link>
-                </nav>
+        <main className={`${styles.flex} ${styles.dashboard}`}>
+            <DashboardNav></DashboardNav>
+            {/* <section className={`${styles.flex} ${styles.create_flags_container}`}> */}
+            <section>
+                <h1>Create New Flag Set</h1>
                 <div className={styles.create_flags_interface}>
                     <div className={`${styles.flex} ${styles.flex_between}`}>
                         <h2>New Flag Set</h2>
@@ -91,7 +90,7 @@ export default function PlayFlags() {
                             className={styles.existing_questions_level}>Level 5</li>
                     </ul>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
     )

@@ -89,6 +89,8 @@
   display: flex;
   justify-content: right;
   gap: 0.5rem;
+  background-color: #58C3FF;
+  color: white;
 }
 
 /* Flag Index Styles */

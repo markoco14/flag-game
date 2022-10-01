@@ -6,7 +6,7 @@ export default function DashboardNav() {
 
     return (
         <nav className={`${styles.flex} ${styles.flex_column} ${styles.dashboard_nav}`}>
-          <Link href="/teachers"><a>Dashboard</a></Link>
+          <Link href="/teachers"><a>Home</a></Link>
           <Link href="/teachers/flags"><a>Flags</a></Link>
           <Link href="#"><a>Facts</a></Link>
           <Link href="#"><a>Homework</a></Link>
