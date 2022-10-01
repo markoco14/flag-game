@@ -2,20 +2,33 @@ import Image from "next/image";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef, useEffect } from 'react';
+import { Flag } from "../interfaces";
 
 
 export default function FlagBoard() {
-    const [selectedFlag, setSelectedFlag] = useState< string | undefined >(undefined);
+    const [selectedFlag, setSelectedFlag] = useState< Flag | undefined >(undefined);
     const selectedFlagModal = useRef<HTMLDialogElement | undefined | null>(undefined);
+    const flipButton = useRef<HTMLButtonElement | null | undefined>(undefined);
 
-    function displayFlag(id: number, country: string) {
-        setSelectedFlag(country);
+    function displayFlag(flag: Flag, id: number, country: string) {
+        console.log(flag);
+        setSelectedFlag(flag);
+    }
+
+    function removeFlagModalFromDom() {
+        selectedFlagModal?.current?.close();
+        setSelectedFlag(undefined);
+    }
+
+    function flipFlag() {
+        console.log(`You flipped the flag!`)
     }
 
     function deselectFlag() {
-        selectedFlagModal?.current?.close();
+        // selectedFlagModal?.current?.close();
         // debugger;
-        setSelectedFlag(undefined);
+        // setSelectedFlag(undefined);
+        removeFlagModalFromDom();
     }
 
     function eliminateFlag() {
@@ -25,19 +38,25 @@ export default function FlagBoard() {
         // setGameFlags array to new value
         // either remove that flag from the DOM
         // or grey it out
-        selectedFlagModal?.current?.close();
+        flags.filter(flag => {
+            // eliminate logic will go here
+            // something like this
+            // if (flag.id !== passed.id) {
+            //     return flag;
+            // }
+        })
+        // selectedFlagModal?.current?.close();
         // debugger;
-        setSelectedFlag(undefined);
+        // setSelectedFlag(undefined);
+        removeFlagModalFromDom();
     }
 
-    if (!selectedFlagModal) {
-        console.log(`There is no modal`)
-    } else {
+    if (selectedFlagModal) {
         useEffect(() => {
-            console.log(selectedFlagModal)
             selectedFlagModal?.current?.showModal();
         });
-    }
+    } 
+    
 
     const flags = [
         {
@@ -90,19 +109,38 @@ export default function FlagBoard() {
             image: 'https://flagicons.lipis.dev/flags/4x3/de.svg',// 
             country: 'Germany',
             id: 10
-        },
+        }
     ];
 
     return (
         <>
             {selectedFlag && 
                 <dialog
-                    // open
                     ref={selectedFlagModal}
-                    className={styles.selected_flag_container}
+                    className={styles.selected_flag_modal}
+                    onClick={() => {
+                        flipButton?.current?.focus();
+                    }}
+                    onKeyDown={(e) => {
+                        // selectedFlagModal?.current?.close();
+                        // setSelectedFlag(undefined);
+                        if (e.key !== 'Escape') {
+                            return;
+                        } else {
+                            removeFlagModalFromDom();
+                        }
+                    }}
                 >
-                    <p>You selected {selectedFlag}</p>
-                    <button>Flip</button>
+                    <div className={styles.selected_flag_image_container}>
+                        <Image 
+                            src={selectedFlag.image}
+                            layout='fill'
+                            objectFit='cover'
+                            alt={`A large image of the ${selectedFlag.country} flag.`}
+                        />
+                    </div>
+                    <p>You selected {selectedFlag.country}</p>
+                    <button ref={flipButton} onClick={flipFlag}>Flip</button>
                     <button onClick={eliminateFlag}>Eliminate</button>
                     <button onClick={deselectFlag}>Back</button>
                 </dialog>
@@ -111,7 +149,7 @@ export default function FlagBoard() {
                 {flags.map((flag) => (
                     <div 
                         key={flag.id}
-                        onClick={() => {displayFlag(flag.id, flag.country)}}
+                        onClick={() => {displayFlag(flag, flag.id, flag.country)}}
                     >
                         <div className={styles.flag_image_container}>
                             <Image 

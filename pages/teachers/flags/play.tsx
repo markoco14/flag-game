@@ -15,7 +15,7 @@ export default function PlayFlags() {
           href="https://fonts.googleapis.com/css?family=Poppins"></link>
         </Head>
         <header>
-        <nav>
+        <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}> 
             <Link href="/"><a>Log Out</a></Link>
             <Link href="/teachers"><a>Dashboard</a></Link>
             <Link href="/teachers/flags"><a>Flags</a></Link>

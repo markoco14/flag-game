@@ -73,10 +73,81 @@
   max-width: 800px;
 }
 
+/* Create Flags Styles */
+
+.flex {
+  display: flex;
+}
+
+.flex_column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex_between {
+  justify-content: space-between;
+}
+
+.create_flags_container {
+  padding: 1rem;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard_nav {
+  min-height: 100vh;
+  border: solid 2px black;
+  border-radius: 3px;
+  min-width: 200px;
+  text-align: center;
+}
+
+.create_flags_interface {
+  min-height: 100vh;
+  border: solid 2px black;
+  border-radius: 3px;
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.choose_questions_interface {
+  min-height: 100vh;
+  border: solid 2px black;
+  border-radius: 3px;
+  min-width: 200px;
+  width: 400px;
+}
+
+.create_flags_bar {
+  gap: 1rem;
+  justify-content: center;
+}
+
+.create_flags_button {
+  border: none;
+  background-color: #58C3FF;
+  color: white;
+  border-radius: 10px;
+  width: 100px;
+}
+
+.create_flags_button:hover {
+  background-color: #3ab7ff;
+  cursor: pointer;
+
+}
+
+.existing_questions_level:hover {
+  background-color: rgb(179, 179, 179);
+  cursor: pointer;
+}
+
+/* Flags Game Styles */
+
 .flags {
   display: grid;
   place-content: center;
-  grid-template-columns: repeat(5,18%);
+  grid-template-columns: repeat(5, 18%);
   gap: 1rem;
   min-height: 100vh;
   width:100%;
@@ -95,14 +166,22 @@
   margin: 0.5rem 0;
 }
 
-.selected_flag_container {
+.selected_flag_modal {
+  /* padding: 0; */
   border: none;
   width: 60%;
-  height: 80%;
+  min-height: 50%;
   background-color: rgb(247, 247, 247);
   color: black;
   border-radius: 5px;
   box-shadow: 0 0 30px -5px rgb(122, 122, 122);
+}
+
+.selected_flag_image_container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 700px;
 }
 
 .selected_flag_container::backdrop {

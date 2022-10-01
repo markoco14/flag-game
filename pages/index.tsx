@@ -13,7 +13,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <nav>
+        <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}>
           <Link href="/"><a>Home</a></Link>
         </nav>
       </header>

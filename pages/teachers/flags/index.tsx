@@ -12,7 +12,7 @@ const FlagsHome: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <nav>
+        <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}>
           <Link href="/"><a>Log Out</a></Link>
           <Link href="/teachers"><a>Dashboard</a></Link>
           <Link href="/teachers/flags"><a>Flags</a></Link>
@@ -21,6 +21,7 @@ const FlagsHome: NextPage = () => {
       <main className={styles.main}>
         <h1>Your Flags</h1>
         <p>Manage all your Flags here. Create, Edit, Delete, and Play all in one cozy interface.</p>
+        <Link href="flags/create"><a>Create</a></Link>
         <Link href="flags/play"><a>Play</a></Link>
       </main>
     </div>
