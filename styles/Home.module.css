@@ -146,6 +146,15 @@
 
 }
 
+.create_flag_question_modal {
+  min-width:70%;
+  min-height:50%;
+}
+
+.flag_question_modal_half {
+  width: 50%;
+}
+
 .existing_questions_level:hover {
   background-color: rgb(179, 179, 179);
   cursor: pointer;
