@@ -8,7 +8,10 @@ export default function FlagList() {
 
     return (
         <article className={`${styles.card}`}>
-            <h2>Your Flags</h2>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <h2>Recent Flags</h2>
+                <Link href="#"><a>See All</a></Link>
+            </div>
             <ul>
                 <li className={`${styles.flex} ${styles.flex_between}`}>
                     <span>L8 W5 D2</span>
