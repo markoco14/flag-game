@@ -39,28 +39,21 @@ const FlagsHome: NextPage = () => {
           <FlagCalendar></FlagCalendar>
           <div className={`${styles.flex} ${styles.flex_between} ${styles.flex_grow} ${styles.flex_gap}`}>
             <FlagList></FlagList>
-            <div>
-              <article className={`${styles.card}`}>
-                <div className={`${styles.dashboard_image_container}`}>
-                  <Image 
-                    className={styles.stacked_img}
-                    src="/images/flags_ui_screenshot.jpg"
-                    layout='fill'
-                    objectFit='cover'
-                    // width={100} 
-                    // height={100}
-                  />
-                </div>
-                  <h2>
-                    <Link href="flags/create"><a>Create</a></Link>
-                  </h2>
-              </article>
-              <article className={`${styles.card}`}>
+            <article className={`${styles.card}`}>
+              <div className={`${styles.dashboard_image_container}`}>
+                <Image 
+                  className={styles.stacked_img}
+                  src="/images/flags_ui_screenshot.jpg"
+                  layout='fill'
+                  objectFit='cover'
+                  // width={100} 
+                  // height={100}
+                />
+              </div>
                 <h2>
-                  <Link href="flags/play"><a>Play</a></Link>
+                  <Link href="flags/create"><a>Create</a></Link>
                 </h2>
-              </article>
-            </div>
+            </article>
             <article className={`${styles.card}`}>
               <h2>
                 <Link href="#"><a>All Teacher&apos;s Flags</a></Link>
