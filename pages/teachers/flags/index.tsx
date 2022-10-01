@@ -5,6 +5,7 @@ import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import FlagCalendar from '../../../components/FlagCalendar'
 import FlagList from '../../../components/FlagList'
+import DashboardNav from '../../../components/DashboardNav'
 
 const FlagsHome: NextPage = () => {
   return (
@@ -26,14 +27,7 @@ const FlagsHome: NextPage = () => {
         </nav>
       </header>
       <main className={`${styles.flex} ${styles.dashboard}`}>
-        <nav className={`${styles.flex} ${styles.flex_column} ${styles.dashboard_nav}`}>
-          <Link href="/teachers"><a>Dashboard</a></Link>
-          <Link href="/teachers/flags"><a>Flags</a></Link>
-          <Link href="#"><a>Facts</a></Link>
-          <Link href="#"><a>Homework</a></Link>
-          <Link href="#"><a>Common Mistakes</a></Link>
-          <Link href="#"><a>Reports</a></Link>
-        </nav>
+        <DashboardNav></DashboardNav>
         <section className={`${styles.dashboard_content}`}>
           <h1>Welcome Back, Teacher Mark</h1>
           <FlagCalendar></FlagCalendar>
