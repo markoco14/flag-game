@@ -1,30 +1,36 @@
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
-import { useEffect, useState, useRef } from "react";
-import { IQuestions } from "../interfaces";
+import { useState, useRef } from "react";
+// import AddQuestionModal from './AddQuestionModal';
 
 export default function FlagSetQuestions() {
     const [flagSetQuestions, setFlagSetQuestions] = useState<[]>([]);
     const addQuestionModal = useRef<HTMLDialogElement | null>(null);
     const [questionType, setQuestionType] = useState<string>('MC');
 
+    const countryNameRef = useRef<string | ''>('');
     const promptRef = useRef<string | ''>('');
     const questionRef = useRef<string | ''>('');
     const answerRef = useRef<string | ''>('');
-    const wrongChoice1 = useRef<string | ''>('');
-    const wrongChoice2 = useRef<string | ''>('');
-    const wrongChoice3 = useRef<string | ''>('');
+    const wrong1Ref = useRef<string | ''>('');
+    const wrong2Ref = useRef<string | ''>('');
+    const wrong3Ref = useRef<string | ''>('');
 
-    useEffect(() => {
-        fetch("/api/flags/create")
+
+    function handleOpenEditModal() {
+        console.log('You clicked the edit question button');
+    }
+
+    function handleDeleteQuestion(id: number) {
+        fetch(`/api/flags/create/${id}`, { method: "DELETE"});
+        fetch('/api/flags/create')
         .then((res) => res.json())
         .then((json) => {
-            setFlagSetQuestions(json.set);
+            setFlagSetQuestions(json.sets);
         })
-    }, []);
+    }
 
-    function handleOpenAddModal(type: EventTarget) {
-        console.log(type)
+    function handleOpenAddModal() {
         addQuestionModal.current?.showModal();
     }
 
@@ -32,26 +38,60 @@ export default function FlagSetQuestions() {
         addQuestionModal.current?.close();
     }
 
-    function handleOpenEditModal() {
-        console.log('You clicked the edit question button');
-    }
-
-    function handleDeleteQuestion(id: number) {
-        const filteredQuestions = flagSetQuestions.filter((question) => {
-            if (id !== question.id) {
-                return question;
-            }
-        })
-        setFlagSetQuestions(filteredQuestions);
-    }
+    function handleAddQuestion(questionType: string) {
+        if (questionType === 'MC') {
+            console.log('You are trying to add an MC question');
+            fetch('/api/flags/create', {
+                method: "POST",
+                body: JSON.stringify({
+                    type: "MC",
+                    country: countryNameRef.current.value,
+                    question: questionRef.current.value,
+                    answer: answerRef.current.value,
+                    options: [
+                        {
+                            text: answerRef.current.value,
+                        },
+                        {                        
+                            text: wrong1Ref.current.value,
+                        },
+                        {
+                            text: wrong2Ref.current.value,
+                        },
+                        {
+                            text: wrong3Ref.current.value,
+                        },
+                    ],
+                }),
+            })
+            fetch('/api/flags/create')
+            .then((res) => res.json())
+            .then((json) => {
+                setFlagSetQuestions(json.sets);
+            })
+            
     
-    function handleAddQuestion() {
-        console.log('You are trying to add a question');
+        } else {
+            console.log('You are trying to add a prompt question');
+            fetch('/api/flags/create', {
+                method: "POST",
+                body: JSON.stringify({
+                    type: "Prompt",
+                    question: promptRef.current.value,
+                }),
+            });
+            fetch('/api/flags/create')
+            .then((res) => res.json())
+            .then((json) => {
+                setFlagSetQuestions(json.sets);
+            })
+        }
+        addQuestionModal.current.close();
     }
 
     return (
         <>
-            {(flagSetQuestions.length === 0) && (
+            {!flagSetQuestions && (
                 <article style={{ padding: '0 1rem',}}>
                     <p>There are no questions in this flag set.</p>
                 </article>
@@ -60,8 +100,9 @@ export default function FlagSetQuestions() {
                 flagSetQuestions?.map((question) => (
 
                 <article key={question.id} style={{ padding: '0 1rem',}}>
+                    <p>Country: {question.country}</p>
                     <div className={`${styles.flex} ${styles.flex_between}`}>
-                        <p>Question 1</p>
+                        <p>Question: {question.question}</p>
                         <div className={`${styles.flex} ${styles.flex_gap}`}>
                             <button onClick={handleOpenEditModal}>Edit</button>
                             <button onClick={() => handleDeleteQuestion(question.id)}>Delete</button>
@@ -70,7 +111,7 @@ export default function FlagSetQuestions() {
                     <div>
                         <p>Answer: {question.answer}</p>
                         {question.options.map((option) => (
-                            <p key={option.id}>Option: &quot;{option.text}&quot;</p>
+                            <p key={option.id}>Option: {option.text}</p>
                         ))}
                     </div>
                 </article>
@@ -98,7 +139,10 @@ export default function FlagSetQuestions() {
                         <>
                         <section className={`${styles.flag_question_modal_half}`}>
                             <h2>Front</h2>
-                            <div></div>
+                            <div>
+                                <label htmlFor="">Country</label>
+                                <input ref={countryNameRef} type="text" />
+                            </div>
                         </section>
                         <section className={`${styles.flag_question_modal_half}`}>
                             <h2>Back</h2>
@@ -106,21 +150,22 @@ export default function FlagSetQuestions() {
                                 <label htmlFor="">Question</label>
                                 <input ref={questionRef}type="text" />
                             </div>
+                            
                             <div className={`${styles.flex} ${styles.flex_column}`}>
                                 <label htmlFor="">Answer</label>
-                                <input ref={answerRef}type="text" />
+                                <input ref={answerRef} type="text" />
                             </div>
                             <div className={`${styles.flex} ${styles.flex_column}`}>
                                 <label htmlFor="">Wrong 1</label>
-                                <input ref={wrongChoice1} type="text" />
+                                <input ref={wrong1Ref} type="text" />
                             </div>
                             <div className={`${styles.flex} ${styles.flex_column}`}>
                                 <label htmlFor="">Wrong 2</label>
-                                <input ref={wrongChoice2} type="text" />
+                                <input ref={wrong2Ref} type="text" />
                             </div>
                             <div className={`${styles.flex} ${styles.flex_column}`}>
                                 <label htmlFor="">Wrong 3</label>
-                                <input ref={wrongChoice3} type="text" />
+                                <input ref={wrong3Ref} type="text" />
                             </div>
                         </section>
                         </>
@@ -142,9 +187,10 @@ export default function FlagSetQuestions() {
                     )}
                 </div>
                 <div>
-                    <button onClick={handleAddQuestion}>Save</button>
+                    <button onClick={() => {handleAddQuestion(questionType)}}>Save</button>
                 </div>
             </dialog>
+            {/* <AddQuestionModal></AddQuestionModal> */}
         </>
     );
 }
