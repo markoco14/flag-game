@@ -6,8 +6,6 @@ import DashboardNav from '../../../components/DashboardNav'
 import FlagDetails from '../../../components/FlagDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { useState, useRef, useEffect } from 'react'
-import { captureRejectionSymbol } from 'stream'
 
 export default function CreateFlags() {
     
@@ -30,10 +28,8 @@ export default function CreateFlags() {
             <section className={`${styles.flex} ${styles.create_flags_container}`}>
                 <div className={styles.create_flags_interface}>
                     <h1>Create New Flag Set</h1>
-                    
                     <FlagDetails></FlagDetails>
                     <FlagSetQuestions></FlagSetQuestions>
-                    
                 </div> 
                 <FlagQuestionsList></FlagQuestionsList>
             </section>
