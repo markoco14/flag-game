@@ -5,8 +5,9 @@ export function makeServer( {environment = "test"} = {}) {
         environment,
         
         models: {
+            option: Model,
             set: Model,
-            flag: Model,
+            flagboard: Model,
             question: Model,
         },
 
@@ -121,12 +122,11 @@ export function makeServer( {environment = "test"} = {}) {
             }))
 
             this.get("/api/flags/play", () => ({
-                flags: [
+                flagboard: [
                     {
-                        
                         image: 'https://flagicons.lipis.dev/flags/4x3/ae.svg',
                         country: 'UAE',
-                        id: 1
+                        id: 1,
                     },
                     {
                         image: 'https://flagicons.lipis.dev/flags/4x3/ch.svg',
@@ -176,33 +176,21 @@ export function makeServer( {environment = "test"} = {}) {
                 ],
             }))
 
-            this.get("/api/flags/create", () => ({
-                set: [
-                    {
-                        id: 1,
-                        question: "Is there a spoon?",
-                        answer: "There is no spoon.",
-                        options: [
-                            {
-                                id: 1,
-                                text: "There is no spoon."
-                            },
-                            {
-                                id: 2,
-                                text: "There are no spoons."
-                            },
-                            {
-                                id: 3,
-                                text: "There are some spoons."
-                            },
-                            {
-                                id: 4,
-                                text: "There is a spoon."
-                            },
-                        ]
-                    },
-                ],
-            }))
+            this.get("/api/flags/create", (schema) => {
+                return schema.sets.all();
+            })
+
+            this.post("/api/flags/create", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+              
+                return schema.db.sets.insert(attrs)
+            })
+
+            this.delete(`/api/flags/create/:id`, (schema, request) => {
+                let id = request.params.id
+
+                return schema.sets.find(id).destroy()
+            })
         }
     })
 
