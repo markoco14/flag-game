@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef, useEffect } from 'react';
-import { Flag, } from "../interfaces";
+import { Flag } from "../interfaces";
 
 
 export default function FlagBoard() {
@@ -67,7 +67,7 @@ export default function FlagBoard() {
         fetch("/api/flags/play")
         .then((res) => res.json())
         .then((json) => {
-          setFlags(json.flags);
+          setFlags(json.flagboard);
         })
     }, [])
     
