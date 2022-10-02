@@ -5,6 +5,7 @@ export function makeServer( {environment = "test"} = {}) {
         environment,
         
         models: {
+            set: Model,
             flag: Model,
             question: Model,
         },
@@ -172,6 +173,34 @@ export function makeServer( {environment = "test"} = {}) {
                         country: 'Germany',
                         id: 10
                     }
+                ],
+            }))
+
+            this.get("/api/flags/create", () => ({
+                set: [
+                    {
+                        id: 1,
+                        question: "Is there a spoon?",
+                        answer: "There is no spoon.",
+                        options: [
+                            {
+                                id: 1,
+                                text: "There is no spoon."
+                            },
+                            {
+                                id: 2,
+                                text: "There are no spoons."
+                            },
+                            {
+                                id: 3,
+                                text: "There are some spoons."
+                            },
+                            {
+                                id: 4,
+                                text: "There is a spoon."
+                            },
+                        ]
+                    },
                 ],
             }))
         }

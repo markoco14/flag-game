@@ -2,10 +2,11 @@ import Image from "next/image";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef, useEffect } from 'react';
-import { Flag } from "../interfaces";
+import { Flag, } from "../interfaces";
 
 
 export default function FlagBoard() {
+    const [flags, setFlags] = useState<Flag[] | []>([])
     const [selectedFlag, setSelectedFlag] = useState< Flag | undefined >(undefined);
     const selectedFlagModal = useRef<HTMLDialogElement | undefined | null>(undefined);
     const flipButton = useRef<HTMLButtonElement | null | undefined>(undefined);
@@ -62,60 +63,14 @@ export default function FlagBoard() {
         });
     } 
     
-
-    const flags = [
-        {
-            
-            image: 'https://flagicons.lipis.dev/flags/4x3/ae.svg',
-            country: 'UAE',
-            id: 1
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/ch.svg',
-            country: 'Switzerland',
-            id: 2
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/af.svg',
-            country: 'Afghanistan',
-            id: 3
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/ar.svg',
-            country: 'Argentina',
-            id: 4
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/au.svg',// 
-            country: 'Australia',
-            id: 5
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/az.svg',// 
-            country: 'Azerbaijan',
-            id: 6
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/ca.svg',// 
-            country: 'Canada',
-            id: 7
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/bm.svg',// 
-            country: 'Bermuda',
-            id: 8
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/bo.svg',// 
-            country: 'Bolivia',
-            id: 9
-        },
-        {
-            image: 'https://flagicons.lipis.dev/flags/4x3/de.svg',// 
-            country: 'Germany',
-            id: 10
-        }
-    ];
+    useEffect(() => {
+        fetch("/api/flags/play")
+        .then((res) => res.json())
+        .then((json) => {
+          setFlags(json.flags);
+        })
+    }, [])
+    
 
     return (
         <>
@@ -151,7 +106,7 @@ export default function FlagBoard() {
                 </dialog>
             }
             <div className={styles.flags}>
-                {flags.map((flag) => (
+                {flags?.map((flag) => (
                     <div 
                         key={flag.id}
                         onClick={() => {displayFlag(flag, flag.id, flag.country)}}
