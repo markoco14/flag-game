@@ -45,10 +45,7 @@ export default function CreateFlags() {
             <section className={`${styles.flex} ${styles.create_flags_container}`}>
                 <div className={styles.create_flags_interface}>
                     <h1>Create New Flag Set</h1>
-                    <div className={`${styles.flex} ${styles.flex_between}`} style={{ padding: '0 1rem',}}>
-                        <h2>New Flag Set</h2>
-                        <span>Questions: 0</span>
-                    </div>
+                    
                     <FlagDetails></FlagDetails>
                     {!hasQuestions && (
                         <article style={{ padding: '0 1rem',}}>

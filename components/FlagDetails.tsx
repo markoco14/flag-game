@@ -4,31 +4,37 @@ import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
 
 export default function FlagDetails() {
+    const [title, setTitle] = useState<string>('This set has no title.');
     const [detailsVisible, setDetailsVisible] = useState<boolean>(true);
-    const [levelNumber, setLevelNumber] = useState<number>(0);
-    const [weekNumber, setWeekNumber] = useState<number>(0);
-    const [dayNumber, setDayNumber] = useState<number>(0);
-    const [dayOfWeek, setDayOfWeek] = useState<string>('No day');
-    const weekDaySelector = useRef<HTMLSelectElement | undefined>(undefined);
+    const levelNumberRef = useRef<string>('');
+    const weekNumberRef = useRef<string>('');
+    const dayNumberRef = useRef<string>('');
+    const dayOfWeekRef = useRef<string>('');
+
+    function handleSetTitle() {
+        const levelNumber = levelNumberRef.current.value;
+        const weekNumber = weekNumberRef.current.value;
+        const dayNumber = dayNumberRef.current.value;
+        const dayOfWeek = dayOfWeekRef.current.value;
+
+        if (levelNumber === '' || weekNumber === '' || dayNumber === '' || dayOfWeek === '') {
+            alert('You need to set choose the level, week, day, and week day');
+            return;
+        }
+
+        setTitle(`L${levelNumber} W${weekNumber} D${dayNumber} ${dayOfWeek}`);
+    }
 
     function toggleDetailsVisible() {
         detailsVisible ? setDetailsVisible(false) : setDetailsVisible(true);
     }
 
-    function handleChangeLevel(level: string) {
-        console.log(`L${level}`);
-    }
-
-    function handleChangeWeek(week: string) {
-        console.log(`W${week}`);
-    }
-
-    function handleChangeDay(day: string) {
-        console.log(`D${day}`);
-    }
-
     return (
         <>
+            <div className={`${styles.flex} ${styles.flex_between}`} style={{ padding: '0 1rem',}}>
+                <h2>{title}</h2>
+                <span>Questions: 0</span>
+            </div>
             <div className={`${styles.flex} ${styles.flex_between}`}>
                 <p>Details</p>
                 <button 
@@ -45,26 +51,26 @@ export default function FlagDetails() {
                     <div>
                         <label>Level</label>
                         <input 
-                            onChange={(e) => {handleChangeLevel(e.target.value)}}
+                            ref={levelNumberRef}
                             type="number" />
                     </div>
                     <div className={styles.flex}>
                         <div>
                             <label>Week (#)</label>
                             <input 
-                                onChange={(e) => {handleChangeWeek(e.target.value)}}
+                                ref={weekNumberRef}
                                 type="number" />
                         </div>
                         <div>
                             <label>Day (#)</label>
                             <input
-                                onChange={(e) => {handleChangeDay(e.target.value)}}
+                                ref={dayNumberRef}
                                 type="number" />
                         </div>
                         <div>
                             <label>Day (of Week)</label>
                             <select 
-                                ref={weekDaySelector}
+                                ref={dayOfWeekRef}
                             >
                                 <option value="">Choose Day</option>
                                 <option value="Monday">Monday</option>
@@ -74,10 +80,9 @@ export default function FlagDetails() {
                             </select>
                         </div>
                     </div>
-                    <button>Save</button>
+                    <button onClick={handleSetTitle}>Save</button>
                 </article>
                 )}
-                
         </>
     );
 }
