@@ -5,27 +5,12 @@ import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
 import FlagDetails from '../../../components/FlagDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
-import { useState, useRef } from 'react'
+import FlagSetQuestions from '../../../components/FlagSetQuestions'
+import { useState, useRef, useEffect } from 'react'
+import { captureRejectionSymbol } from 'stream'
 
 export default function CreateFlags() {
-    const [hasQuestions, setHasQuestions] = useState<boolean>(false);
-    const [questionType, setQuestionType] = useState<string>('MC');
-
-    const addQuestionModal = useRef<HTMLDialogElement | null>(null);
-
-    function handleOpenAddModal(type: EventTarget) {
-        console.log(type)
-        addQuestionModal.current?.showModal();
-    }
-
-    function handleDeleteQuestion() {
-        setHasQuestions(false);
-    }
-
-    function handleOpenEditModal() {
-        console.log('You clicked the edit question button');
-    }
-
+    
     return (
     <div>
         <Head>
@@ -47,97 +32,11 @@ export default function CreateFlags() {
                     <h1>Create New Flag Set</h1>
                     
                     <FlagDetails></FlagDetails>
-                    {!hasQuestions && (
-                        <article style={{ padding: '0 1rem',}}>
-                            <p>There are no questions in this flag set.</p>
-                        </article>
-                    )}
-                    {hasQuestions && (
-                        <article style={{ padding: '0 1rem',}}>
-                            <div className={`${styles.flex} ${styles.flex_between}`}>
-                                <span>Question 1</span>
-                                <div className={`${styles.flex} ${styles.flex_gap}`}>
-                                    <button onClick={handleOpenEditModal}>Edit</button>
-                                    <button onClick={handleDeleteQuestion}>Delete</button>
-                                </div>
-                            </div>
-                        </article>
-                    )}
-                    <article className={`${styles.flex} ${styles.create_flags_bar}`}>
-                        <button 
-                            onClick={(e) => handleOpenAddModal()}
-                            className={styles.create_flags_button}
-                        >
-                            Add Question
-                        </button>
-                    </article>
-                </div>
+                    <FlagSetQuestions></FlagSetQuestions>
+                    
+                </div> 
                 <FlagQuestionsList></FlagQuestionsList>
             </section>
-            <dialog
-                ref={addQuestionModal}
-                className={`${styles.create_flag_question_modal}`}
-            >
-                <div>
-                    <button onClick={() => {setQuestionType('MC')}}>MC</button>
-                    <button onClick={() => {setQuestionType('Prompt')}}>Prompt</button>
-                </div>
-                <div className={`${styles.flex} ${styles.flex_between}`}>
-                    {(questionType === 'MC') && (
-                        <>
-                        <section className={`${styles.flag_question_modal_half}`}>
-                            <h2>Front</h2>
-                            <div></div>
-                        </section>
-                        <section className={`${styles.flag_question_modal_half}`}>
-                            <h2>Back</h2>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Question</label>
-                                <input type="text" />
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Answer</label>
-                                <input type="text" />
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Option 1</label>
-                                <input type="text" />
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Option 2</label>
-                                <input type="text" />
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Option 3</label>
-                                <input type="text" />
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Option 4</label>
-                                <input type="text" />
-                            </div>
-                        </section>
-                        </>
-                    )}
-                    {(questionType === 'Prompt') && (
-                        <>
-                        <section className={`${styles.flag_question_modal_half}`}>
-                            <h2>Front</h2>
-                            <div></div>
-                        </section>
-                        <section className={`${styles.flag_question_modal_half}`}>
-                            <h2>Back</h2>
-                            <div className={`${styles.flex} ${styles.flex_column}`}>
-                                <label htmlFor="">Prompt</label>
-                                <input type="text" />
-                            </div>
-                        </section>
-                        </>
-                    )}
-                </div>
-                <div>
-                    <button>Save</button>
-                </div>
-            </dialog>
         </main>
     </div>
     )

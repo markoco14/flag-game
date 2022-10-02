@@ -12,7 +12,9 @@ export default function FlagQuestionsList() {
         .then((res) => res.json())
         .then((json) => {
           setOriginalQuestions(json.questions);
-          setDisplayedQuestions(json.questions);
+          setDisplayedQuestions(json.questions.filter((question: IQuestions) => {
+            return question.level === '5'
+          }));
         })
     }, [])
 
@@ -38,7 +40,7 @@ export default function FlagQuestionsList() {
                     id="questionLevelSelector" 
                     onChange={(e) => handleFilterQuestionsList(e.target.value)}
                 >
-                    <option value={0}>All</option>
+                    {/* <option value={0}>All</option> */}
                     <option value={5}>Level 5</option>
                     <option value={6}>Level 6</option>
                     <option value={7}>Level 7</option>
