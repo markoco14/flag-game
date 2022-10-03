@@ -54,8 +54,28 @@ export default function FlagBoard() {
                         <p className={styles.flag_country_name}>{selectedFlag?.country}</p>
                     </>
                 )}
-                {isBackSide && (
-                    <p style={{ width: '100%', aspectRatio: '4/3'}}>You are looking at my backside</p>
+                {isBackSide && selectedFlag && (
+
+                    <>
+                        <div className={styles.selected_flag_image_container}>
+                            <Image 
+                                src='https://i.ytimg.com/vi/mRf3-JkwqfU/sddefault.jpg'
+                                layout='fill'
+                                objectFit='cover'
+                                alt={`A large image of the ${selectedFlag?.country} flag.`}
+                            />
+                        </div>
+                        <p>Is this puppy cute?</p>
+                        <div style={{ display: 'flex'}}>
+                            <p>Yes!</p>
+                            <p>Yes?</p>
+                        </div>
+                        <div style={{ display: 'flex'}}>
+                            <p>Yes.</p>
+                            <p>Waldo is not in the picture.</p>
+                        </div>
+                        {/* <p style={{ width: '100%', aspectRatio: '4/3'}}>You are looking at my backside</p> */}
+                    </>
                 )}
                 <button onClick={flipFlag}>Flip</button>
                 {/* <button onClick={eliminateFlag}>Eliminate</button> */}
