@@ -8,61 +8,24 @@ import { Flag } from "../interfaces";
 export default function FlagBoard() {
     const [flags, setFlags] = useState<Flag[] | []>([])
     const [selectedFlag, setSelectedFlag] = useState< Flag | undefined >(undefined);
-    const selectedFlagModal = useRef<HTMLDialogElement | undefined | null>(undefined);
-    const flipButton = useRef<HTMLButtonElement | null | undefined>(undefined);
+    const [isBackSide, setIsBackSide] = useState<boolean>(false);
+    const selectedFlagModal = useRef<HTMLDialogElement>(null);
 
-    function displayFlag(flag: Flag, id: number, country: string) {
-        console.log(flag);
+    function displayFlag(flag: Flag) {
         setSelectedFlag(flag);
-    }
-
-    function removeFlagModalFromDom() {
-        selectedFlagModal?.current?.close();
-        setSelectedFlag(undefined);
+        selectedFlagModal?.current?.showModal();
     }
 
     function flipFlag() {
-        console.log(`You flipped the flag!`)
+        isBackSide ? setIsBackSide(false) : setIsBackSide(true);
     }
 
     function deselectFlag() {
-        // selectedFlagModal?.current?.close();
-        // debugger;
-        // setSelectedFlag(undefined);
-        removeFlagModalFromDom();
+        selectedFlagModal?.current?.close();
+        setSelectedFlag(undefined);
+        setIsBackSide(false);
     }
 
-    function eliminateFlag() {
-        // TODO: 
-        // needs logic to:
-        // filter the gameFlags array
-        // setGameFlags array to new value
-        // either remove that flag from the DOM
-        // or grey it out
-        flags.filter(flag => {
-            // eliminate logic will go here
-            // something like this
-            // if (flag.id !== passed.id) {
-            //     return flag;
-            // }
-        })
-        // selectedFlagModal?.current?.close();
-        // debugger;
-        // setSelectedFlag(undefined);
-        removeFlagModalFromDom();
-    }
-
-    if (selectedFlagModal) {
-        // this is no good
-        // I will just change to have the modal always rendered
-        // and research the conditional later
-        // AT used the condition to replace the content in their input form
-        // so maybe this isn't the best use case for adding/removing the element
-        useEffect(() => {
-            selectedFlagModal?.current?.showModal();
-        });
-    } 
-    
     useEffect(() => {
         fetch("/api/flags/play")
         .then((res) => res.json())
@@ -74,42 +37,35 @@ export default function FlagBoard() {
 
     return (
         <>
-            {selectedFlag && 
-                <dialog
-                    ref={selectedFlagModal}
-                    className={styles.selected_flag_modal}
-                    onClick={() => {
-                        flipButton?.current?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                        // selectedFlagModal?.current?.close();
-                        // setSelectedFlag(undefined);
-                        if (e.key !== 'Escape') {
-                            return;
-                        } else {
-                            removeFlagModalFromDom();
-                        }
-                    }}
-                >
-                    <div className={styles.selected_flag_image_container}>
-                        <Image 
-                            src={selectedFlag.image}
-                            layout='fill'
-                            objectFit='cover'
-                            alt={`A large image of the ${selectedFlag.country} flag.`}
-                        />
-                    </div>
-                    <p>You selected {selectedFlag.country}</p>
-                    <button ref={flipButton} onClick={flipFlag}>Flip</button>
-                    <button onClick={eliminateFlag}>Eliminate</button>
-                    <button onClick={deselectFlag}>Back</button>
-                </dialog>
-            }
+            <dialog
+                ref={selectedFlagModal}
+                className={styles.selected_flag_modal}
+            >
+                {!isBackSide && selectedFlag && (
+                    <>
+                        <div className={styles.selected_flag_image_container}>
+                            <Image 
+                                src={selectedFlag.image}
+                                layout='fill'
+                                objectFit='cover'
+                                alt={`A large image of the ${selectedFlag?.country} flag.`}
+                            />
+                        </div>
+                        <p>{selectedFlag?.country}</p>
+                    </>
+                )}
+                {isBackSide && (
+                    <p style={{ width: '100%', aspectRatio: '4/3'}}>You are looking at my backside</p>
+                )}
+                <button onClick={flipFlag}>Flip</button>
+                {/* <button onClick={eliminateFlag}>Eliminate</button> */}
+                <button onClick={deselectFlag}>Back</button>
+            </dialog>
             <div className={styles.flags}>
                 {flags?.map((flag) => (
                     <div 
                         key={flag.id}
-                        onClick={() => {displayFlag(flag, flag.id, flag.country)}}
+                        onClick={() => {displayFlag(flag)}}
                     >
                         <div className={styles.flag_image_container}>
                             <Image 
