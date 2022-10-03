@@ -40,6 +40,7 @@ const FlagsHome: NextPage = () => {
                   src="/images/flags_ui_screenshot.jpg"
                   layout='fill'
                   objectFit='cover'
+                  alt="An image of a flagboard"
                   // width={100} 
                   // height={100}
                 />
