@@ -1,4 +1,3 @@
-import Link from "next/link";
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
@@ -6,16 +5,16 @@ import { useState, useRef } from "react";
 export default function FlagDetails() {
     const [title, setTitle] = useState<string>('This set has no title.');
     const [detailsVisible, setDetailsVisible] = useState<boolean>(true);
-    const levelNumberRef = useRef<string>('');
-    const weekNumberRef = useRef<string>('');
-    const dayNumberRef = useRef<string>('');
-    const dayOfWeekRef = useRef<string>('');
+    const levelNumberRef = useRef<HTMLInputElement>(null);
+    const weekNumberRef = useRef<HTMLInputElement>(null);
+    const dayNumberRef = useRef<HTMLInputElement>(null);
+    const dayOfWeekRef = useRef<HTMLSelectElement>(null);
 
     function handleSetTitle() {
-        const levelNumber = levelNumberRef.current.value;
-        const weekNumber = weekNumberRef.current.value;
-        const dayNumber = dayNumberRef.current.value;
-        const dayOfWeek = dayOfWeekRef.current.value;
+        const levelNumber = levelNumberRef?.current?.value;
+        const weekNumber = weekNumberRef?.current?.value;
+        const dayNumber = dayNumberRef?.current?.value;
+        const dayOfWeek = dayOfWeekRef?.current?.value;
 
         if (levelNumber === '' || weekNumber === '' || dayNumber === '' || dayOfWeek === '') {
             alert('You need to set choose the level, week, day, and week day');

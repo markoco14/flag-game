@@ -1,20 +1,20 @@
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
-// import AddQuestionModal from './AddQuestionModal';
+import { IQuestions, IOptions } from "../interfaces";
 
 export default function FlagSetQuestions() {
     const [flagSetQuestions, setFlagSetQuestions] = useState<[]>([]);
     const addQuestionModal = useRef<HTMLDialogElement | null>(null);
     const [questionType, setQuestionType] = useState<string>('MC');
 
-    const countryNameRef = useRef<string | ''>('');
-    const promptRef = useRef<string | ''>('');
-    const questionRef = useRef<string | ''>('');
-    const answerRef = useRef<string | ''>('');
-    const wrong1Ref = useRef<string | ''>('');
-    const wrong2Ref = useRef<string | ''>('');
-    const wrong3Ref = useRef<string | ''>('');
+    const countryNameRef = useRef<HTMLInputElement>(null);
+    const promptRef = useRef<HTMLInputElement>(null);
+    const questionRef = useRef<HTMLInputElement>(null);
+    const answerRef = useRef<HTMLInputElement>(null);
+    const wrong1Ref = useRef<HTMLInputElement>(null);
+    const wrong2Ref = useRef<HTMLInputElement>(null);
+    const wrong3Ref = useRef<HTMLInputElement>(null);
 
 
     function handleOpenEditModal() {
@@ -45,21 +45,21 @@ export default function FlagSetQuestions() {
                 method: "POST",
                 body: JSON.stringify({
                     type: "MC",
-                    country: countryNameRef.current.value,
-                    question: questionRef.current.value,
-                    answer: answerRef.current.value,
+                    country: countryNameRef?.current?.value,
+                    question: questionRef?.current?.value,
+                    answer: answerRef?.current?.value,
                     options: [
                         {
-                            text: answerRef.current.value,
+                            text: answerRef?.current?.value,
                         },
                         {                        
-                            text: wrong1Ref.current.value,
+                            text: wrong1Ref?.current?.value,
                         },
                         {
-                            text: wrong2Ref.current.value,
+                            text: wrong2Ref?.current?.value,
                         },
                         {
-                            text: wrong3Ref.current.value,
+                            text: wrong3Ref?.current?.value,
                         },
                     ],
                 }),
@@ -77,7 +77,7 @@ export default function FlagSetQuestions() {
                 method: "POST",
                 body: JSON.stringify({
                     type: "Prompt",
-                    question: promptRef.current.value,
+                    question: promptRef?.current?.value,
                 }),
             });
             fetch('/api/flags/create')
@@ -86,7 +86,7 @@ export default function FlagSetQuestions() {
                 setFlagSetQuestions(json.sets);
             })
         }
-        addQuestionModal.current.close();
+        addQuestionModal?.current?.close();
     }
 
     return (
@@ -97,7 +97,7 @@ export default function FlagSetQuestions() {
                 </article>
             )}
             {flagSetQuestions && (
-                flagSetQuestions?.map((question) => (
+                flagSetQuestions?.map((question: IQuestions) => (
 
                 <article key={question.id} style={{ padding: '0 1rem',}}>
                     <p>Country: {question.country}</p>
@@ -110,7 +110,7 @@ export default function FlagSetQuestions() {
                     </div>
                     <div>
                         <p>Answer: {question.answer}</p>
-                        {question.options.map((option) => (
+                        {question.options.map((option: IOptions) => (
                             <p key={option.id}>Option: {option.text}</p>
                         ))}
                     </div>
@@ -190,7 +190,6 @@ export default function FlagSetQuestions() {
                     <button onClick={() => {handleAddQuestion(questionType)}}>Save</button>
                 </div>
             </dialog>
-            {/* <AddQuestionModal></AddQuestionModal> */}
         </>
     );
 }
