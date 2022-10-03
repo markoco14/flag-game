@@ -13,7 +13,7 @@ export default function PlayFlags() {
         <link rel="icon" href="/favicon.ico" />
         
         </Head>
-        <header style={{ position: 'fixed', width: '100vw', background: '#58C3FF', display: 'flex', justifyContent: 'right', padding: '1rem'}}>
+        <header className={`${styles.flags_navbar}`}>
         {/* <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}> 
             <Link href="/"><a>Log Out</a></Link>
             <Link href="/teachers"><a>Dashboard</a></Link>

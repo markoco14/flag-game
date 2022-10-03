@@ -51,7 +51,7 @@ export default function FlagBoard() {
                                 alt={`A large image of the ${selectedFlag?.country} flag.`}
                             />
                         </div>
-                        <p>{selectedFlag?.country}</p>
+                        <p className={styles.flag_country_name}>{selectedFlag?.country}</p>
                     </>
                 )}
                 {isBackSide && (

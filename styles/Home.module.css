@@ -162,6 +162,22 @@
 
 /* Play Flags Styles */
 
+.flags_navbar {
+  position: fixed;
+  width: 100vw;
+  background: #58C3FF;
+  display: flex;
+  justify-content: right;
+  padding: 1rem;
+  opacity: 0;
+  transition: 1s;
+}
+
+.flags_navbar:hover {
+  opacity: 100;
+  transition: 1s;
+}
+
 .flags {
   display: grid;
   place-content: center;
@@ -179,7 +195,7 @@
 
 .flag_country_name {
   text-align: center;
-  font-size: 2rem;
+  font-size: clamp(1rem, 3vw, 5.5rem);
   font-family: 'Poppins', 'sans-serif';
   margin: 0.5rem 0;
 }
