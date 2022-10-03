@@ -2,6 +2,7 @@ import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
 import { IQuestions, IOptions } from "../interfaces";
+import Image from 'next/image';
 
 export default function FlagSetQuestions() {
     const [flagSetQuestions, setFlagSetQuestions] = useState<[]>([]);
@@ -104,6 +105,7 @@ export default function FlagSetQuestions() {
                     <div className={`${styles.flex} ${styles.flex_between}`}>
                         <p>Question: {question.question}</p>
                         <div className={`${styles.flex} ${styles.flex_gap}`}>
+                            <button>Preview</button>
                             <button onClick={handleOpenEditModal}>Edit</button>
                             <button onClick={() => handleDeleteQuestion(question.id)}>Delete</button>
                         </div>
@@ -140,8 +142,122 @@ export default function FlagSetQuestions() {
                         <section className={`${styles.flag_question_modal_half}`}>
                             <h2>Front</h2>
                             <div>
-                                <label htmlFor="">Country</label>
-                                <input ref={countryNameRef} type="text" />
+                                <div>
+                                    <label htmlFor="">Country</label>
+                                    <input ref={countryNameRef} type="text" />
+                                </div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem'}}>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                    <div>
+                                        <div style={{ margin: 'auto', position: 'relative', width: '50px', height: '50px', border: '2px solid black' }}>
+                                            <Image 
+                                                src="https://flagicons.lipis.dev/flags/1x1/ar.svg"
+                                                alt=""
+                                                layout="fill"
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                        <p>Argentina</p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                         <section className={`${styles.flag_question_modal_half}`}>
