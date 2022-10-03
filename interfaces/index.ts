@@ -11,8 +11,14 @@ export type FlagBoard = {
 export type IQuestions = {
     id: number;
     level: string;
+    country: string;
     type: string;
     question: string;
     answer: string;
-    options: string | string[];
+    options: IOptions[];
+}
+
+export type IOptions = {
+    id: number;
+    text: string;
 }
