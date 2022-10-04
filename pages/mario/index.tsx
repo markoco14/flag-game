@@ -3,8 +3,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../../styles/Home.module.css'
+import DashboardNav from '../../components/DashboardNav'
+import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
+  const router = useRouter()
+  console.log(router);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,11 +19,19 @@ const Home: NextPage = () => {
       </Head>
       <header>
         <nav className={`${styles.primary_nav}`}>
-          <Link href="/"><a>Home</a></Link>
+          <Link href="/"><a>Logout</a></Link>
         </nav>
       </header>
-      <main className={styles.main}>
-        <h1>Mario Section</h1>
+      <main className={`${styles.flex} ${styles.dashboard}`}>
+        <DashboardNav></DashboardNav>
+        <section className={`${styles.flex} ${styles.flex_column}`}>
+          <h1>Welcome back, Teacher Teacher!</h1>
+          <p>This is your main dashboard. Keep track of everything you need to do today and throughout the week.</p>
+          <p>Today&apos;s schedule</p>
+          <p>Absent Today</p>
+          <p>Flags</p>
+          <p>Flags</p>
+        </section>
       </main>
 
       <footer className={styles.footer}>
