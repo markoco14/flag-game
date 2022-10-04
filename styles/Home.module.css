@@ -10,6 +10,12 @@
   display: flex;
 }
 
+.flex_center {
+  justify-content: center;
+  align-items: center;
+  height:100vh;
+}
+
 .flex_align_center {
   align-items: center;
 }
@@ -33,6 +39,40 @@
 
 .flex_evenly {
   justify-content: space-evenly;
+}
+
+/* Log In Page Styles */
+
+.form_margin > * {
+  margin-bottom: 1rem;
+}
+
+.form_group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form_group > label {
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.form_button_group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.form_button {
+  color: rgb(19, 19, 19);
+  background: #58C3FF;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.form_button:hover {
+  background: #32b4ff;
+  box-shadow: 0 0 4px 4px rgb(145, 242, 255);
 }
 
 .dashboard {

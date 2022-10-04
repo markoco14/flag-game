@@ -17,12 +17,9 @@ const FlagsHome: NextPage = () => {
       </Head>
       <header>
         <nav className={`${styles.primary_nav}`}>
-          <Link href="/teachers">
-            <a className={`${styles.sm_scr_nav}`}>Dashboard</a>
-          </Link>
-          <Link href="/teachers/flags">
-            <a className={`${styles.sm_scr_nav}`}>Flags</a>
-          </Link>
+          {/* <Link href="/teachers"><a>Dashboard</a></Link> */}
+          {/* <Link href="/teachers/flags"><a>Flags</a></Link> */}
+          <Link href="/teachers/flags/#"><a>Profile</a></Link>
           <Link href="/"><a>Log Out</a></Link>
         </nav>
       </header>

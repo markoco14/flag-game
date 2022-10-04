@@ -14,9 +14,10 @@ const TeachersHome: NextPage = () => {
       </Head>
       <header>
         <nav className={`${styles.primary_nav}`}>
+          {/* <Link href="/teachers"><a>Dashboard</a></Link> */}
+          {/* <Link href="/teachers/flags"><a>Flags</a></Link> */}
+          <Link href="/teachers/#"><a>Profile</a></Link>
           <Link href="/"><a>Log Out</a></Link>
-          <Link href="/teachers"><a>Dashboard</a></Link>
-          <Link href="/teachers/flags"><a>Flags</a></Link>
         </nav>
       </header>
       <main className={`${styles.flex} ${styles.dashboard}`}>
