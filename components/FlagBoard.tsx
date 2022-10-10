@@ -30,7 +30,7 @@ export default function FlagBoard() {
         fetch("/api/flags/play")
         .then((res) => res.json())
         .then((json) => {
-          setFlags(json.flagboard);
+          setFlags(json);
         })
     }, [])
     
