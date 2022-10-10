@@ -17,16 +17,17 @@ const FlagsHome: NextPage = () => {
     fetch("/api/recent")
     .then((res) => res.json())
     .then((json) => {
+      console.log(json);
       const date = new Date();
       const firstDay = startOfWeek(date);
       const lastDay = lastDayOfWeek(date);
-      const thisWeek = json.filter((flag: IRecentFlag) => {
+      const thisWeek = json.flagsets.filter((flag: IRecentFlag) => {
         if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
           return flag;
         }
       })
       setThisWeeksFlags(thisWeek);
-      setRecentFlags(json);
+      setRecentFlags(json.flagsets);
     })
   }, [])
 
@@ -75,6 +76,7 @@ const FlagsHome: NextPage = () => {
           <div className={`${styles.flex} ${styles.flex_between} ${styles.flex_grow} ${styles.flex_gap}`}>
             {/* <FlagList></FlagList> */}
             <article className={`${styles.card}`}>
+              <h2>Recent Flags</h2>
               <ul>
                 {recentFlags?.map((flag: IRecentFlag) => (
                   <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>

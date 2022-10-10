@@ -168,7 +168,7 @@
   min-height: 100vh;
   /* border: solid 2px black; */
   border-radius: 3px;
-  min-width: 200px;
+  min-width: 60vw;
   flex-grow: 1;
   background-color: white;
   padding: 1rem;
