@@ -14,7 +14,7 @@ const FlagsHome: NextPage = () => {
   const workDays = ['Monday', 'Wednesday', 'Thursday', 'Friday']
 
   useEffect(() => {
-    fetch("/api/recent")
+    fetch("/api/flags/flagsets")
     .then((res) => res.json())
     .then((json) => {
       console.log(json);
