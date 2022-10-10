@@ -7,7 +7,9 @@ export type Flag = {
 export type IRecentFlag = {
     id: number,
     title: string,
-    date: string
+    date: string,
+    dayOfWeek: string,
+    class: string,
 }
 
 export type FlagBoard = {

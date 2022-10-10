@@ -5,8 +5,6 @@ import { useRouter } from 'next/router'
 
 export default function DashboardNav() {
     const router = useRouter()
-    console.log(router);
-
 
     return (
         <nav className={`${styles.flex} ${styles.flex_column} ${styles.dashboard_nav}`}>
