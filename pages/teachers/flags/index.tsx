@@ -6,8 +6,22 @@ import styles from '../../../styles/Home.module.css'
 import FlagCalendar from '../../../components/FlagCalendar'
 import FlagList from '../../../components/FlagList'
 import DashboardNav from '../../../components/DashboardNav'
+import { useState, useEffect } from 'react'
+import { IRecentFlag } from '../../../interfaces'
 
 const FlagsHome: NextPage = () => {
+  const [recentFlags, setRecentFlags] = useState<IRecentFlag[] | []>([]);
+
+  
+
+  useEffect(() => {
+    fetch("/api/recent")
+    .then((res) => res.json())
+    .then((json) => {
+      setRecentFlags(json);
+    })
+  }, [])
+
   return (
     <div>
       <Head>
@@ -27,9 +41,25 @@ const FlagsHome: NextPage = () => {
         <DashboardNav></DashboardNav>
         <section className={`${styles.dashboard_content}`}>
           <h1>Welcome Back, Teacher Mark</h1>
-          <FlagCalendar></FlagCalendar>
+          <FlagCalendar></FlagCalendar>          
           <div className={`${styles.flex} ${styles.flex_between} ${styles.flex_grow} ${styles.flex_gap}`}>
-            <FlagList></FlagList>
+            {/* <FlagList></FlagList> */}
+            <article className={`${styles.card}`}>
+              <ul>
+                <>
+                  {console.log(recentFlags)}
+                  {recentFlags?.map((flag: IRecentFlag) => (
+                    <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>
+                      {flag.title}
+                      <div className={`${styles.flex} ${styles.flex_gap}`}>
+                        <Link href="./flags/play"><a>Play</a></Link>
+                        <Link href="#"><a>Edit</a></Link>
+                      </div> 
+                    </li>
+                  ))}
+                </>
+              </ul>
+            </article>
             <article className={`${styles.card}`}>
               <div className={`${styles.dashboard_image_container}`}>
                 <Image 
