@@ -6,7 +6,7 @@ import DashboardNav from '../../../components/DashboardNav'
 import FlagDetails from '../../../components/FlagDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { useRef, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { parseISO, isFriday, isMonday, isWednesday, isThursday, isTuesday, isSaturday, isSunday } from 'date-fns'
 import { parse } from 'path'
 
@@ -20,7 +20,7 @@ export default function CreateFlags() {
 
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
-    function createNewSet(e: Event) {
+    function createNewSet(e: FormEvent) {
         console.log(date);
         console.log(parseISO(date));
         const parsedDate: Date = parseISO(date);
