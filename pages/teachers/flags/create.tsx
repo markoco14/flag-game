@@ -15,7 +15,7 @@ export default function CreateFlags() {
     const [weekNumber, setWeekNumber] = useState<string | undefined>('');
     const [dayNumber, setDayNumber] = useState<string | undefined>('');
     const [dayOfWeek, setDayOfWeek] = useState<string | undefined>('');
-    const [date, setDate] = useState<string | undefined>('');
+    const [date, setDate] = useState<string>('');
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
 
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
