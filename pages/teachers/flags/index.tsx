@@ -3,11 +3,33 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
-import FlagCalendar from '../../../components/FlagCalendar'
-import FlagList from '../../../components/FlagList'
 import DashboardNav from '../../../components/DashboardNav'
+import { useState, useEffect } from 'react'
+import { IRecentFlag } from '../../../interfaces'
+import { startOfWeek, lastDayOfWeek, isAfter, isBefore, parseISO } from 'date-fns'
 
 const FlagsHome: NextPage = () => {
+  const [recentFlags, setRecentFlags] = useState<IRecentFlag[] | []>([]);
+  const [thisWeeksFlags, setThisWeeksFlags] = useState<IRecentFlag[] | undefined>(undefined);
+  const workDays = ['Monday', 'Wednesday', 'Thursday', 'Friday']
+
+  useEffect(() => {
+    fetch("/api/recent")
+    .then((res) => res.json())
+    .then((json) => {
+      const date = new Date();
+      const firstDay = startOfWeek(date);
+      const lastDay = lastDayOfWeek(date);
+      const thisWeek = json.filter((flag: IRecentFlag) => {
+        if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
+          return flag;
+        }
+      })
+      setThisWeeksFlags(thisWeek);
+      setRecentFlags(json);
+    })
+  }, [])
+
   return (
     <div>
       <Head>
@@ -17,8 +39,6 @@ const FlagsHome: NextPage = () => {
       </Head>
       <header>
         <nav className={`${styles.primary_nav}`}>
-          {/* <Link href="/teachers"><a>Dashboard</a></Link> */}
-          {/* <Link href="/teachers/flags"><a>Flags</a></Link> */}
           <Link href="/teachers/flags/#"><a>Profile</a></Link>
           <Link href="/"><a>Log Out</a></Link>
         </nav>
@@ -27,9 +47,46 @@ const FlagsHome: NextPage = () => {
         <DashboardNav></DashboardNav>
         <section className={`${styles.dashboard_content}`}>
           <h1>Welcome Back, Teacher Mark</h1>
-          <FlagCalendar></FlagCalendar>
+          {/* <FlagCalendar></FlagCalendar>    */}
+          <article>
+            <div className={`${styles.card}`}>
+              <div className={`${styles.grid} ${styles.flag_calendar_grid}`}>
+                {workDays.map((day) => (
+                  <div key={day}>
+                    <p>{day}</p>
+                    <ul>
+                      {thisWeeksFlags?.map((flag) => {
+                        if (flag.dayOfWeek === day) {
+                          return (
+                            <li key={flag.id}>
+                              <Link href="./flags/play">
+                                <a>{flag.title.slice(0,8)}</a>
+                              </Link>
+                            </li>
+                          )
+                        }
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </article>       
           <div className={`${styles.flex} ${styles.flex_between} ${styles.flex_grow} ${styles.flex_gap}`}>
-            <FlagList></FlagList>
+            {/* <FlagList></FlagList> */}
+            <article className={`${styles.card}`}>
+              <ul>
+                {recentFlags?.map((flag: IRecentFlag) => (
+                  <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>
+                    {flag.title}
+                    <div className={`${styles.flex} ${styles.flex_gap}`}>
+                      <Link href="./flags/play"><a>Play</a></Link>
+                      <Link href="#"><a>Edit</a></Link>
+                    </div> 
+                  </li>
+                ))}
+              </ul>
+            </article>
             <article className={`${styles.card}`}>
               <div className={`${styles.dashboard_image_container}`}>
                 <Image 

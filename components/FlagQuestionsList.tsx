@@ -11,10 +11,11 @@ export default function FlagQuestionsList() {
         fetch("/api/questions")
         .then((res) => res.json())
         .then((json) => {
-          setOriginalQuestions(json.questions);
-          setDisplayedQuestions(json.questions.filter((question: IQuestions) => {
-            return question.level === '5'
-          }));
+          setOriginalQuestions(json);
+        //   setDisplayedQuestions(json.questions.filter((question: IQuestions) => {
+        //     return question.level === '5'
+        //   }));
+          setDisplayedQuestions(json);
         })
     }, [])
 

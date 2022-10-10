@@ -4,6 +4,14 @@ export type Flag = {
     id: number
 }
 
+export type IRecentFlag = {
+    id: number,
+    title: string,
+    date: string,
+    dayOfWeek: string,
+    class: string,
+}
+
 export type FlagBoard = {
     flags: Flag[]
 }

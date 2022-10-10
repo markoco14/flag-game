@@ -5,6 +5,7 @@ import styles from '../../styles/Home.module.css'
 import DashboardNav from '../../components/DashboardNav'
 
 const TeachersHome: NextPage = () => {
+  
   return (
     <div className={styles.container}>
       <Head>
