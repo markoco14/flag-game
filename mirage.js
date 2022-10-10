@@ -38,13 +38,13 @@ export function makeServer( {environment = "test"} = {}) {
 
             this.passthrough();
 
-            this.get("/_next/static/development/_devMiddlewareManifest.json", () => {
-                return [];
-            })
+            // this.get("/_next/static/development/_devMiddlewareManifest.json", () => {
+            //     return [];
+            // })
     
-            this.get("/_next/static/development/_devPagesManifest.json", () => {
-                return {"pages":["/","/../mirage","/../next.config","/_app"]};
-            })
+            // this.get("/_next/static/development/_devPagesManifest.json", () => {
+            //     return {"pages":["/","/../mirage","/../next.config","/_app"]};
+            // })
 
             // flags home API endpoints
 
