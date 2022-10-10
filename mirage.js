@@ -36,6 +36,8 @@ export function makeServer( {environment = "test"} = {}) {
         routes() {
             // this.namespace = "api"
 
+            this.passthrough();
+
             this.get("/_next/static/development/_devMiddlewareManifest.json", () => {
                 return [];
             })
