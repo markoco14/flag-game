@@ -1,4 +1,7 @@
 import { createServer, Model } from "miragejs"
+import questions from './fixtures/questions'
+import flagsets from './fixtures/flagsets'
+import recent from './fixtures/recent'
 
 export function makeServer( {environment = "test"} = {}) {
     let server = createServer({
@@ -9,6 +12,10 @@ export function makeServer( {environment = "test"} = {}) {
             set: Model,
             flagboard: Model,
             question: Model,
+        },
+
+        fixtures: {
+            questions,
         },
 
         routes() {
@@ -22,104 +29,9 @@ export function makeServer( {environment = "test"} = {}) {
                 return {"pages":["/","/../mirage","/../next.config","/_app"]};
             })
 
-            this.get("/api/questions", () => ({
-                questions: [
-                    {
-                        id: 1,
-                        level: '5',
-                        type: 'MC',
-                        question: "Why did the chicken cross the road?",
-                        answer: "To get to the other side.",
-                        // options: [
-                        //     {id: 1, text: "He didn't."}, 
-                        //     {id: 2, text: "Did the chicken cross the road?"}, 
-                        //     {id: 3, text: "A wolf was chasing him!"}, 
-                        //     {id: 4, text: "He wanted to eat KFC."}, 
-                        // ],
-                    },
-                    {
-                        id: 2,
-                        level: '5',
-                        type: 'MC',
-                        question: "What is this?",
-                        answer: "Kimchi.",
-                        // options: [
-                        //     "Kimchi", 
-                        //     "Rice", 
-                        //     "Roast Beef", 
-                        //     "KFC"
-                        // ],
-                    },
-                    {
-                        id: 3,
-                        level: '6',
-                        type: 'MC',
-                        question: "How much wood could a woodchuck chuck....",
-                        answer: "Kimchi.",
-                        // options: [
-                        //     "Kimchi", 
-                        //     "Rice", 
-                        //     "Roast Beef", 
-                        //     "KFC"
-                        // ],
-                    },
-                    {
-                        id: 4,
-                        level: '6',
-                        type: 'MC',
-                        question: "What type of dog is this?",
-                        answer: "Corgi.",
-                        // options: [
-                        //     "Golden Retriever", 
-                        //     "Corgi", 
-                        //     "Pug", 
-                        //     "German Shepherd"
-                        // ],
-                    },
-                    {
-                        id: 5,
-                        level: '6',
-                        type: 'Prompt',
-                        question: "Name 5 Taiwanese teachers at Sky.",
-                        answer: "n/a",
-                        // options: "n/a"
-                    },
-                    {
-                        id: 6,
-                        level: '6',
-                        type: 'Prompt',
-                        question: "Do 5 push-ups",
-                        answer: "n/a",
-                        // options: "n/a"
-                    },
-                    {
-                        id: 7,
-                        level: '7',
-                        type: 'MC',
-                        question: "Who is Canada's Prime Minister?",
-                        answer: "Justin Trudeau",
-                        // options: [
-                        //     "Ronald McDonald", 
-                        //     "Justin Timberlake", 
-                        //     "Donald Trump", 
-                        //     "Justin Trudeau"
-                        // ],
-                    },
-                    {
-                        id: 8,
-                        level: '8',
-                        type: 'MC',
-                        question: "What is Teacher Mario's favorite sport?",
-                        answer: "Hockey",
-                        // options: [
-                        //     "Swimming", 
-                        //     "Hockey", 
-                        //     "Soccer", 
-                        //     "Frisbee"
-                        // ],
-                    },
-                ],
-            }))
+            this.get("api/recent", recent)
+            
+            this.get("/api/questions", questions)
 
             this.get("/api/flags/play", () => ({
                 flagboard: [
@@ -175,6 +87,12 @@ export function makeServer( {environment = "test"} = {}) {
                     }
                 ],
             }))
+
+            this.get("/api/flags/play/:id", flagsets)
+
+            this.get("/api/flagsets", (schema) => {
+                return schema.flagsets.all();
+            })
 
             this.get("/api/flags/create", (schema) => {
                 return schema.sets.all();
