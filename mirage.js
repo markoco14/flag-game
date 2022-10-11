@@ -3,6 +3,7 @@ import questions from './fixtures/questions'
 import game from './fixtures/game'
 import gameCopy from './fixtures/gameCopy'
 import flagsets from './fixtures/flagsets'
+import availableFlags from './fixtures/availableFlags'
 
 export function makeServer( {environment = "test"} = {}) {
     let server = createServer({
@@ -17,7 +18,8 @@ export function makeServer( {environment = "test"} = {}) {
 
         fixtures: {
             questions,
-            flagsets
+            flagsets,
+            availableFlags,
         },
 
         seeds(server) {
@@ -46,6 +48,8 @@ export function makeServer( {environment = "test"} = {}) {
             
             // create page API endpoints
             this.get("/api/questions", questions)
+
+            this.get("/api/flags/availableFlags", availableFlags)
             
             this.post("/api/flags/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)

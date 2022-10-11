@@ -165,8 +165,6 @@
 }
 
 .create_flags_interface {
-  min-height: 100vh;
-  /* border: solid 2px black; */
   border-radius: 3px;
   min-width: 60vw;
   flex-grow: 1;

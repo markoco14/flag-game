@@ -1,14 +1,16 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
 import FlagDetails from '../../../components/FlagDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { parseISO, isFriday, isMonday, isWednesday, isThursday, isTuesday, isSaturday, isSunday } from 'date-fns'
-import { parse } from 'path'
+import { Flag } from '../../../interfaces'
+import FlagCalendar from '../../../components/FlagCalendar'
 
 export default function CreateFlags() {
     const [levelNumber, setLevelNumber] = useState<string | undefined>('');
@@ -17,7 +19,8 @@ export default function CreateFlags() {
     const [dayOfWeek, setDayOfWeek] = useState<string | undefined>('');
     const [date, setDate] = useState<string>('');
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
-
+    const [availableFlags, setAvailableFlags] = useState<Flag[] | []>([]);
+    const [selectedFlags, setSelectedFlags] = useState<Flag[] | []>([]);
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
     function createNewSet(e: FormEvent) {
@@ -52,6 +55,37 @@ export default function CreateFlags() {
         setIsTitleSet(true);
         setFlagsName(title)
     }
+
+    function addSelectedFlagToSet(flag: Flag) {
+        if (!selectedFlags.find((selectedFlag) => {
+            return selectedFlag.id === flag.id;
+        })) {
+            setSelectedFlags([...selectedFlags, flag])
+        } else {
+            alert('That flag is already selected')
+        }
+    }
+
+    function removeSelectedFlagFromSet(flag: Flag) {
+        const updatedFlags = selectedFlags.filter((selectedFlag) => {
+            console.log(selectedFlag.id);
+            console.log(flag.id);
+            console.log(selectedFlag.id === flag.id);
+            return selectedFlag.id !== flag.id;
+        })
+        console.log(updatedFlags);
+        setSelectedFlags(updatedFlags);
+    }
+
+    useEffect(() => {
+        fetch('/api/flags/availableFlags')
+        .then((res) => res.json())
+        .then((json) => {
+            console.log(json);
+            setAvailableFlags(json)
+        })
+    
+    }, [])
     
     return (
     <div>
@@ -71,82 +105,136 @@ export default function CreateFlags() {
         <main className={`${styles.dashboard}`}>
             <div className={`${styles.dashboard_content_wrapper}`}>
                 <DashboardNav></DashboardNav>
-                <section className={`${styles.create_flags_container}`}>
-                    <div className={styles.create_flags_interface}>
-                        <h1>Create New Flag Set</h1>
-                        <div className={`${styles.flex} ${styles.flex_between}`} style={{ padding: '0 1rem', marginBottom: '1rem'}}>
-                            <h2>Flagset Name: {flagsName}</h2>
-                            <span>Questions: 0</span>
-                        </div>
-                        <div className={`${styles.flex} ${styles.flex_between}`}>
-                            <p>Details</p>
-                            <button 
-                                style={{ border: 'none', background: 'none', color: 'black'}}
-                            >
-                            <span className="material-symbols-outlined">
-                                close
-                            </span>
-                            </button>
-                        </div>
-                        {!isTitleSet && (
-                            <form 
-                                onSubmit={(e) => {createNewSet(e)}}
-                                className={styles.flex_column}
-                            >
-                                <div className={styles.flex_column}>
-                                    <label>Level</label>
-                                    <input 
-                                        // ref={levelNumberRef}
-                                        onChange={(e) => {setLevelNumber(e.target.value)}}
-                                        type="number" />
-                                </div>
-                                <div className={styles.flex_column}>
-                                    <label>Week (#)</label>
-                                    <input 
-                                        // ref={weekNumberRef}
-                                        onChange={(e) => {setWeekNumber(e.target.value)}}
-                                        type="number" />
-                                </div>
-                                <div>
-                                    <label>Day (#)</label>
-                                    <input
-                                        onChange={(e) => {setDayNumber(e.target.value)}}
-                                        type="number" />
-                                </div>
-                                <div>
-                                    <label>Day (of Week)</label>
-                                    <select 
-                                        onChange={(e) => {setDayOfWeek(e.target.value)}}
-                                    >
-                                        <option value="">Choose Day</option>
-                                        <option value="Monday">Monday</option>
-                                        <option value="Wednesday">Wednesday</option>
-                                        <option value="Thursday">Thursday</option>
-                                        <option value="Friday">Friday</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label>Date</label>
-                                    <input 
-                                        onChange={(e) => {setDate(e.target.value)}}
-                                        type='date'
-                                    >
-                                    </input>
-                                </div>
-                                <button>Save</button>
-                            </form>
-                        )}
-                        {isTitleSet && (
-                            <div>
-                                <p>Level: {levelNumber}</p>
-                                <p>Week: {weekNumber}</p>
-                                <p>Day: {dayNumber}</p>
-                                <p>Day of Week: {dayOfWeek}</p>
-                                <button>+</button>
+                <div>
+                    <section className={`${styles.create_flags_container}`}>
+                        <div className={styles.create_flags_interface}>
+                            <h1>Create New Flag Set</h1>
+                            <div className={`${styles.flex} ${styles.flex_between}`} style={{ padding: '0 1rem', marginBottom: '1rem'}}>
+                                <h2>Flagset Name: {flagsName}</h2>
+                                <span>Questions: 0</span>
                             </div>
-                        )}
-                    </div>
-                </section>
+                            <div className={`${styles.flex} ${styles.flex_between}`}>
+                                <p>Details</p>
+                                <button 
+                                    style={{ border: 'none', background: 'none', color: 'black'}}
+                                >
+                                <span className="material-symbols-outlined">
+                                    close
+                                </span>
+                                </button>
+                            </div>
+                            {!isTitleSet && (
+                                <form 
+                                    onSubmit={(e) => {createNewSet(e)}}
+                                    className={styles.flex_column}
+                                >
+                                    <div className={styles.flex_column}>
+                                        <label>Level</label>
+                                        <input 
+                                            // ref={levelNumberRef}
+                                            onChange={(e) => {setLevelNumber(e.target.value)}}
+                                            type="number" />
+                                    </div>
+                                    <div className={styles.flex_column}>
+                                        <label>Week (#)</label>
+                                        <input 
+                                            // ref={weekNumberRef}
+                                            onChange={(e) => {setWeekNumber(e.target.value)}}
+                                            type="number" />
+                                    </div>
+                                    <div>
+                                        <label>Day (#)</label>
+                                        <input
+                                            onChange={(e) => {setDayNumber(e.target.value)}}
+                                            type="number" />
+                                    </div>
+                                    <div>
+                                        <label>Day (of Week)</label>
+                                        <select 
+                                            onChange={(e) => {setDayOfWeek(e.target.value)}}
+                                        >
+                                            <option value="">Choose Day</option>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Date</label>
+                                        <input 
+                                            onChange={(e) => {setDate(e.target.value)}}
+                                            type='date'
+                                        >
+                                        </input>
+                                    </div>
+                                    <button>Save</button>
+                                </form>
+                            )}
+                            {isTitleSet && (
+                                <div>
+                                    <p>Level: {levelNumber}</p>
+                                    <p>Week: {weekNumber}</p>
+                                    <p>Day: {dayNumber}</p>
+                                    <p>Day of Week: {dayOfWeek}</p>
+                                    <button>+</button>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                    <section className={`${styles.create_flags_container}`}>
+                        <div className={styles.create_flags_interface}>
+                            <h2>Choose your flags</h2>
+                            <div style={{ display: 'flex', }}>
+                                <div style={{ overflow: 'hidden', minWidth: '30%' }}>
+                                    <p>Selected Flags: {selectedFlags.length ? selectedFlags.length : 0}</p>
+                                    {(selectedFlags?.length > 0) && (
+                                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem'}}>
+                                            <ul>
+                                            {selectedFlags.map((flag: Flag) => (
+                                                <li 
+                                                    style={{background: 'grey', borderRadius: '5px', padding: '0.5rem 1rem',}}
+                                                    key={`selected-flag-${flag.id}`}
+                                                    onClick={() => {removeSelectedFlagFromSet(flag)}}
+                                                >{flag.country}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div style={{ overflow: 'hidden', maxHeight: '40vh'}}>
+                                    <article style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
+                                        {(availableFlags?.length > 0) ? (
+                                            <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', overflowY: 'scroll'}}>
+                                                {availableFlags.map((flag: Flag) => (
+                                                    <div 
+                                                        key={`available-flag-${flag.id}`}
+                                                        style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
+                                                        onClick={() => {addSelectedFlagToSet(flag)}}
+                                                    >
+                                                        <Image
+                                                            alt={`An image of the ${flag.country} country flag.`}
+                                                            src={flag.image}
+                                                            layout='fill'
+                                                            objectFit='cover'
+                                                        ></Image>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>Loading....</p>
+                                        )}
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className={`${styles.create_flags_container}`}>
+                        <div className={styles.create_flags_interface}>
+                            <h2>Add Your Questions</h2>
+                        </div>
+                    </section>
+                </div>
             </div>
         </main>
     </div>
