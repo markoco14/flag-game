@@ -63,10 +63,10 @@ export function makeServer( {environment = "test"} = {}) {
                 return schema.flagsets.find(request.params.id);
             })
 
-            this.delete(`/api/flags/create/:id`, (schema, request) => {
+            this.delete(`/api/flagsets/delete/:id`, (schema, request) => {
                 let id = request.params.id
 
-                return schema.sets.find(id).destroy()
+                return schema.flagsets.find(id).destroy()
             })
 
             // play page API endpoints
