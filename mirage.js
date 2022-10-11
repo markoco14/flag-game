@@ -2,7 +2,7 @@ import { createServer, Model } from "miragejs"
 import questions from './fixtures/questions'
 import game from './fixtures/game'
 import gameCopy from './fixtures/gameCopy'
-// import flagsets from './fixtures/flagsets'
+import flagsets from './fixtures/flagsets'
 
 export function makeServer( {environment = "test"} = {}) {
     let server = createServer({
@@ -17,11 +17,11 @@ export function makeServer( {environment = "test"} = {}) {
 
         fixtures: {
             questions,
-            // flagsets
+            flagsets
         },
 
         seeds(server) {
-            // server.loadFixtures()
+            server.loadFixtures()
 
             // flagsets.forEach((flagset) => {
             //     server.create('flagset', {
@@ -35,38 +35,29 @@ export function makeServer( {environment = "test"} = {}) {
 
         routes() {
             // this.namespace = "api"
-
             this.passthrough();
 
-            // this.get("/_next/static/development/_devMiddlewareManifest.json", () => {
-            //     return [];
-            // })
-    
-            // this.get("/_next/static/development/_devPagesManifest.json", () => {
-            //     return {"pages":["/","/../mirage","/../next.config","/_app"]};
-            // })
-
             // flags home API endpoints
-
-            this.get("api/recent", (schema) => {
-                return schema.flagsets.all();
-            })
             
-            this.get("/api/questions", questions)
-
-            // create page API endpoints
-
-            this.post("/api/flags/create", (schema, request) => {
-                let attrs = JSON.parse(request.requestBody)
-              
-                return schema.db.flagsets.insert(attrs)
-            })
-
+            
             this.get("/api/flags/flagsets", (schema) => {
                 return schema.flagsets.all();
             })
-
+            
+            // create page API endpoints
+            this.get("/api/questions", questions)
+            
+            this.post("/api/flags/create", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                
+                return schema.db.flagsets.insert(attrs)
+            })
+            
+            
             // edit page API endpoints
+            this.get("/api/flags/flagsets/:id", (schema, request) => {
+                return schema.flagsets.find(request.params.id);
+            })
 
             this.delete(`/api/flags/create/:id`, (schema, request) => {
                 let id = request.params.id

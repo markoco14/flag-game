@@ -5,12 +5,12 @@ import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
 import { useState, useEffect } from 'react'
-import { IRecentFlag } from '../../../interfaces'
+import { IFlagSet } from '../../../interfaces'
 import { startOfWeek, lastDayOfWeek, isAfter, isBefore, parseISO } from 'date-fns'
 
 const FlagsHome: NextPage = () => {
-  const [recentFlags, setRecentFlags] = useState<IRecentFlag[] | []>([]);
-  const [thisWeeksFlags, setThisWeeksFlags] = useState<IRecentFlag[] | undefined>(undefined);
+  const [recentFlags, setRecentFlags] = useState<IFlagSet[] | []>([]);
+  const [thisWeeksFlags, setThisWeeksFlags] = useState<IFlagSet[] | undefined>(undefined);
   const workDays = ['Monday', 'Wednesday', 'Thursday', 'Friday']
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const FlagsHome: NextPage = () => {
       const date = new Date();
       const firstDay = startOfWeek(date);
       const lastDay = lastDayOfWeek(date);
-      const thisWeek = json.flagsets.filter((flag: IRecentFlag) => {
+      const thisWeek = json.flagsets.filter((flag: IFlagSet) => {
         if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
           return flag;
         }
@@ -78,12 +78,12 @@ const FlagsHome: NextPage = () => {
             <article className={`${styles.card}`}>
               <h2>Recent Flags</h2>
               <ul>
-                {recentFlags?.map((flag: IRecentFlag) => (
+                {recentFlags?.map((flag: IFlagSet) => (
                   <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>
                     {flag.title}
                     <div className={`${styles.flex} ${styles.flex_gap}`}>
                       <Link href="./flags/play"><a>Play</a></Link>
-                      <Link href="#"><a>Edit</a></Link>
+                      <Link href={`./flags/edit/${flag.id}`}><a>Edit</a></Link>
                     </div> 
                   </li>
                 ))}
