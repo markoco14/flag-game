@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
+import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { IFlagSet } from "../../../../interfaces";
@@ -12,6 +13,7 @@ export default function EditFlagset() {
     const flagId = useRouter().query.id;
     const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
     const deleteModal = useRef<HTMLDialogElement>(null)
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
 
     async function getSelectedFlag() {
         try {
@@ -64,6 +66,10 @@ export default function EditFlagset() {
                     </nav>
                 </header>
                 <main className={`${styles.dashboard}`}>
+                    {/* {isDeleteModalVisible && (
+                        <DeleteModal id={selectedFlag?.id}
+                        ></DeleteModal>
+                    )} */}
                     <dialog
                         ref={deleteModal}
                     >
@@ -92,6 +98,10 @@ export default function EditFlagset() {
                             <div style={{minHeight: '70vh', padding: '1rem', background: 'white'}}>
                                 <div className={`${styles.flex} ${styles.flex_between}`}>
                                     <h1>{selectedFlag.title}</h1>
+                                    {/* <button 
+                                        className={styles.delete_button}
+                                        onClick={otherOpenDeleteModal}
+                                    >Modal Delete</button> */}
                                     <button 
                                         className={styles.delete_button}
                                         onClick={openDeleteModal}
