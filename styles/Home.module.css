@@ -215,6 +215,39 @@
   cursor: pointer;
 }
 
+/* Edit Flags Styles */
+.button {
+  padding: 1rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.button:hover {
+  background: rgb(173, 173, 173);
+  cursor: pointer;
+}
+
+.button:active {
+  background: grey;
+}
+
+.delete_button {
+  padding: 1rem;
+  background: rgb(224, 41, 41);
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.delete_button:hover {
+  cursor: pointer;
+  background: rgb(223, 14, 14);
+}
+
+.delete_button:active {
+  background: rgb(177, 14, 14);
+}
+
 /* Play Flags Styles */
 
 .flags_navbar {

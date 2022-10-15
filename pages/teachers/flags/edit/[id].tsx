@@ -2,13 +2,18 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
+import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { IFlagSet } from "../../../../interfaces";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function EditFlagset() {
+    const router = useRouter()
     const flagId = useRouter().query.id;
     const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
+    const deleteModal = useRef<HTMLDialogElement>(null)
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
 
     async function getSelectedFlag() {
         try {
@@ -26,11 +31,26 @@ export default function EditFlagset() {
         // TODO: function for patch 
         // or put to update this ID, and call 
         // the updated one, and setSelectedFlag
-
     }
+
+    function openDeleteModal() {
+        deleteModal?.current?.showModal();
+    }
+
+    function deleteFlagSet() {
+        // console.log(flag.id);
+        fetch(`/api/flagsets/delete/${selectedFlag?.id}`, {method: 'DELETE'});
+        router.push('/teachers/flags');
+    }
+
+    function cancelDelete() {
+        deleteModal?.current?.close();
+    }
+
     useEffect(() => {
         getSelectedFlag();
     }, []);
+
     return (
         <>
             <div>
@@ -46,6 +66,24 @@ export default function EditFlagset() {
                     </nav>
                 </header>
                 <main className={`${styles.dashboard}`}>
+                    {/* {isDeleteModalVisible && (
+                        <DeleteModal id={selectedFlag?.id}
+                        ></DeleteModal>
+                    )} */}
+                    <dialog
+                        ref={deleteModal}
+                    >
+                        <div style={{marginBottom: '1rem',}}>
+                            <p style={{textAlign: 'center', fontWeight: '700'}}>Warning!</p>
+                            <p>You are about to delete your flag set: {selectedFlag?.title}.</p>
+                            <p>Once you do, you can&apos;t get it back.</p>
+                        </div>
+                        <p style={{marginBottom: '1rem',}}>Are you sure you want to delete this set?</p>
+                        <div style={{display: 'flex', justifyContent: 'center', gap: '1rem',}}>
+                            <button className={styles.delete_button}onClick={deleteFlagSet}>Delete</button>
+                            <button className={styles.button} onClick={cancelDelete}>Cancel</button>
+                        </div>
+                    </dialog>
                     <div className={`${styles.dashboard_content_wrapper}`}>
                         <DashboardNav></DashboardNav>
                         {!selectedFlag && (
@@ -58,7 +96,17 @@ export default function EditFlagset() {
                         {selectedFlag && (
                         <div style={{ padding: '1rem', width: 'min(100%, 1200px)', minHeight: '70vh'}}>
                             <div style={{minHeight: '70vh', padding: '1rem', background: 'white'}}>
-                                <h1>{selectedFlag.title}</h1>
+                                <div className={`${styles.flex} ${styles.flex_between}`}>
+                                    <h1>{selectedFlag.title}</h1>
+                                    {/* <button 
+                                        className={styles.delete_button}
+                                        onClick={otherOpenDeleteModal}
+                                    >Modal Delete</button> */}
+                                    <button 
+                                        className={styles.delete_button}
+                                        onClick={openDeleteModal}
+                                    >Delete</button>
+                                </div>
                                 <hr></hr>
                                 <section>
                                     <table>
