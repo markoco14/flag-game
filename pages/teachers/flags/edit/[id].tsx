@@ -6,21 +6,28 @@ import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { IFlagSet } from "../../../../interfaces";
-import { redirect } from "next/dist/server/api-utils";
 
 export default function EditFlagset() {
     const router = useRouter()
-    const flagId = useRouter().query.id;
+    
     const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
-    const deleteModal = useRef<HTMLDialogElement>(null)
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
+    const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
+    const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
+    
+    const deleteModal = useRef<HTMLDialogElement>(null)
+    
 
-    async function getSelectedFlag() {
+    async function getSelectedFlag(flagId: string | string[] | undefined) {
+        console.log(flagId);
         try {
             await fetch(`/api/flags/flagsets/${flagId}`)
             .then((res) => res.json())
             .then((json) => {
+                console.log(json.flagset);
+                console.log(json.flagset.flagsetQuestions);
                 setSelectedFlag(json.flagset);
+                setFlagsetQuestions(json.flagset.flagsetQuestions);
             })
         } catch(e) {
             console.log(e);
@@ -38,7 +45,6 @@ export default function EditFlagset() {
     }
 
     function deleteFlagSet() {
-        // console.log(flag.id);
         fetch(`/api/flagsets/delete/${selectedFlag?.id}`, {method: 'DELETE'});
         router.push('/teachers/flags');
     }
@@ -48,8 +54,12 @@ export default function EditFlagset() {
     }
 
     useEffect(() => {
-        getSelectedFlag();
-    }, []);
+        if (router.isReady) {
+            console.log('router is ready')
+            console.log(router.query.id)
+            getSelectedFlag(router.query.id);
+        }
+    }, [router.isReady, router.query.id])
 
     return (
         <>
@@ -161,6 +171,11 @@ export default function EditFlagset() {
                                     </table>
                                     <button onClick={updateFlagDetails}>Save</button>
                                 </section>
+                                {!(flagsetQuestions.length > 0) ? (
+                                    <>There are no flagset questions</>
+                                    ) : (
+                                        <>There are flagset questions</>
+                                )}
                                 <section>
                                     <h2>Edit the Flags here</h2>
                                 </section>
