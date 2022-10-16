@@ -4,29 +4,25 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
-import FlagDetails from '../../../components/FlagDetails'
+import FlagDetails from '../../../components/SetNewFlagsetTitle'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { parseISO, isFriday, isMonday, isWednesday, isThursday, isTuesday, isSaturday, isSunday } from 'date-fns'
 import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
 import FlagCalendar from '../../../components/FlagCalendar'
+import { title } from 'process'
 
 export default function CreateFlags() {
-    const [levelNumber, setLevelNumber] = useState<string | undefined>('');
-    const [weekNumber, setWeekNumber] = useState<string | undefined>('');
-    const [dayNumber, setDayNumber] = useState<string | undefined>('');
-    const [dayOfWeek, setDayOfWeek] = useState<string | undefined>('');
-    const [date, setDate] = useState<string>('');
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
     const [availableFlags, setAvailableFlags] = useState<Flag[] | []>([]);
     const [selectedFlags, setSelectedFlags] = useState<Flag[] | []>([]);
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
-    const [createdSet, setCreatedSet] = useState<IFlagSet | undefined>(undefined);
+    const [isSetCreated, setisSetCreated] = useState<IFlagSet | undefined>(undefined);
     const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
 
-    function createNewFlagset(e: FormEvent) {
+    function createNewFlagset(e: FormEvent, levelNumber: string, weekNumber: string, dayNumber: string, dayOfWeek: string, date: string) {
         console.log(date);
         console.log(parseISO(date));
         const parsedDate: Date = parseISO(date);
@@ -55,9 +51,8 @@ export default function CreateFlags() {
         })
         .then((res)=> res.json())
         .then((json) => {
-            setCreatedSet(json);
+            setisSetCreated(json);
         })
-        // fetch('/api/flags/flagsets')
         setIsTitleSet(true);
         setFlagsName(title)
     }
@@ -69,7 +64,7 @@ export default function CreateFlags() {
             fetch('/api/flags/flagsetQuestion/create', {
                 method: "POST",
                 body: JSON.stringify({
-                    flagsetId: createdSet?.id,
+                    flagsetId: isSetCreated?.id,
                     countryName: flag.country,
                     countryFlag: flag.image,
                     countryId: flag.id
@@ -132,80 +127,14 @@ export default function CreateFlags() {
                     <section className={`${styles.create_flags_container}`}>
                         <div className={styles.create_flags_interface}>
                             <h1>Create New Flag Set</h1>
-                            <div className={`${styles.flex} ${styles.flex_between}`} style={{ padding: '0 1rem', marginBottom: '1rem'}}>
-                                <h2>Flagset Name: {flagsName}</h2>
-                                <span>Questions: 0</span>
-                            </div>
-                            <div className={`${styles.flex} ${styles.flex_between}`}>
-                                <p>Details</p>
-                                <button 
-                                    style={{ border: 'none', background: 'none', color: 'black'}}
-                                >
-                                <span className="material-symbols-outlined">
-                                    close
-                                </span>
-                                </button>
-                            </div>
-                            {!isTitleSet && (
-                                <form 
-                                    onSubmit={(e) => {createNewFlagset(e)}}
-                                    className={styles.flex_column}
-                                >
-                                    <div className={styles.flex_column}>
-                                        <label>Level</label>
-                                        <input 
-                                            // ref={levelNumberRef}
-                                            onChange={(e) => {setLevelNumber(e.target.value)}}
-                                            type="number" />
-                                    </div>
-                                    <div className={styles.flex_column}>
-                                        <label>Week (#)</label>
-                                        <input 
-                                            // ref={weekNumberRef}
-                                            onChange={(e) => {setWeekNumber(e.target.value)}}
-                                            type="number" />
-                                    </div>
-                                    <div>
-                                        <label>Day (#)</label>
-                                        <input
-                                            onChange={(e) => {setDayNumber(e.target.value)}}
-                                            type="number" />
-                                    </div>
-                                    <div>
-                                        <label>Day (of Week)</label>
-                                        <select 
-                                            onChange={(e) => {setDayOfWeek(e.target.value)}}
-                                        >
-                                            <option value="">Choose Day</option>
-                                            <option value="Monday">Monday</option>
-                                            <option value="Wednesday">Wednesday</option>
-                                            <option value="Thursday">Thursday</option>
-                                            <option value="Friday">Friday</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label>Date</label>
-                                        <input 
-                                            onChange={(e) => {setDate(e.target.value)}}
-                                            type='date'
-                                        >
-                                        </input>
-                                    </div>
-                                    <button>Save</button>
-                                </form>
-                            )}
-                            {isTitleSet && (
-                                <div>
-                                    <p>Level: {levelNumber}</p>
-                                    <p>Week: {weekNumber}</p>
-                                    <p>Day: {dayNumber}</p>
-                                    <p>Day of Week: {dayOfWeek}</p>
-                                    <button onClick={() => {console.log('You clicked the update button')}}>Update</button>
-                                </div>
-                            )}
+                            <FlagDetails 
+                                createFlagSet={createNewFlagset}
+                                isTitleSet={isTitleSet}   
+                                title={flagsName}
+                            ></FlagDetails>
                         </div>
                     </section>
-                    {createdSet && (
+                    {isSetCreated && (
                     <>
                     <section className={`${styles.create_flags_container}`}>
                         <div className={styles.create_flags_interface}>
