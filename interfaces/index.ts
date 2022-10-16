@@ -1,5 +1,3 @@
-
-
 export type Flag = {
     image: string,
     country: string,
@@ -14,6 +12,15 @@ export type IFlagSet = {
     class: string,
     level: string,
     week: string,
+    day: string,
+}
+
+export type IFlagsetQuestion = {
+    id: number,
+    flagset_id: number,
+    question_id: number,
+    countryName: string,
+    flagImage: string,
 }
 
 export type FlagBoard = {

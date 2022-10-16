@@ -1,4 +1,4 @@
-import { createServer, Model } from "miragejs"
+import { belongsTo, hasMany, createServer, Model } from "miragejs"
 import questions from './fixtures/questions'
 import game from './fixtures/game'
 import gameCopy from './fixtures/gameCopy'
@@ -10,8 +10,14 @@ export function makeServer( {environment = "test"} = {}) {
         environment,
         
         models: {
+            teacher: Model,
             option: Model,
-            flagset: Model,
+            flagset: Model.extend({
+                flagsetQuestions: hasMany(),
+            }),
+            flagsetQuestion: Model.extend({
+                flagset: belongsTo(),
+            }),
             flagboard: Model,
             question: Model,
         },
@@ -24,6 +30,8 @@ export function makeServer( {environment = "test"} = {}) {
 
         seeds(server) {
             server.loadFixtures()
+
+            // server.create()
 
             // flagsets.forEach((flagset) => {
             //     server.create('flagset', {
@@ -56,7 +64,18 @@ export function makeServer( {environment = "test"} = {}) {
                 
                 return schema.db.flagsets.insert(attrs)
             })
-            
+
+            this.post("/api/flags/flagsetQuestion/create", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                
+                return schema.db.flagsetQuestions.insert(attrs)
+            })
+
+            this.delete("/api/flags/flagsetQuestion/delete/:id", (schema, request) => {
+                let id = request.params.id
+                
+                return schema.flagsetQuestions.find(id).destroy()
+            })
             
             // edit page API endpoints
             this.get("/api/flags/flagsets/:id", (schema, request) => {

@@ -9,7 +9,7 @@ import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { parseISO, isFriday, isMonday, isWednesday, isThursday, isTuesday, isSaturday, isSunday } from 'date-fns'
-import { Flag } from '../../../interfaces'
+import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
 import FlagCalendar from '../../../components/FlagCalendar'
 
 export default function CreateFlags() {
@@ -23,7 +23,10 @@ export default function CreateFlags() {
     const [selectedFlags, setSelectedFlags] = useState<Flag[] | []>([]);
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
-    function createNewSet(e: FormEvent) {
+    const [createdSet, setCreatedSet] = useState<IFlagSet | undefined>(undefined);
+    const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
+
+    function createNewFlagset(e: FormEvent) {
         console.log(date);
         console.log(parseISO(date));
         const parsedDate: Date = parseISO(date);
@@ -38,7 +41,6 @@ export default function CreateFlags() {
             return;
         }
         const title = `L${levelNumber} W${weekNumber} D${dayNumber} ${dayOfWeek} (${date})`
-        console.log('You are saving a new set');
         fetch('/api/flags/create', {
             method: "POST",
             body: JSON.stringify({
@@ -51,31 +53,52 @@ export default function CreateFlags() {
                 date: date,
             }),
         })
-        fetch('/api/flags/flagsets')
+        .then((res)=> res.json())
+        .then((json) => {
+            setCreatedSet(json);
+        })
+        // fetch('/api/flags/flagsets')
         setIsTitleSet(true);
         setFlagsName(title)
     }
 
-    function addSelectedFlagToSet(flag: Flag) {
+    function createFlagsetQuestion(flag: Flag) {
         if (!selectedFlags.find((selectedFlag) => {
             return selectedFlag.id === flag.id;
         })) {
+            fetch('/api/flags/flagsetQuestion/create', {
+                method: "POST",
+                body: JSON.stringify({
+                    flagsetId: createdSet?.id,
+                    countryName: flag.country,
+                    countryFlag: flag.image,
+                    countryId: flag.id
+                }),
+            })
             setSelectedFlags([...selectedFlags, flag])
         } else {
             alert('That flag is already selected')
         }
     }
 
-    function removeSelectedFlagFromSet(flag: Flag) {
+    function deleteFlagsetQuestion(flag: Flag) {
+        // print flag to check it's the right flag
+        // console.log(flag);
+        // fetch(`/api/flags/flagsetQuestion/delete/${flag.id}`, {method: 'DELETE'})
         const updatedFlags = selectedFlags.filter((selectedFlag) => {
-            console.log(selectedFlag.id);
-            console.log(flag.id);
-            console.log(selectedFlag.id === flag.id);
+            // console.log(selectedFlag.id);
+            // console.log(flag.id);
+            // console.log(selectedFlag.id === flag.id);
             return selectedFlag.id !== flag.id;
         })
-        console.log(updatedFlags);
+        // console.log("updated flags:", updatedFlags);
         setSelectedFlags(updatedFlags);
     }
+
+    // create flag set question functions
+
+    
+
 
     useEffect(() => {
         fetch('/api/flags/availableFlags')
@@ -105,7 +128,7 @@ export default function CreateFlags() {
         <main className={`${styles.dashboard}`}>
             <div className={`${styles.dashboard_content_wrapper}`}>
                 <DashboardNav></DashboardNav>
-                <div>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '1rem',}}>
                     <section className={`${styles.create_flags_container}`}>
                         <div className={styles.create_flags_interface}>
                             <h1>Create New Flag Set</h1>
@@ -125,7 +148,7 @@ export default function CreateFlags() {
                             </div>
                             {!isTitleSet && (
                                 <form 
-                                    onSubmit={(e) => {createNewSet(e)}}
+                                    onSubmit={(e) => {createNewFlagset(e)}}
                                     className={styles.flex_column}
                                 >
                                     <div className={styles.flex_column}>
@@ -177,11 +200,13 @@ export default function CreateFlags() {
                                     <p>Week: {weekNumber}</p>
                                     <p>Day: {dayNumber}</p>
                                     <p>Day of Week: {dayOfWeek}</p>
-                                    <button>+</button>
+                                    <button onClick={() => {console.log('You clicked the update button')}}>Update</button>
                                 </div>
                             )}
                         </div>
                     </section>
+                    {createdSet && (
+                    <>
                     <section className={`${styles.create_flags_container}`}>
                         <div className={styles.create_flags_interface}>
                             <h2>Choose your flags</h2>
@@ -193,9 +218,9 @@ export default function CreateFlags() {
                                             <ul>
                                             {selectedFlags.map((flag: Flag) => (
                                                 <li 
-                                                    style={{background: 'grey', borderRadius: '5px', padding: '0.5rem 1rem',}}
+                                                    style={{background: 'WhiteSmoke', borderRadius: '5px', padding: '0.5rem 1rem',}}
                                                     key={`selected-flag-${flag.id}`}
-                                                    onClick={() => {removeSelectedFlagFromSet(flag)}}
+                                                    onClick={() => {deleteFlagsetQuestion(flag)}}
                                                 >{flag.country}</li>
                                                 ))}
                                             </ul>
@@ -210,7 +235,7 @@ export default function CreateFlags() {
                                                     <div 
                                                         key={`available-flag-${flag.id}`}
                                                         style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
-                                                        onClick={() => {addSelectedFlagToSet(flag)}}
+                                                        onClick={() => {createFlagsetQuestion(flag)}}
                                                     >
                                                         <Image
                                                             alt={`An image of the ${flag.country} country flag.`}
@@ -227,13 +252,35 @@ export default function CreateFlags() {
                                     </article>
                                 </div>
                             </div>
+                            <button onClick={() => {console.log('You clicked save flags')}}>Save</button>
                         </div>
                     </section>
-                    <section className={`${styles.create_flags_container}`}>
-                        <div className={styles.create_flags_interface}>
-                            <h2>Add Your Questions</h2>
-                        </div>
-                    </section>
+                    {(selectedFlags.length > 0) && (
+                        <section className={`${styles.create_flags_container}`}>
+                            <div className={styles.create_flags_interface}>
+                                <h2>Add Your Questions</h2>
+                                {selectedFlags.map((flag) => (
+                                    <article key={`flag-${flag.id}`}>
+                                        <button onClick={() => {deleteFlagsetQuestion(flag)}}>Delete</button>
+                                        <button onClick={() => {() => {console.log('edit flag')}}}>Edit</button>
+                                        <div
+                                    className={`${styles.flex} ${styles.flex_gap} ${styles.flex_between}`}>
+                                        
+                                        <div style={{width: '30%', border: 'solid 2px black'}}>
+                                            <h3 style={{textAlign: 'center'}}>Front side</h3>
+                                            <div>{flag.country}</div>
+                                        </div>
+                                        <div style={{width: '70%', border: 'solid 2px black'}}>
+                                            <h3 style={{textAlign: 'center'}}>Back side</h3>
+                                        </div>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                    </>
+                    )}
                 </div>
             </div>
         </main>
