@@ -130,7 +130,7 @@ export default function CreateFlags() {
                             <FlagDetails 
                                 createFlagSet={createNewFlagset}
                                 isTitleSet={isTitleSet}   
-                                title={flagsName} 
+                                title={flagsName}
                             ></FlagDetails>
                         </div>
                     </section>
