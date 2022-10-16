@@ -41,6 +41,14 @@
   justify-content: space-evenly;
 }
 
+.flex_middle {
+  justify-content: center;
+}
+
+.flex_end {
+  justify-content: end;
+}
+
 /* Log In Page Styles */
 
 .form_margin > * {

@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
-import FlagDetails from '../../../components/FlagDetails'
+import FlagDetails from '../../../components/SetNewFlagsetTitle'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
 
