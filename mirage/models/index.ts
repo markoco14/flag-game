@@ -29,7 +29,7 @@ export type Country = {
     image: string,
 }
 
-enum QuestionTypeEnum {
+export enum QuestionTypeEnum {
     MC,
     Prompt,
     Riddle
