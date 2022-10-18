@@ -164,7 +164,7 @@
   gap: 1rem;
 }
 
-/* Create Flags Styles */
+/* Create and Edit Flags Styles */
 
 .create_flags_container {
   padding: 0 1rem;
@@ -221,6 +221,11 @@
 .existing_questions_level:hover {
   background-color: rgb(179, 179, 179);
   cursor: pointer;
+}
+
+.question_front_back_container {
+  display: flex;
+  gap: 1rem;
 }
 
 /* Edit Flags Styles */

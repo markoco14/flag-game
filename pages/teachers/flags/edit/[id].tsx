@@ -1,11 +1,12 @@
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { IFlagSet } from "../../../../interfaces";
+import { IFlagSet, IFlagsetQuestion } from "../../../../interfaces";
 
 export default function EditFlagset() {
     const router = useRouter()
@@ -26,7 +27,11 @@ export default function EditFlagset() {
             .then((json) => {
                 console.log(json.flagset);
                 console.log(json.flagset.flagsetQuestions);
+                console.log(json.flagset.flagsetQuestions.length);
                 setSelectedFlag(json.flagset);
+                if(json.flagset.flagsetQuestions.length > 0) {
+                    setHasFlagsetQuestions(true);
+                }
                 setFlagsetQuestions(json.flagset.flagsetQuestions);
             })
         } catch(e) {
@@ -103,9 +108,10 @@ export default function EditFlagset() {
                             </div>
                         </div>
                         )}
-                        {selectedFlag && (
                         <div style={{ padding: '1rem', width: 'min(100%, 1200px)', minHeight: '70vh'}}>
                             <div style={{minHeight: '70vh', padding: '1rem', background: 'white'}}>
+                        {selectedFlag && (
+                            <>
                                 <div className={`${styles.flex} ${styles.flex_between}`}>
                                     <h1>{selectedFlag.title}</h1>
                                     {/* <button 
@@ -171,20 +177,35 @@ export default function EditFlagset() {
                                     </table>
                                     <button onClick={updateFlagDetails}>Save</button>
                                 </section>
-                                {!(flagsetQuestions.length > 0) ? (
-                                    <>There are no flagset questions</>
-                                    ) : (
-                                        <>There are flagset questions</>
-                                )}
-                                <section>
-                                    <h2>Edit the Flags here</h2>
-                                </section>
-                                <section>
-                                    <h2>Edit the questions for each flag here</h2>
-                                </section>
+                                </>
+                        )}
+                        {hasFlagsetQuestions? (
+                            flagsetQuestions.map((question: IFlagsetQuestion) => (
+                                <article 
+                                    key={`fs-q-${question.id}`} 
+                                    className={styles.question_front_back_container}
+                                >
+                                    <div style={{ position: 'relative', width: '30%'}}>
+                                        <h3 style={{ textAlign: 'center' }}>Front Side</h3>
+                                        <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
+                                            <Image
+                                                alt={`A picture of the ${question.country} flag`}
+                                                src={question.flag}
+                                                layout='fill'
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                    </div>
+                                    <div style={{ width: '70%'}}>
+                                        <h3 style={{ textAlign: 'center' }}>Back Side</h3>
+                                    </div>
+                                </article>
+                            ))
+                        ) : (
+                            <p>False</p>
+                        )}
                             </div>
                         </div>
-                        )}
                     </div>
                 </main>
             </div>
