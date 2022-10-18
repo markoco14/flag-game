@@ -57,14 +57,14 @@ export default function CreateFlags() {
         setFlagsName(title)
     }
 
-    function createFlagsetQuestion(flag: Flag) {
+    function createFlagSetTile(flag: Flag) {
         if (!selectedFlags.find((selectedFlag) => {
             return selectedFlag.id === flag.id;
         })) {
-            fetch('/api/flags/flagsetQuestion/create', {
+            fetch('/api/flags/flagSetTile/create', {
                 method: "POST",
                 body: JSON.stringify({
-                    flagsetId: isSetCreated?.id,
+                    flagSetId: isSetCreated?.id,
                     countryName: flag.country,
                     countryFlag: flag.image,
                     countryId: flag.id
@@ -79,7 +79,7 @@ export default function CreateFlags() {
     function deleteFlagsetQuestion(flag: Flag) {
         // print flag to check it's the right flag
         // console.log(flag);
-        // fetch(`/api/flags/flagsetQuestion/delete/${flag.id}`, {method: 'DELETE'})
+        // fetch(`/api/flags/flagSetTile/delete/${flag.id}`, {method: 'DELETE'})
         const updatedFlags = selectedFlags.filter((selectedFlag) => {
             // console.log(selectedFlag.id);
             // console.log(flag.id);
@@ -164,7 +164,7 @@ export default function CreateFlags() {
                                                     <div 
                                                         key={`available-flag-${flag.id}`}
                                                         style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
-                                                        onClick={() => {createFlagsetQuestion(flag)}}
+                                                        onClick={() => {createFlagSetTile(flag)}}
                                                     >
                                                         <Image
                                                             alt={`An image of the ${flag.country} country flag.`}

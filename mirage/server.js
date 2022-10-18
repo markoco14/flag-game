@@ -55,7 +55,6 @@ export function makeServer( {environment = "test"} = {}) {
             })
             
             // create page API endpoints
-            // this.get("/api/questions", questions)
 
             this.get("/api/flags/countries", countries)
             
@@ -65,13 +64,12 @@ export function makeServer( {environment = "test"} = {}) {
                 return schema.db.flagSets.insert(attrs)
             })
 
-            this.post("/api/flags/flagsetQuestion/create", (schema, request) => {
+            this.post("/api/flags/flagSetTile/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
-                
                 return schema.db.flagSetTiles.insert(attrs)
             })
 
-            this.delete("/api/flags/flagsetQuestion/delete/:id", (schema, request) => {
+            this.delete("/api/flags/flagSetTile/delete/:id", (schema, request) => {
                 let id = request.params.id
                 
                 return schema.flagSetTiles.find(id).destroy()
