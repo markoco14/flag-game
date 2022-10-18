@@ -7,11 +7,9 @@ import DashboardNav from '../../../components/DashboardNav'
 import FlagDetails from '../../../components/SetNewFlagsetTitle'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { FormEvent, useEffect, useRef, useState } from 'react'
-import { parseISO, isFriday, isMonday, isWednesday, isThursday, isTuesday, isSaturday, isSunday } from 'date-fns'
+import { FormEvent, useEffect, useState } from 'react'
+import { parseISO, isTuesday, isSaturday, isSunday } from 'date-fns'
 import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
-import FlagCalendar from '../../../components/FlagCalendar'
-import { title } from 'process'
 
 export default function CreateFlags() {
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
@@ -37,7 +35,7 @@ export default function CreateFlags() {
             return;
         }
         const title = `L${levelNumber} W${weekNumber} D${dayNumber} ${dayOfWeek} (${date})`
-        fetch('/api/flags/create', {
+        fetch('/api/flags/flagSet/create', {
             method: "POST",
             body: JSON.stringify({
                 title: title,

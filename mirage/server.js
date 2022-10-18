@@ -50,15 +50,19 @@ export function makeServer( {environment = "test"} = {}) {
             // flags home API endpoints
             
             
-            this.get("/api/flags/flagsets", (schema) => {
-                return schema.flagSets.all();
-            })
+            this.get(
+                "/api/flags/flagsets", 
+                (schema) => {
+                    return schema.flagSets.all();
+                },
+                { timing: 2000 }
+                )
             
             // create page API endpoints
 
             this.get("/api/flags/countries", countries)
             
-            this.post("/api/flags/create", (schema, request) => {
+            this.post("/api/flags/flagSet/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
                 
                 return schema.db.flagSets.insert(attrs)
