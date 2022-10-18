@@ -2,7 +2,7 @@ import { belongsTo, hasMany, createServer, Model, RestSerializer  } from "mirage
 import questions from './fixtures/questions'
 import game from './fixtures/game'
 import gameCopy from './fixtures/gameCopy'
-import flagsets from './fixtures/flagsets'
+import flagSets from './fixtures/flagSets'
 import availableFlags from './fixtures/availableFlags'
 import flagsetQuestions from './fixtures/flagsetQuestions'
 
@@ -19,21 +19,25 @@ export function makeServer( {environment = "test"} = {}) {
         },
         
         models: {
-            teacher: Model,
-            option: Model,
-            flagset: Model.extend({
-                flagsetQuestions: hasMany(),
+            teacher: Model.extend({
+                flagset: hasMany(),
             }),
-            flagsetQuestion: Model.extend({
-                flagset: belongsTo(),
+            flagSet: Model.extend({
+                teacher: belongsTo(),
+                flagSetTile: hasMany(),
             }),
-            flagboard: Model,
-            question: Model,
+            flagSetTile: Model.extend({
+                flagSet: belongsTo(),
+                question: belongsTo(),
+            }),
+            question: Model.extend({
+                flagSetTile: hasMany(),
+            }),
         },
 
         fixtures: {
             questions,
-            flagsets,
+            flagSets,
             availableFlags,
             flagsetQuestions
         },
@@ -46,7 +50,7 @@ export function makeServer( {environment = "test"} = {}) {
             
             
             this.get("/api/flags/flagsets", (schema) => {
-                return schema.flagsets.all();
+                return schema.flagSets.all();
             })
             
             // create page API endpoints
@@ -57,7 +61,7 @@ export function makeServer( {environment = "test"} = {}) {
             this.post("/api/flags/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
                 
-                return schema.db.flagsets.insert(attrs)
+                return schema.db.flagSets.insert(attrs)
             })
 
             this.post("/api/flags/flagsetQuestion/create", (schema, request) => {
@@ -76,13 +80,13 @@ export function makeServer( {environment = "test"} = {}) {
             this.get("/api/flags/flagsets/:id", (schema, request) => {
 
                 // return list.reminders
-                return schema.flagsets.find(request.params.id);
+                return schema.flagSets.find(request.params.id);
             })
 
             this.delete(`/api/flagsets/delete/:id`, (schema, request) => {
                 let id = request.params.id
 
-                return schema.flagsets.find(id).destroy()
+                return schema.flagSets.find(id).destroy()
             })
 
             // play page API endpoints
