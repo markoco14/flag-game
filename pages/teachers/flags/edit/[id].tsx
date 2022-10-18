@@ -17,22 +17,17 @@ export default function EditFlagset() {
     const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
     
     const deleteModal = useRef<HTMLDialogElement>(null)
-    
 
     async function getSelectedFlag(flagId: string | string[] | undefined) {
-        console.log(flagId);
         try {
             await fetch(`/api/flags/flagsets/${flagId}`)
             .then((res) => res.json())
             .then((json) => {
-                console.log(json.flagset);
-                console.log(json.flagset.flagsetQuestions);
-                console.log(json.flagset.flagsetQuestions.length);
-                setSelectedFlag(json.flagset);
-                if(json.flagset.flagsetQuestions.length > 0) {
+                setSelectedFlag(json.flagSet);
+                if(json.flagSet.flagSetTile.length > 0) {
                     setHasFlagsetQuestions(true);
                 }
-                setFlagsetQuestions(json.flagset.flagsetQuestions);
+                setFlagsetQuestions(json.flagSet.flagSetTile);
             })
         } catch(e) {
             console.log(e);
@@ -60,8 +55,6 @@ export default function EditFlagset() {
 
     useEffect(() => {
         if (router.isReady) {
-            console.log('router is ready')
-            console.log(router.query.id)
             getSelectedFlag(router.query.id);
         }
     }, [router.isReady, router.query.id])

@@ -78,13 +78,7 @@ export function makeServer( {environment = "test"} = {}) {
             })
             
             // edit page API endpoints
-            this.get("/api/flagSetTiles", (schema, request) => {
-                return schema.flagSetTiles.all();
-            })
-
             this.get("/api/flags/flagsets/:id", (schema, request) => {
-
-                // return list.reminders
                 return schema.flagSets.find(request.params.id);
             })
 

@@ -96,7 +96,7 @@ export default function CreateFlags() {
 
 
     useEffect(() => {
-        fetch('/api/flags/availableFlags')
+        fetch('/api/flags/countries')
         .then((res) => res.json())
         .then((json) => {
             console.log(json);
