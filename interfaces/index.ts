@@ -19,8 +19,8 @@ export type IFlagsetQuestion = {
     id: number,
     flagset_id: number,
     question_id: number,
-    countryName: string,
-    flagImage: string,
+    country: string,
+    flag: string,
 }
 
 export type FlagBoard = {

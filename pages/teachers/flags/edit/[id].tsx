@@ -1,26 +1,38 @@
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { IFlagSet } from "../../../../interfaces";
-import { redirect } from "next/dist/server/api-utils";
+import { IFlagSet, IFlagsetQuestion } from "../../../../interfaces";
 
 export default function EditFlagset() {
     const router = useRouter()
-    const flagId = useRouter().query.id;
+    
     const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
-    const deleteModal = useRef<HTMLDialogElement>(null)
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
+    const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
+    const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
+    
+    const deleteModal = useRef<HTMLDialogElement>(null)
+    
 
-    async function getSelectedFlag() {
+    async function getSelectedFlag(flagId: string | string[] | undefined) {
+        console.log(flagId);
         try {
             await fetch(`/api/flags/flagsets/${flagId}`)
             .then((res) => res.json())
             .then((json) => {
+                console.log(json.flagset);
+                console.log(json.flagset.flagsetQuestions);
+                console.log(json.flagset.flagsetQuestions.length);
                 setSelectedFlag(json.flagset);
+                if(json.flagset.flagsetQuestions.length > 0) {
+                    setHasFlagsetQuestions(true);
+                }
+                setFlagsetQuestions(json.flagset.flagsetQuestions);
             })
         } catch(e) {
             console.log(e);
@@ -38,7 +50,6 @@ export default function EditFlagset() {
     }
 
     function deleteFlagSet() {
-        // console.log(flag.id);
         fetch(`/api/flagsets/delete/${selectedFlag?.id}`, {method: 'DELETE'});
         router.push('/teachers/flags');
     }
@@ -48,8 +59,12 @@ export default function EditFlagset() {
     }
 
     useEffect(() => {
-        getSelectedFlag();
-    }, []);
+        if (router.isReady) {
+            console.log('router is ready')
+            console.log(router.query.id)
+            getSelectedFlag(router.query.id);
+        }
+    }, [router.isReady, router.query.id])
 
     return (
         <>
@@ -93,9 +108,10 @@ export default function EditFlagset() {
                             </div>
                         </div>
                         )}
-                        {selectedFlag && (
                         <div style={{ padding: '1rem', width: 'min(100%, 1200px)', minHeight: '70vh'}}>
                             <div style={{minHeight: '70vh', padding: '1rem', background: 'white'}}>
+                        {selectedFlag && (
+                            <>
                                 <div className={`${styles.flex} ${styles.flex_between}`}>
                                     <h1>{selectedFlag.title}</h1>
                                     {/* <button 
@@ -161,15 +177,35 @@ export default function EditFlagset() {
                                     </table>
                                     <button onClick={updateFlagDetails}>Save</button>
                                 </section>
-                                <section>
-                                    <h2>Edit the Flags here</h2>
-                                </section>
-                                <section>
-                                    <h2>Edit the questions for each flag here</h2>
-                                </section>
+                                </>
+                        )}
+                        {hasFlagsetQuestions? (
+                            flagsetQuestions.map((question: IFlagsetQuestion) => (
+                                <article 
+                                    key={`fs-q-${question.id}`} 
+                                    className={styles.question_front_back_container}
+                                >
+                                    <div style={{ position: 'relative', width: '30%'}}>
+                                        <h3 style={{ textAlign: 'center' }}>Front Side</h3>
+                                        <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
+                                            <Image
+                                                alt={`A picture of the ${question.country} flag`}
+                                                src={question.flag}
+                                                layout='fill'
+                                                objectFit="cover"
+                                            ></Image>
+                                        </div>
+                                    </div>
+                                    <div style={{ width: '70%'}}>
+                                        <h3 style={{ textAlign: 'center' }}>Back Side</h3>
+                                    </div>
+                                </article>
+                            ))
+                        ) : (
+                            <p>False</p>
+                        )}
                             </div>
                         </div>
-                        )}
                     </div>
                 </main>
             </div>

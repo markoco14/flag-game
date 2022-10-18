@@ -1,13 +1,22 @@
-import { belongsTo, hasMany, createServer, Model } from "miragejs"
+import { belongsTo, hasMany, createServer, Model, RestSerializer  } from "miragejs"
 import questions from './fixtures/questions'
 import game from './fixtures/game'
 import gameCopy from './fixtures/gameCopy'
 import flagsets from './fixtures/flagsets'
 import availableFlags from './fixtures/availableFlags'
+import flagsetQuestions from './fixtures/flagsetQuestions'
 
 export function makeServer( {environment = "test"} = {}) {
     let server = createServer({
         environment,
+
+        serializers: {
+            application: RestSerializer,
+            flagset: RestSerializer.extend({
+                include: ["flagsetQuestions"],
+                embed: true,
+            })
+        },
         
         models: {
             teacher: Model,
@@ -26,22 +35,8 @@ export function makeServer( {environment = "test"} = {}) {
             questions,
             flagsets,
             availableFlags,
+            flagsetQuestions
         },
-
-        seeds(server) {
-            server.loadFixtures()
-
-            // server.create()
-
-            // flagsets.forEach((flagset) => {
-            //     server.create('flagset', {
-            //         title: flagset.title,
-            //         class: flagset.class,
-            //         dayOfWeek: flagset.dayOfWeek,
-            //         date: flagset.date,
-            //     });
-            // })
-        }, 
 
         routes() {
             // this.namespace = "api"
@@ -79,6 +74,8 @@ export function makeServer( {environment = "test"} = {}) {
             
             // edit page API endpoints
             this.get("/api/flags/flagsets/:id", (schema, request) => {
+
+                // return list.reminders
                 return schema.flagsets.find(request.params.id);
             })
 
