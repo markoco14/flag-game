@@ -94,41 +94,10 @@ export default function CreateFlags() {
         // }
     }
 
-    function updateFlagSetTiles(json) {
+    function updateFlagSetTiles() {
     //    console.log(json);
         // console.log(isSetCreated);
-        fetch(`/api/flags/flagsets/${json.flagSetId}`)
-        .then((res) => res.json())
-        .then((json) => {
-            console.log(json);
-            console.log(isSetCreated)
-            // console.log(json.flagSet.flagSetTile)
-            // let flagSetIds = json.flagSet.flagSetTile;
-            // console.log(flagSetIds);
-            // flagSetIds = [...flagSetIds, newFlagSetTile];
-            // console.log(flagSetIds);
-        })
-
-        let payload = {
-            date: isSetCreated?.date,
-            title: isSetCreated?.title,
-            level: isSetCreated?.level,
-            status: isSetCreated?.status,
-            week: isSetCreated?.week,
-        }
-
-        console.log(payload)
-        // let newFlagSetTile = json.id;
-        // console.log('logging new tile id', newFlagSetTile)
-        // fetch(`/api/flags/flagsets/${json.flagSetId}`)
-        // .then((res) => res.json())
-        // .then((json) => {
-        //     // console.log(json.flagSet.flagSetTile)
-        //     let flagSetIds = json.flagSet.flagSetTile;
-        //     console.log(flagSetIds);
-        //     flagSetIds = [...flagSetIds, newFlagSetTile];
-        //     console.log(flagSetIds);
-        // })
+        console.log('You pressed the create tile button')
     }
 
     function deleteFlagsetQuestion(flag: Flag) {
