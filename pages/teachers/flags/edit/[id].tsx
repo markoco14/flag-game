@@ -6,12 +6,12 @@ import DashboardNav from '../../../../components/DashboardNav'
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { IFlagSet, IFlagsetQuestion } from "../../../../interfaces";
+import { FlagSet, FlagSetTile } from "../../../../mirage/models";
 
 export default function EditFlagset() {
     const router = useRouter()
     
-    const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
+    const [selectedFlag, setSelectedFlag] = useState<FlagSet | undefined>(undefined);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
     const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
@@ -173,24 +173,55 @@ export default function EditFlagset() {
                                 </>
                         )}
                         {hasFlagsetQuestions? (
-                            flagsetQuestions.map((question: IFlagsetQuestion) => (
+                            flagsetQuestions.map((question: FlagSetTile) => (
                                 <article 
                                     key={`fs-q-${question.id}`} 
                                     className={styles.question_front_back_container}
                                 >
                                     <div style={{ position: 'relative', width: '30%'}}>
-                                        <h3 style={{ textAlign: 'center' }}>Front Side</h3>
-                                        <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
-                                            <Image
-                                                alt={`A picture of the ${question.country} flag`}
-                                                src={question.flag}
-                                                layout='fill'
-                                                objectFit="cover"
-                                            ></Image>
+                                        <div style={{ position: 'relative'}}>
+                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Front</h3>
+                                            <button                                                     
+                                                onClick={() => {console.log('You clicked edit front side')}} 
+                                                className={`material-symbols-outlined ${styles.edit_flagset_info_button}`}
+                                            >
+                                                <span>edit</span>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <p>{question.country.name}</p>
+                                            <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
+                                                <Image
+                                                    alt={`A picture of the ${question.country.name} flag`}
+                                                    src={question.country.flag}
+                                                    layout='fill'
+                                                    objectFit="cover"
+                                                ></Image>
+                                            </div>
                                         </div>
                                     </div>
                                     <div style={{ width: '70%'}}>
-                                        <h3 style={{ textAlign: 'center' }}>Back Side</h3>
+                                        <div style={{ position: 'relative'}}>
+                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Back</h3>
+                                            <button                                                     
+                                                onClick={() => {console.log('You clicked edit back side')}} 
+                                                className={`material-symbols-outlined ${styles.edit_flagset_info_button}`}
+                                            >
+                                                <span>edit</span>
+                                            </button>
+                                        </div>
+                                        <p>Question: {question.question.question}</p>
+                                        {question.question.options && (
+                                            <>
+                                                <p>Options:</p>
+                                                <ul>
+                                                    <li>Answer: {question.question.answer}</li>
+                                                        {question.question.options.map((option, index) => (
+                                                            <li key={`option${index}-${option.id}`}>Option {index+1}: {option.text}</li>
+                                                        ))}
+                                                </ul>
+                                            </>
+                                        )}
                                     </div>
                                 </article>
                             ))
