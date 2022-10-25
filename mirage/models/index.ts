@@ -23,14 +23,19 @@ export type Question = {
     type: string,
     question: string,
     answer: string,
-    wrong: string[],
+    options: Options[],
     reason: string,
+}
+
+export type Options = {
+    id: number,
+    text: string,
 }
 
 export type Country = {
     id: string,
     name: string,
-    image: string,
+    flag: string,
 }
 
 export enum QuestionTypeEnum {
