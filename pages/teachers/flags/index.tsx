@@ -21,13 +21,13 @@ const FlagsHome: NextPage = () => {
       const date = new Date();
       const firstDay = startOfWeek(date);
       const lastDay = lastDayOfWeek(date);
-      const thisWeek = json.flagsets.filter((flag: IFlagSet) => {
+      const thisWeek = json.flagSets.filter((flag: IFlagSet) => {
         if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
           return flag;
         }
       })
       setThisWeeksFlags(thisWeek);
-      setRecentFlags(json.flagsets);
+      setRecentFlags(json.flagSets);
     })
   }, [])
 

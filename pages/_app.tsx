@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
-import { makeServer } from "../mirage"
+import { makeServer } from "../mirage/server"
 
 if (process.env.NODE_ENV === "development") {
   makeServer({ environment: "development" })

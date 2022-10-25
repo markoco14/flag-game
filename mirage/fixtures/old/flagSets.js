@@ -1,4 +1,4 @@
-const recent = [
+const flagSets = [
     {
         id: 1,
         title: 'L5 W3 D2 Friday 2022-10-21',
@@ -63,4 +63,4 @@ const recent = [
     },
 ];
 
-export default recent;
+export default flagSets;
