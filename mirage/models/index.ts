@@ -8,14 +8,14 @@ export type FlagSet = {
     date: string,
     status: string,
     // teacher_id: string,
-    flagSetTiles: FlagSetTile["id"][],
+    flagSetTiles: FlagSetTile[],
 }
 
 export type FlagSetTile = {
     id: string,
-    flagset: FlagSet["id"],
-    country: Country["id"],
-    question: Question["id"]
+    flagset: FlagSet,
+    country: Country,
+    question: Question,
 }
 
 export type Question = {

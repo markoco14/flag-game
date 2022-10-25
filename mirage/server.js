@@ -1,8 +1,9 @@
 import { belongsTo, hasMany, createServer, Model, RestSerializer  } from "miragejs"
-import questions from './fixtures/old/questions'
+// import questions from './fixtures/old/questions'
 import game from './fixtures/old/game'
 import gameCopy from './fixtures/old/gameCopy'
 
+import questions from'./fixtures/questions'
 import countries from './fixtures/countries'
 import flagSets from './fixtures/flagSets'
 import flagSetTiles from './fixtures/flagSetTiles'
@@ -16,7 +17,11 @@ export function makeServer( {environment = "test"} = {}) {
             flagSet: RestSerializer.extend({
                 include: ["flagSetTile"],
                 embed: true,
-            })
+            }),
+            flagSetTile: RestSerializer.extend({
+                include: ["question"],
+                embed: true,
+            }),
         },
         
         models: {

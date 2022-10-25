@@ -3,13 +3,15 @@ const flagSetTiles = [
         id: 1,
         flagSetId: '1',
         country: 'Canada',
-        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg'
+        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg',
+        questionId: '1',
     },
     {
         id: 2,
         flagSetId: '1',
         country: 'Canada',
-        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg'
+        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg',
+        questionId: '2',
     },
     // {
     //     id: 3,
@@ -21,7 +23,8 @@ const flagSetTiles = [
         id: 4,
         flagSetId: '1',
         country: 'Canada',
-        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg'
+        flag: 'https://flagicons.lipis.dev/flags/4x3/af.svg',
+        questionId: '3',
     },
     // {
     //     id: 5,
