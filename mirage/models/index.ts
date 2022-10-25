@@ -1,17 +1,21 @@
 export type FlagSet = {
     id: string,
+    title: string,
     level: string,
     week: string,
+    // day: string,
+    // dayOfWeek: string,
     date: string,
     status: string,
-    teacher_id: string,
+    // teacher_id: string,
+    flagSetTiles: FlagSetTile["id"][],
 }
 
 export type FlagSetTile = {
     id: string,
-    flagset: FlagSet,
-    country: Country
-    question: Question
+    flagset: FlagSet["id"],
+    country: Country["id"],
+    question: Question["id"]
 }
 
 export type Question = {

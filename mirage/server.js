@@ -68,6 +68,25 @@ export function makeServer( {environment = "test"} = {}) {
                 return schema.db.flagSets.insert(attrs)
             })
 
+            this.patch("/api/flags/flagSet/updateTiles", (schema, request) => {
+                // let attrs = this.normalizedRequestAttrs("flagSet")
+                // let attrs = JSON.parse(request.requestBody);
+                // let id = request.params.flagSetId;
+                // let newTiles = flagSet.flagSetTileIds = [...flagSet.flagSetTileIds, request.params.tileId]
+                // let newAttrs = JSON.parse(request.requestBody);
+                // let id = request.params.id;
+                // let flagSet = schema.todos.find(id);
+                // return attrs;
+                // return schema.flagSets.find(Number(id));
+                // return 'Youve hit the endpoint'
+                // return schema.flagSets.find(Number(id)).update(attrs);
+                // return 
+                let id = Number(request.params.id)
+                let attrs = JSON.parse(request.requestBody)
+
+                return schema.flagSets.find(id).update(attrs)
+            })
+
             this.post("/api/flags/flagSetTile/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody)
                 return schema.db.flagSetTiles.insert(attrs)

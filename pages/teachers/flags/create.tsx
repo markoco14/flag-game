@@ -10,6 +10,8 @@ import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { FormEvent, useEffect, useState } from 'react'
 import { parseISO, isTuesday, isSaturday, isSunday } from 'date-fns'
 import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
+import { FlagSet, FlagSetTile } from '../../../mirage/models/index'
+
 
 export default function CreateFlags() {
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
@@ -17,7 +19,7 @@ export default function CreateFlags() {
     const [selectedFlags, setSelectedFlags] = useState<Flag[] | []>([]);
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
-    const [isSetCreated, setisSetCreated] = useState<IFlagSet | undefined>(undefined);
+    const [isSetCreated, setIsSetCreated] = useState<FlagSet | undefined>(undefined);
     const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
 
     function createNewFlagset(e: FormEvent, levelNumber: string, weekNumber: string, dayNumber: string, dayOfWeek: string, date: string) {
@@ -39,39 +41,94 @@ export default function CreateFlags() {
             method: "POST",
             body: JSON.stringify({
                 title: title,
-                class: '1',
                 level: levelNumber,
                 week: weekNumber,
-                day: dayNumber,
-                dayOfWeek: dayOfWeek,
                 date: date,
+                status: 'WIP',
             }),
         })
         .then((res)=> res.json())
         .then((json) => {
-            setisSetCreated(json);
+            setIsSetCreated(json);
         })
         setIsTitleSet(true);
         setFlagsName(title)
     }
 
-    function createFlagSetTile(flag: Flag) {
-        if (!selectedFlags.find((selectedFlag) => {
-            return selectedFlag.id === flag.id;
-        })) {
+    function addTileToFlagSet(flag: Flag) {
+        console.log('You are adding a tile!')
+        console.log(flag);
+        // fetch("/api/flags/flagSet/updateTiles", {
+        //     method: "PATCH",
+        //     body: JSON.stringify(
+        //         {
+        //             title: 'hello',
+        //             level: '1',
+        //             week: '1',
+        //             date: '7',
+        //             status: 'WIP',
+        //             flagSetTile: [...flagSetTiles, '1']
+        //         }
+        //     )
+        // })
+        // fetch('/api')
+        // if (!selectedFlags.find((selectedFlag) => {
+        //     return selectedFlag.id === flag.id;
+        // })) {
             fetch('/api/flags/flagSetTile/create', {
                 method: "POST",
                 body: JSON.stringify({
                     flagSetId: isSetCreated?.id,
-                    countryName: flag.country,
-                    countryFlag: flag.image,
-                    countryId: flag.id
+                    countryId: '1',
                 }),
             })
-            setSelectedFlags([...selectedFlags, flag])
-        } else {
-            alert('That flag is already selected')
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                // console.log('flagset id', json.flagSetId, 'tile id', json.id)
+                // updateFlagSetTiles(json);
+            });
+        //     setSelectedFlags([...selectedFlags, flag])
+        // } else {
+        //     alert('That flag is already selected')
+        // }
+    }
+
+    function updateFlagSetTiles(json) {
+    //    console.log(json);
+        // console.log(isSetCreated);
+        fetch(`/api/flags/flagsets/${json.flagSetId}`)
+        .then((res) => res.json())
+        .then((json) => {
+            console.log(json);
+            console.log(isSetCreated)
+            // console.log(json.flagSet.flagSetTile)
+            // let flagSetIds = json.flagSet.flagSetTile;
+            // console.log(flagSetIds);
+            // flagSetIds = [...flagSetIds, newFlagSetTile];
+            // console.log(flagSetIds);
+        })
+
+        let payload = {
+            date: isSetCreated?.date,
+            title: isSetCreated?.title,
+            level: isSetCreated?.level,
+            status: isSetCreated?.status,
+            week: isSetCreated?.week,
         }
+
+        console.log(payload)
+        // let newFlagSetTile = json.id;
+        // console.log('logging new tile id', newFlagSetTile)
+        // fetch(`/api/flags/flagsets/${json.flagSetId}`)
+        // .then((res) => res.json())
+        // .then((json) => {
+        //     // console.log(json.flagSet.flagSetTile)
+        //     let flagSetIds = json.flagSet.flagSetTile;
+        //     console.log(flagSetIds);
+        //     flagSetIds = [...flagSetIds, newFlagSetTile];
+        //     console.log(flagSetIds);
+        // })
     }
 
     function deleteFlagsetQuestion(flag: Flag) {
@@ -162,7 +219,7 @@ export default function CreateFlags() {
                                                     <div 
                                                         key={`available-flag-${flag.id}`}
                                                         style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
-                                                        onClick={() => {createFlagSetTile(flag)}}
+                                                        onClick={() => {addTileToFlagSet(flag)}}
                                                     >
                                                         <Image
                                                             alt={`An image of the ${flag.country} country flag.`}
@@ -182,7 +239,7 @@ export default function CreateFlags() {
                             <button onClick={() => {console.log('You clicked save flags')}}>Save</button>
                         </div>
                     </section>
-                    {(selectedFlags.length > 0) && (
+                    {/* {(selectedFlags.length > 0) && (
                         <section className={`${styles.create_flags_container}`}>
                             <div className={styles.create_flags_interface}>
                                 <h2>Add Your Questions</h2>
@@ -205,7 +262,7 @@ export default function CreateFlags() {
                                 ))}
                             </div>
                         </section>
-                    )}
+                    )} */}
                     </>
                     )}
                 </div>
