@@ -19,7 +19,7 @@ export function makeServer( {environment = "test"} = {}) {
                 embed: true,
             }),
             flagSetTile: RestSerializer.extend({
-                include: ["question"],
+                include: ["question", "country"],
                 embed: true,
             }),
         },
@@ -35,10 +35,10 @@ export function makeServer( {environment = "test"} = {}) {
             flagSetTile: Model.extend({
                 flagSet: belongsTo(),
                 question: belongsTo(),
+                country: belongsTo(),
             }),
-            question: Model.extend({
-                flagSetTile: hasMany(),
-            }),
+            question: Model.extend({}),
+            country: Model.extend({}),
         },
 
         fixtures: {

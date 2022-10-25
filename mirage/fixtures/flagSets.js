@@ -7,7 +7,7 @@ const flagSets = [
         day: '2',
         dayOfWeek: 'Friday',
         date: '2022-10-21',
-        flagSetTileIds: ['1', '2', '4']
+        flagSetTileIds: ['1', '2', '3', '4']
     },
     // {
     //     id: 2,
