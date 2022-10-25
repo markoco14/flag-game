@@ -223,6 +223,18 @@
   cursor: pointer;
 }
 
+.add_new_question_container {
+  padding: 1rem;
+  /* border: 1px solid rgb(201, 201, 201); */
+  margin: 1rem 0;
+  box-shadow: 0px 0px 10px 2px rgba(221, 221, 221, 0.774);
+}
+
+.add_new_question_step_container {
+  width: 50%;
+  margin: auto;
+}
+
 .question_front_back_container {
   display: flex;
   gap: 1rem;

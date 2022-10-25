@@ -15,6 +15,10 @@ export default function EditFlagset() {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
     const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
+
+    const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
+    const [isFlagConfirmed, setIsFlagConfirmed] = useState<boolean>(false);
+    const [isQuestionConfirmed, setIsQuestionConfirmed] = useState<boolean>(false);
     
     const deleteModal = useRef<HTMLDialogElement>(null)
 
@@ -171,6 +175,63 @@ export default function EditFlagset() {
                                     <button onClick={updateFlagDetails}>Save</button>
                                 </section>
                                 </>
+                        )}
+                        <button onClick={() => {setIsAddingTile(true)}}>+</button>
+                        {isAddingTile && (
+                            <article className={styles.add_new_question_container}>
+                                <div style={{position: 'relative'}}>
+
+                                <p style={{textAlign: 'center'}}>Welcome to adding a new question</p>
+                                <button style={{position: 'absolute', right: '0', top: '0'}}onClick={() => {
+                                    setIsAddingTile(false);
+                                    setIsFlagConfirmed(false);
+                                    setIsQuestionConfirmed(false);
+                                }}>
+                                    Cancel
+                                </button>
+                                </div>
+                                {!isFlagConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        <h3 style={{textAlign: 'center'}}>Choose flag</h3>
+                                        <div>box of flags</div>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+
+                                        <button onClick={() => {setIsFlagConfirmed(true)}}>Next Step</button>
+                                        </div>
+                                    </div>
+                                )}
+                                {isFlagConfirmed && !isQuestionConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        <h3 style={{textAlign: 'center'}}>Make Question</h3>
+                                        <p>Question</p>
+                                        <p>Answer</p>
+                                        <p>Wrong</p>
+                                        <p>Wrong</p>
+                                        <p>Wrong</p>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+
+                                        <button onClick={() => {setIsFlagConfirmed(false)}}>Back</button>
+                                        <button onClick={() => {setIsQuestionConfirmed(true)}}>Next Step</button>
+                                        </div>
+                                    </div>
+                                )}
+                                {isFlagConfirmed && isQuestionConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        <h3 style={{textAlign: 'center'}}>Review and Confirm</h3>
+                                        <p>Your flag is Canada</p>
+                                        <p>Question details</p>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+
+                                        <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
+                                        <button onClick={() => {
+                                            setIsFlagConfirmed(false);
+                                            setIsQuestionConfirmed(false);
+                                            setIsAddingTile(false)
+                                            }}>Save</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </article>
                         )}
                         {hasFlagsetQuestions? (
                             flagsetQuestions.map((question: FlagSetTile) => (
