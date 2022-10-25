@@ -5,8 +5,8 @@ const flagSets = [
         level: '8',
         week: '7',
         day: '2',
-        dayOfWeek: 'Friday',
-        date: '2022-10-21',
+        dayOfWeek: 'Wednesday',
+        date: '2022-10-26',
         flagSetTileIds: ['1', '2', '3', '4']
     },
     // {
