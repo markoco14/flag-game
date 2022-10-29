@@ -48,27 +48,37 @@ export default function EditFlagset() {
         const options = newTileQuestionDetails?.options.map((option, index) => {
             return {id: index+1, text: option}
         })
-        fetch(`/api/question/confirm/${router.query.id}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                question: {
-                    question: newTileQuestionDetails?.question,
-                    answer: newTileQuestionDetails?.answer,
-                    options: options
-                },
-                countryId: newTileSelectedCountry?.id,
-                flagSetId: selectedFlag?.id
+
+        try {
+            fetch(`/api/question/confirm/${router.query.id}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    question: {
+                        question: newTileQuestionDetails?.question,
+                        answer: newTileQuestionDetails?.answer,
+                        options: options
+                    },
+                    countryId: newTileSelectedCountry?.id,
+                    flagSetId: selectedFlag?.id
+                })
             })
-        })
-        .then((res) => res.json())
-        .then((json) => {
-            console.log(json);
-            setSelectedFlag(json.flagSet);
-            if(json.flagSet.flagSetTile.length > 0) {
-                setHasFlagsetQuestions(true);
-            }
-            setFlagSetTiles(json.flagSet.flagSetTile);
-        })
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json);
+                setSelectedFlag(json.flagSet);
+                if(json.flagSet.flagSetTile.length > 0) {
+                    setHasFlagsetQuestions(true);
+                }
+                setFlagSetTiles(json.flagSet.flagSetTile);
+                setIsAddingTile(false);
+                setIsFlagConfirmed(false);
+                setIsQuestionConfirmed(false);
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            alert('Question added to flag set!')
+        }
     }
 
     function updateFlagDetails() {
