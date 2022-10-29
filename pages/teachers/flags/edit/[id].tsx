@@ -76,11 +76,10 @@ export default function EditFlagset() {
         .then((json) => {
             tileId = json.id;
         });
-        console.log('logging current flag set tiles: ', selectedFlag?.flagSetTile)
         const flagSetTileIds = selectedFlag ? selectedFlag.flagSetTile.map((tile) => {
             return tile.id;
         }) : [];
-        console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
+        // console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
         
         // add the new tile id to the flag set's old tile id
         await fetch(`/api/flagSet/updateTiles/${selectedFlag?.id}`, {
@@ -91,13 +90,13 @@ export default function EditFlagset() {
         })
         .then((res) => res.json())
         .then((json) => {
-            console.log('logging the updated tiles response: ', json);
             setSelectedFlag(json.flagSet);
+            if(json.flagSet.flagSetTile.length > 0) {
+                setHasFlagsetQuestions(true);
+            }
             setFlagSetTiles(json.flagSet.flagSetTile);
         })
         
-        console.log('clicking the save button')
-
         setIsFlagConfirmed(false);
         setIsQuestionConfirmed(false);
         setIsAddingTile(false)
