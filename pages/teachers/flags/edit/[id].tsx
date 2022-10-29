@@ -8,7 +8,7 @@ import NewTileQuestionDetails from '../../../../components/NewTileQuestionDetail
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { Country, FlagSet, FlagSetTile, Question } from "../../../../mirage/models";
+import { Country, FlagSet, FlagSetTile, Question, Options } from "../../../../mirage/models";
 
 export default function EditFlagset() {
     const router = useRouter()
@@ -269,8 +269,8 @@ export default function EditFlagset() {
                                         <p>Question: {newTileQuestionDetails?.question}</p>
                                         <p>Answer: {newTileQuestionDetails?.answer}</p>
                                         <div>
-                                            {newTileQuestionDetails?.options?.map((option, index) => (
-                                                <p key={index+1}>Option {index+1}: {option}</p>
+                                            {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
+                                                <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
                                             ))}
                                         </div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
