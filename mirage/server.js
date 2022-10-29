@@ -105,7 +105,33 @@ export function makeServer( {environment = "test"} = {}) {
                 return schema.flagSets.find(id).destroy();
             })
 
-            /this.post("/api/question/create", (schema, request) => {
+            // this can all be done in one request.
+            // if you use those API methods you can edit and update attributes within this function
+            // you need to pass in everything you need as a payload
+            // and process the logic the same way but with methods like .reload() (I think)
+
+            this.post("/api/question/confirm/:id", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody);
+                // return attrs.question
+
+                // create a question
+                const newQuestion = schema.db.questions.insert({
+                    question: attrs.question.question,
+                    answer: attrs.question.answer,
+                    options: attrs.question.options,
+                });
+                // return newQuestion
+                const newTile = schema.db.flagSetTiles.insert({questionId: newQuestion.id, flagSetId: request.params.id, countryId: attrs.countryId})
+                let thisFlagSet = schema.flagSets.find(request.params.id)
+                // thisFlagSet.flagSetTileIds
+                const updatedFlagSetIds = [...thisFlagSet.flagSetTileIds, newTile.id]
+                thisFlagSet.update({flagSetTileIds: updatedFlagSetIds})
+                thisFlagSet.reload()
+                return thisFlagSet
+                // return [newQuestion, newTile];
+            })
+
+            this.post("/api/question/create", (schema, request) => {
                 let attrs = JSON.parse(request.requestBody);
                 
                 return schema.db.questions.insert(attrs);
