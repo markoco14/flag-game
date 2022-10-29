@@ -10,13 +10,13 @@ import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { FormEvent, useEffect, useState } from 'react'
 import { parseISO, isTuesday, isSaturday, isSunday } from 'date-fns'
 import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
-import { FlagSet, FlagSetTile } from '../../../mirage/models/index'
+import { FlagSet, FlagSetTile, Country } from '../../../mirage/models/index'
 
 
 export default function CreateFlags() {
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
-    const [availableFlags, setAvailableFlags] = useState<Flag[] | []>([]);
-    const [selectedFlags, setSelectedFlags] = useState<Flag[] | []>([]);
+    const [availableFlags, setAvailableFlags] = useState<Country[] | []>([]);
+    const [selectedFlags, setSelectedFlags] = useState<Country[] | []>([]);
     const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
     const [isSetCreated, setIsSetCreated] = useState<FlagSet | undefined>(undefined);
@@ -55,7 +55,7 @@ export default function CreateFlags() {
         setFlagsName(title)
     }
 
-    function addTileToFlagSet(flag: Flag) {
+    function addTileToFlagSet(flag: Country) {
         console.log('You are adding a tile!')
         console.log(flag);
         // fetch("/api/flags/flagSet/updateTiles", {
@@ -100,7 +100,7 @@ export default function CreateFlags() {
         console.log('You pressed the create tile button')
     }
 
-    function deleteFlagsetQuestion(flag: Flag) {
+    function deleteFlagsetQuestion(flag: Country) {
         // print flag to check it's the right flag
         // console.log(flag);
         // fetch(`/api/flags/flagSetTile/delete/${flag.id}`, {method: 'DELETE'})
@@ -169,12 +169,12 @@ export default function CreateFlags() {
                                     {(selectedFlags?.length > 0) && (
                                         <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem'}}>
                                             <ul>
-                                            {selectedFlags.map((flag: Flag) => (
+                                            {selectedFlags.map((flag: Country) => (
                                                 <li 
                                                     style={{background: 'WhiteSmoke', borderRadius: '5px', padding: '0.5rem 1rem',}}
                                                     key={`selected-flag-${flag.id}`}
                                                     onClick={() => {deleteFlagsetQuestion(flag)}}
-                                                >{flag.country}</li>
+                                                >{flag.name}</li>
                                                 ))}
                                             </ul>
                                         </div>
@@ -184,15 +184,15 @@ export default function CreateFlags() {
                                     <article style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
                                         {(availableFlags?.length > 0) ? (
                                             <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', overflowY: 'scroll'}}>
-                                                {availableFlags.map((flag: Flag) => (
+                                                {availableFlags.map((flag: Country) => (
                                                     <div 
                                                         key={`available-flag-${flag.id}`}
                                                         style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
                                                         onClick={() => {addTileToFlagSet(flag)}}
                                                     >
                                                         <Image
-                                                            alt={`An image of the ${flag.country} country flag.`}
-                                                            src={flag.image}
+                                                            alt={`An image of the ${flag.name} country flag.`}
+                                                            src={flag.flag}
                                                             layout='fill'
                                                             objectFit='cover'
                                                         ></Image>
@@ -221,7 +221,7 @@ export default function CreateFlags() {
                                         
                                         <div style={{width: '30%', border: 'solid 2px black'}}>
                                             <h3 style={{textAlign: 'center'}}>Front side</h3>
-                                            <div>{flag.country}</div>
+                                            <div>{flag.name}</div>
                                         </div>
                                         <div style={{width: '70%', border: 'solid 2px black'}}>
                                             <h3 style={{textAlign: 'center'}}>Back side</h3>
