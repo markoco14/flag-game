@@ -101,7 +101,7 @@ export function makeServer( {environment = "test"} = {}) {
             // delete flag set by id
             this.delete(`/api/flagsets/delete/:id`, (schema, request) => {
                 let id = request.params.id;
-
+                schema.flagSetTiles.where({flagSetId: id}).destroy();
                 return schema.flagSets.find(id).destroy();
             })
 
@@ -135,6 +135,12 @@ export function makeServer( {environment = "test"} = {}) {
                 let attrs = JSON.parse(request.requestBody);
                 
                 return schema.db.questions.insert(attrs);
+            })
+
+            this.delete("/api/flagSet/tile/:id/delete", (schema, request) => {
+                let id = request.params.id;
+                return schema.flagSetTiles.find(id).destroy();
+                return 'You hit the delete tile by id endpoint';
             })
 
             this.post("/api/flagSetTile/create", (schema, request) => {

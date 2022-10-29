@@ -16,7 +16,7 @@ export default function EditFlagset() {
     const [selectedFlag, setSelectedFlag] = useState<FlagSet | undefined>(undefined);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
-    const [flagSetTiles, setFlagSetTiles] = useState<[]>([]);
+    const [flagSetTiles, setFlagSetTiles] = useState<FlagSetTile[]>([]);
 
     // add new flag modal state
     const [newTileSelectedCountry, setNewTileSelectedCountry] = useState<Country | undefined>(undefined);
@@ -64,7 +64,7 @@ export default function EditFlagset() {
             })
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
+                // console.log(json);
                 setSelectedFlag(json.flagSet);
                 if(json.flagSet.flagSetTile.length > 0) {
                     setHasFlagsetQuestions(true);
@@ -94,6 +94,17 @@ export default function EditFlagset() {
     function deleteFlagSet() {
         fetch(`/api/flagsets/delete/${selectedFlag?.id}`, {method: 'DELETE'});
         router.push('/teachers/flags');
+    }
+
+    function handleDeleteTile(id: string) {
+        fetch(`/api/flagSet/tile/${id}/delete`, {method: 'DELETE'})
+        const filteredTiles = flagSetTiles.filter((tile: FlagSetTile) => {
+            console.log('logging the tiles: ', tile)
+            return tile.id !== id;
+        })
+        setFlagSetTiles(filteredTiles);
+        console.log(id);
+        console.log('You are deleting this tile')
     }
 
     function cancelDelete() {
@@ -276,7 +287,7 @@ export default function EditFlagset() {
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
                                             <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
                                             <button onClick={addTile}>
-                                                Save
+                                                Confirm and Save
                                             </button>
                                         </div>
                                     </div>
@@ -289,6 +300,7 @@ export default function EditFlagset() {
                                     key={`fs-q-${question.id}`} 
                                     className={styles.question_front_back_container}
                                 >
+                                    <button onClick={() => {handleDeleteTile(question.id)}}>Delete</button>
                                     <div style={{ position: 'relative', width: '30%'}}>
                                         <div style={{ position: 'relative'}}>
                                             <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Front {question.id}</h3>
