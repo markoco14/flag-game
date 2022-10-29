@@ -7,6 +7,8 @@ import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { FlagSet, FlagSetTile } from "../../../../mirage/models";
+import flagSetTiles from "../../../../mirage/fixtures/flagSetTiles";
+import flagsets from "../../../../mirage/fixtures/old/game";
 
 export default function EditFlagset() {
     const router = useRouter()
@@ -14,7 +16,7 @@ export default function EditFlagset() {
     const [selectedFlag, setSelectedFlag] = useState<FlagSet | undefined>(undefined);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
-    const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
+    const [flagSetTiles, setFlagSetTiles] = useState<[]>([]);
 
     const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
     const [isFlagConfirmed, setIsFlagConfirmed] = useState<boolean>(false);
@@ -31,7 +33,7 @@ export default function EditFlagset() {
                 if(json.flagSet.flagSetTile.length > 0) {
                     setHasFlagsetQuestions(true);
                 }
-                setFlagsetQuestions(json.flagSet.flagSetTile);
+                setFlagSetTiles(json.flagSet.flagSetTile);
             })
         } catch(e) {
             console.log(e);
@@ -195,7 +197,72 @@ export default function EditFlagset() {
                                         <h3 style={{textAlign: 'center'}}>Choose flag</h3>
                                         <div>box of flags</div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
+                                        <button onClick={ async () => {
+                                            setIsFlagConfirmed(false);
+                                            setIsQuestionConfirmed(false);
+                                            setIsAddingTile(false)
 
+                                            let questionId = 'null';
+
+                                            // create the question first, because we need
+                                            await fetch('/api/question/create', {
+                                                method: 'POST',
+                                                body: JSON.stringify({
+                                                    level: 'null',
+                                                    type: 'null',
+                                                    question: 'null',
+                                                    answer: 'null',
+                                                    options: [],
+                                                })
+                                            })
+                                            .then((res) => res.json())
+                                            .then((json) => {
+                                                questionId = json.id;
+                                            })
+
+
+                                            let tileId = 'null';
+
+                                            await fetch('/api/flagSetTile/create', {
+                                                method: 'POST',
+                                                body: JSON.stringify({
+                                                    selectedFlagId: '1',
+                                                    tileDetails: {
+                                                        countryId: '7',
+                                                        questionId: questionId,
+                                                        flagSetId: selectedFlag?.id,
+                                                    }
+                                                }
+                                                )
+                                            })
+                                            .then((res) => res.json())
+                                            .then((json) => {
+                                                tileId = json.id;
+                                            });
+                                            console.log('logging current flag set tiles: ', selectedFlag?.flagSetTile)
+                                            const flagSetTileIds = selectedFlag ? selectedFlag.flagSetTile.map((tile) => {
+                                                return tile.id;
+                                            }) : [];
+                                            console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
+                                            
+
+                                            await fetch(`/api/flagSet/updateTiles/${selectedFlag?.id}`, {
+                                                method: 'PUT',
+                                                body: JSON.stringify({
+                                                    tileId: [...flagSetTileIds, tileId],
+                                                })
+                                            })
+                                            .then((res) => res.json())
+                                            .then((json) => {
+                                                console.log('logging the updated tiles response: ', json);
+                                                setSelectedFlag(json.flagSet);
+                                                setFlagSetTiles(json.flagSet.flagSetTile);
+                                            })
+                                            
+
+                                            
+                                            console.log('clicking the save button')
+                                            }}>Save</button>
                                         <button onClick={() => {setIsFlagConfirmed(true)}}>Next Step</button>
                                         </div>
                                     </div>
@@ -223,25 +290,21 @@ export default function EditFlagset() {
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
 
                                         <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
-                                        <button onClick={() => {
-                                            setIsFlagConfirmed(false);
-                                            setIsQuestionConfirmed(false);
-                                            setIsAddingTile(false)
-                                            }}>Save</button>
+                                        
                                         </div>
                                     </div>
                                 )}
                             </article>
                         )}
                         {hasFlagsetQuestions? (
-                            flagsetQuestions.map((question: FlagSetTile) => (
+                            flagSetTiles.map((question: FlagSetTile) => (
                                 <article 
                                     key={`fs-q-${question.id}`} 
                                     className={styles.question_front_back_container}
                                 >
                                     <div style={{ position: 'relative', width: '30%'}}>
                                         <div style={{ position: 'relative'}}>
-                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Front</h3>
+                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Front {question.id}</h3>
                                             <button                                                     
                                                 onClick={() => {console.log('You clicked edit front side')}} 
                                                 className={`material-symbols-outlined ${styles.edit_flagset_info_button}`}

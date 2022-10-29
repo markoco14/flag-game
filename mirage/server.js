@@ -55,72 +55,83 @@ export function makeServer( {environment = "test"} = {}) {
             // flags home API endpoints
             
             
-            this.get(
-                "/api/flags/flagsets", 
-                (schema) => {
-                    return schema.flagSets.all();
-                },
-                { timing: 2000 }
-                )
+            this.get("/api/flags/flagsets", (schema) => {
+                return schema.flagSets.all();
+            },
+            { timing: 2000 }
+            );
             
             // create page API endpoints
 
             this.get("/api/flags/countries", countries)
             
             this.post("/api/flags/flagSet/create", (schema, request) => {
-                let attrs = JSON.parse(request.requestBody)
+                let attrs = JSON.parse(request.requestBody);
                 
-                return schema.db.flagSets.insert(attrs)
+                return schema.db.flagSets.insert(attrs);
             })
 
             this.patch("/api/flags/flagSet/updateTiles", (schema, request) => {
-                // let attrs = this.normalizedRequestAttrs("flagSet")
-                // let attrs = JSON.parse(request.requestBody);
-                // let id = request.params.flagSetId;
-                // let newTiles = flagSet.flagSetTileIds = [...flagSet.flagSetTileIds, request.params.tileId]
-                // let newAttrs = JSON.parse(request.requestBody);
-                // let id = request.params.id;
-                // let flagSet = schema.todos.find(id);
-                // return attrs;
-                // return schema.flagSets.find(Number(id));
-                // return 'Youve hit the endpoint'
-                // return schema.flagSets.find(Number(id)).update(attrs);
-                // return 
-                let id = Number(request.params.id)
-                let attrs = JSON.parse(request.requestBody)
+                let id = Number(request.params.id);
+                let attrs = JSON.parse(request.requestBody);
 
-                return schema.flagSets.find(id).update(attrs)
+                return schema.flagSets.find(id).update(attrs);
             })
 
             this.post("/api/flags/flagSetTile/create", (schema, request) => {
-                let attrs = JSON.parse(request.requestBody)
-                return schema.db.flagSetTiles.insert(attrs)
+                let attrs = JSON.parse(request.requestBody);
+
+                return schema.db.flagSetTiles.insert(attrs);
             })
 
             this.delete("/api/flags/flagSetTile/delete/:id", (schema, request) => {
-                let id = request.params.id
+                let id = request.params.id;
                 
-                return schema.flagSetTiles.find(id).destroy()
+                return schema.flagSetTiles.find(id).destroy();
             })
             
             // edit page API endpoints
+            
+            // get flag set by id
             this.get("/api/flags/flagsets/:id", (schema, request) => {
+                console.log(server.db.dump());
                 return schema.flagSets.find(request.params.id);
             })
 
+            // delete flag set by id
             this.delete(`/api/flagsets/delete/:id`, (schema, request) => {
-                let id = request.params.id
+                let id = request.params.id;
 
-                return schema.flagSets.find(id).destroy()
+                return schema.flagSets.find(id).destroy();
             })
 
+            /this.post("/api/question/create", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody);
+                
+                return schema.db.questions.insert(attrs);
+            })
+
+            this.post("/api/flagSetTile/create", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody);
+
+                return schema.db.flagSetTiles.insert(attrs.tileDetails);
+            })
+
+            this.put("/api/flagSet/updateTiles/:id", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody);
+                let flagSet = schema.flagSets.find(request.params.id);
+                flagSet.update({flagSetTileIds: attrs.tileId});
+
+                return schema.flagSets.find(request.params.id);
+            })
+         
             // play page API endpoints
 
-            this.get("/api/flags/play", game)
+            this.get("/api/flags/play", game);
 
-            this.get("/api/flags/play/:id", gameCopy)
+            this.get("/api/flags/play/:id", gameCopy);
         }
     })
 
-    return server
+    return server;
 }
