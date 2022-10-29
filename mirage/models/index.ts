@@ -8,7 +8,7 @@ export type FlagSet = {
     date: string,
     status: string,
     // teacher_id: string,
-    flagSetTiles: FlagSetTile[],
+    flagSetTile: FlagSetTile[],
 }
 
 export type FlagSetTile = {

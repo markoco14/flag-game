@@ -1,7 +1,7 @@
 const flagSets = [
     {
         id: 1,
-        title: 'L5 W3 D2 Friday 2022-10-21',
+        title: 'L5 W3 D2 Wednesday 2022-10-26',
         level: '8',
         week: '7',
         day: '2',

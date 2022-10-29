@@ -12,7 +12,7 @@ const flagSetTiles = [
     {
         id: 3,
         countryId: '4',
-        questionId: '4'
+        questionId: '4',
     },
     {
         id: 4,
