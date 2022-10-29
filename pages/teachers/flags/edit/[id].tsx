@@ -3,10 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
+import NewTileFlagSelector from '../../../../components/NewTileFlagSelector'
+import NewTileQuestionDetails from '../../../../components/NewTileQuestionDetails'
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { FlagSet, FlagSetTile } from "../../../../mirage/models";
+import { Country, FlagSet, FlagSetTile, Question } from "../../../../mirage/models";
 
 export default function EditFlagset() {
     const router = useRouter()
@@ -15,6 +17,10 @@ export default function EditFlagset() {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
     const [flagSetTiles, setFlagSetTiles] = useState<[]>([]);
+
+    // add new flag modal state
+    const [newTileSelectedCountry, setNewTileSelectedCountry] = useState<Country | undefined>(undefined);
+    const [newTileQuestionDetails, setNewTileQuestionDetails] = useState<Question | undefined>(undefined)
 
     const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
     const [isFlagConfirmed, setIsFlagConfirmed] = useState<boolean>(false);
@@ -38,68 +44,31 @@ export default function EditFlagset() {
         }
     }
 
-    async function addNewTileToSet() {
-        let questionId = 'null';
-
-        // we need to create a question and return the id
-        await fetch('/api/question/create', {
+    async function addTile() {
+        const options = newTileQuestionDetails?.options.map((option, index) => {
+            return {id: index+1, text: option}
+        })
+        fetch(`/api/question/confirm/${router.query.id}`, {
             method: 'POST',
             body: JSON.stringify({
-                level: 'null',
-                type: 'null',
-                question: 'null',
-                answer: 'null',
-                options: [],
+                question: {
+                    question: newTileQuestionDetails?.question,
+                    answer: newTileQuestionDetails?.answer,
+                    options: options
+                },
+                countryId: newTileSelectedCountry?.id,
+                flagSetId: selectedFlag?.id
             })
         })
         .then((res) => res.json())
         .then((json) => {
-            questionId = json.id;
-        })
-
-        let tileId = 'null';
-
-        // create the tile with the question id, and return the tile id
-        await fetch('/api/flagSetTile/create', {
-            method: 'POST',
-            body: JSON.stringify({
-                selectedFlagId: '1',
-                tileDetails: {
-                    countryId: '7',
-                    questionId: questionId,
-                    flagSetId: selectedFlag?.id,
-                }
-            }
-            )
-        })
-        .then((res) => res.json())
-        .then((json) => {
-            tileId = json.id;
-        });
-        const flagSetTileIds = selectedFlag ? selectedFlag.flagSetTile.map((tile) => {
-            return tile.id;
-        }) : [];
-        // console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
-        
-        // add the new tile id to the flag set's old tile id
-        await fetch(`/api/flagSet/updateTiles/${selectedFlag?.id}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                tileId: [...flagSetTileIds, tileId],
-            })
-        })
-        .then((res) => res.json())
-        .then((json) => {
+            console.log(json);
             setSelectedFlag(json.flagSet);
             if(json.flagSet.flagSetTile.length > 0) {
                 setHasFlagsetQuestions(true);
             }
             setFlagSetTiles(json.flagSet.flagSetTile);
         })
-        
-        setIsFlagConfirmed(false);
-        setIsQuestionConfirmed(false);
-        setIsAddingTile(false)
     }
 
     function updateFlagDetails() {
@@ -250,16 +219,21 @@ export default function EditFlagset() {
                                     setIsAddingTile(false);
                                     setIsFlagConfirmed(false);
                                     setIsQuestionConfirmed(false);
+                                    setNewTileSelectedCountry(undefined)
+                                    setNewTileQuestionDetails(undefined)
                                 }}>
                                     Cancel
                                 </button>
                                 </div>
                                 {!isFlagConfirmed && (
                                     <div className={`${styles.add_new_question_step_container}`}>
-                                        <h3 style={{textAlign: 'center'}}>Choose flag</h3>
-                                        <div>box of flags</div>
+                                        <NewTileFlagSelector 
+                                            updateId={setNewTileSelectedCountry}
+                                        ></NewTileFlagSelector>
+                                        <div>
+                                            <p>Selected Flag: {newTileSelectedCountry?.name}</p>
+                                        </div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                                        <button onClick={addNewTileToSet}>Save</button>
                                         <button onClick={() => {setIsFlagConfirmed(true)}}>Next Step</button>
                                         </div>
                                     </div>
@@ -267,27 +241,33 @@ export default function EditFlagset() {
                                 {isFlagConfirmed && !isQuestionConfirmed && (
                                     <div className={`${styles.add_new_question_step_container}`}>
                                         <h3 style={{textAlign: 'center'}}>Make Question</h3>
-                                        <p>Question</p>
-                                        <p>Answer</p>
-                                        <p>Wrong</p>
-                                        <p>Wrong</p>
-                                        <p>Wrong</p>
-                                        <div style={{display: 'flex', justifyContent: 'center'}}>
-
-                                        <button onClick={() => {setIsFlagConfirmed(false)}}>Back</button>
-                                        <button onClick={() => {setIsQuestionConfirmed(true)}}>Next Step</button>
-                                        </div>
+                                        <NewTileQuestionDetails 
+                                            setDetails={setNewTileQuestionDetails} 
+                                            setQuestionConfirmed={setIsQuestionConfirmed}
+                                            setFlagConfirmed={setIsFlagConfirmed}
+                                        ></NewTileQuestionDetails>
                                     </div>
                                 )}
                                 {isFlagConfirmed && isQuestionConfirmed && (
                                     <div className={`${styles.add_new_question_step_container}`}>
+                                        {/* this is where we have all our state variables prepared */}
+                                        {/* everything will be packaged into a response for the API endpoint */}
+                                        {/* state will be cleared after */}
                                         <h3 style={{textAlign: 'center'}}>Review and Confirm</h3>
-                                        <p>Your flag is Canada</p>
+                                        <p>Your flag is {newTileSelectedCountry?.name}</p>
                                         <p>Question details</p>
+                                        <p>Question: {newTileQuestionDetails?.question}</p>
+                                        <p>Answer: {newTileQuestionDetails?.answer}</p>
+                                        <div>
+                                            {newTileQuestionDetails?.options?.map((option, index) => (
+                                                <p key={index+1}>Option {index+1}: {option}</p>
+                                            ))}
+                                        </div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
-
-                                        <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
-                                        
+                                            <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
+                                            <button onClick={addTile}>
+                                                Save
+                                            </button>
                                         </div>
                                     </div>
                                 )}
