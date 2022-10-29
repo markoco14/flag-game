@@ -7,8 +7,6 @@ import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { FlagSet, FlagSetTile } from "../../../../mirage/models";
-import flagSetTiles from "../../../../mirage/fixtures/flagSetTiles";
-import flagsets from "../../../../mirage/fixtures/old/game";
 
 export default function EditFlagset() {
     const router = useRouter()
@@ -38,6 +36,71 @@ export default function EditFlagset() {
         } catch(e) {
             console.log(e);
         }
+    }
+
+    async function addNewTileToSet() {
+        let questionId = 'null';
+
+        // we need to create a question and return the id
+        await fetch('/api/question/create', {
+            method: 'POST',
+            body: JSON.stringify({
+                level: 'null',
+                type: 'null',
+                question: 'null',
+                answer: 'null',
+                options: [],
+            })
+        })
+        .then((res) => res.json())
+        .then((json) => {
+            questionId = json.id;
+        })
+
+        let tileId = 'null';
+
+        // create the tile with the question id, and return the tile id
+        await fetch('/api/flagSetTile/create', {
+            method: 'POST',
+            body: JSON.stringify({
+                selectedFlagId: '1',
+                tileDetails: {
+                    countryId: '7',
+                    questionId: questionId,
+                    flagSetId: selectedFlag?.id,
+                }
+            }
+            )
+        })
+        .then((res) => res.json())
+        .then((json) => {
+            tileId = json.id;
+        });
+        console.log('logging current flag set tiles: ', selectedFlag?.flagSetTile)
+        const flagSetTileIds = selectedFlag ? selectedFlag.flagSetTile.map((tile) => {
+            return tile.id;
+        }) : [];
+        console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
+        
+        // add the new tile id to the flag set's old tile id
+        await fetch(`/api/flagSet/updateTiles/${selectedFlag?.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                tileId: [...flagSetTileIds, tileId],
+            })
+        })
+        .then((res) => res.json())
+        .then((json) => {
+            console.log('logging the updated tiles response: ', json);
+            setSelectedFlag(json.flagSet);
+            setFlagSetTiles(json.flagSet.flagSetTile);
+        })
+        
+        console.log('clicking the save button')
+
+        setIsFlagConfirmed(false);
+        setIsQuestionConfirmed(false);
+        setIsAddingTile(false)
     }
 
     function updateFlagDetails() {
@@ -197,72 +260,7 @@ export default function EditFlagset() {
                                         <h3 style={{textAlign: 'center'}}>Choose flag</h3>
                                         <div>box of flags</div>
                                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                                        <button onClick={ async () => {
-                                            setIsFlagConfirmed(false);
-                                            setIsQuestionConfirmed(false);
-                                            setIsAddingTile(false)
-
-                                            let questionId = 'null';
-
-                                            // create the question first, because we need
-                                            await fetch('/api/question/create', {
-                                                method: 'POST',
-                                                body: JSON.stringify({
-                                                    level: 'null',
-                                                    type: 'null',
-                                                    question: 'null',
-                                                    answer: 'null',
-                                                    options: [],
-                                                })
-                                            })
-                                            .then((res) => res.json())
-                                            .then((json) => {
-                                                questionId = json.id;
-                                            })
-
-
-                                            let tileId = 'null';
-
-                                            await fetch('/api/flagSetTile/create', {
-                                                method: 'POST',
-                                                body: JSON.stringify({
-                                                    selectedFlagId: '1',
-                                                    tileDetails: {
-                                                        countryId: '7',
-                                                        questionId: questionId,
-                                                        flagSetId: selectedFlag?.id,
-                                                    }
-                                                }
-                                                )
-                                            })
-                                            .then((res) => res.json())
-                                            .then((json) => {
-                                                tileId = json.id;
-                                            });
-                                            console.log('logging current flag set tiles: ', selectedFlag?.flagSetTile)
-                                            const flagSetTileIds = selectedFlag ? selectedFlag.flagSetTile.map((tile) => {
-                                                return tile.id;
-                                            }) : [];
-                                            console.log('logging updated flag set tiles: ', selectedFlag?.flagSetTile)
-                                            
-
-                                            await fetch(`/api/flagSet/updateTiles/${selectedFlag?.id}`, {
-                                                method: 'PUT',
-                                                body: JSON.stringify({
-                                                    tileId: [...flagSetTileIds, tileId],
-                                                })
-                                            })
-                                            .then((res) => res.json())
-                                            .then((json) => {
-                                                console.log('logging the updated tiles response: ', json);
-                                                setSelectedFlag(json.flagSet);
-                                                setFlagSetTiles(json.flagSet.flagSetTile);
-                                            })
-                                            
-
-                                            
-                                            console.log('clicking the save button')
-                                            }}>Save</button>
+                                        <button onClick={addNewTileToSet}>Save</button>
                                         <button onClick={() => {setIsFlagConfirmed(true)}}>Next Step</button>
                                         </div>
                                     </div>
