@@ -1,13 +1,13 @@
 const flagSets = [
     {
         id: 1,
-        title: 'L5 W3 D2 Friday 2022-10-21',
+        title: 'L5 W3 D2 Monday 2022-10-31',
         level: '8',
         week: '7',
         day: '2',
-        dayOfWeek: 'Friday',
-        date: '2022-10-21',
-        flagSetTileIds: ['1', '2', '4']
+        dayOfWeek: 'Monday',
+        date: '2022-10-31',
+        flagSetTileIds: ['1', '2', '3', '4']
     },
     // {
     //     id: 2,

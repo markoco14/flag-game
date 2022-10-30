@@ -1,10 +1,38 @@
-import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../../../../styles/Home.module.css'
-import FlagBoard from '../../../../components/FlagBoard'
+import FlagBoard from '../../../../components/play/FlagBoard'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { FlagSetTile } from '../../../../mirage/models';
 
 export default function PlayFlags() {
+    const router = useRouter()
+    const [flagSet, setFlagSet] = useState([]);
+    
+    async function getFlagSet(id: string | string[] | undefined) {
+        fetch(`/api/flags/play/${id}`)
+        .then((res) => res.json())
+        .then((json) => {
+            setFlagSet(json.flagSet.flagSetTile)
+        })
+    }
+
+    function handleRemoveFlag(selectedFlag: string) {
+        const filteredFlags = flagSet.filter((flag: FlagSetTile) => {
+            console.log(flag.id);
+            console.log(selectedFlag)
+            return flag.id !== selectedFlag
+        });
+        setFlagSet(filteredFlags);
+    }
+
+    useEffect(() => {
+        if (router.isReady) {
+            getFlagSet(router.query.id);
+        }
+    }, [router.isReady, router.query.id])
+
     return (
     <div>
         <Head>
@@ -14,11 +42,6 @@ export default function PlayFlags() {
         
         </Head>
         <header className={`${styles.flags_navbar}`}>
-        {/* <nav style={{ backgroundColor: '#58C3FF', color: 'white'}}> 
-            <Link href="/"><a>Log Out</a></Link>
-            <Link href="/teachers"><a>Dashboard</a></Link>
-            <Link href="/teachers/flags"><a>Flags</a></Link>
-        </nav> */}
             <Link href="/teachers/flags">
                 <a>
                     <span 
@@ -29,10 +52,12 @@ export default function PlayFlags() {
                     </span>
                 </a>
             </Link>
-        
         </header>
         <main>
-            <FlagBoard></FlagBoard>
+            <FlagBoard
+                flagSet={flagSet}
+                removeFlag={handleRemoveFlag}
+            ></FlagBoard>
         </main>
     </div>
     )

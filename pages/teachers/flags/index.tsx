@@ -5,12 +5,12 @@ import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
 import { useState, useEffect } from 'react'
-import { IFlagSet } from '../../../interfaces'
+import { FlagSet } from '../../../mirage/models'
 import { startOfWeek, lastDayOfWeek, isAfter, isBefore, parseISO } from 'date-fns'
 
 const FlagsHome: NextPage = () => {
-  const [recentFlags, setRecentFlags] = useState<IFlagSet[] | []>([]);
-  const [thisWeeksFlags, setThisWeeksFlags] = useState<IFlagSet[] | undefined>(undefined);
+  const [recentFlags, setRecentFlags] = useState<FlagSet[] | []>([]);
+  const [thisWeeksFlags, setThisWeeksFlags] = useState<FlagSet[] | undefined>(undefined);
   const workDays = ['Monday', 'Wednesday', 'Thursday', 'Friday']
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const FlagsHome: NextPage = () => {
       const date = new Date();
       const firstDay = startOfWeek(date);
       const lastDay = lastDayOfWeek(date);
-      const thisWeek = json.flagSets.filter((flag: IFlagSet) => {
+      const thisWeek = json.flagSets.filter((flag: FlagSet) => {
         if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
           return flag;
         }
@@ -60,7 +60,7 @@ const FlagsHome: NextPage = () => {
                         if (flag.dayOfWeek === day) {
                           return (
                             <li key={flag.id}>
-                              <Link href="./flags/play">
+                              <Link href={`./flags/play/${flag.id}`}>
                                 <a>{flag.title.slice(0,8)}</a>
                               </Link>
                             </li>
@@ -78,11 +78,11 @@ const FlagsHome: NextPage = () => {
             <article className={`${styles.card}`}>
               <h2>Recent Flags</h2>
               <ul>
-                {recentFlags?.map((flag: IFlagSet) => (
+                {recentFlags?.map((flag: FlagSet) => (
                   <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>
-                    {flag.title}
+                    {flag.title} Tiles: {flag.flagSetTile.length}
                     <div className={`${styles.flex} ${styles.flex_gap}`}>
-                      <Link href="./flags/play"><a>Play</a></Link>
+                      <Link href={`./flags/play/${flag.id}`}><a>Play</a></Link>
                       <Link href={`./flags/edit/${flag.id}`}><a>Edit</a></Link>
                     </div> 
                   </li>
@@ -97,8 +97,6 @@ const FlagsHome: NextPage = () => {
                   layout='fill'
                   objectFit='cover'
                   alt="An image of a flagboard"
-                  // width={100} 
-                  // height={100}
                 />
               </div>
                 <h2>

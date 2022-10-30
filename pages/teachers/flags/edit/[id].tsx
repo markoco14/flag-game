@@ -3,18 +3,28 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
+import NewTileFlagSelector from '../../../../components/NewTileFlagSelector'
+import NewTileQuestionDetails from '../../../../components/NewTileQuestionDetails'
 import DeleteModal from '../../../../components/edit/DeleteModal'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { IFlagSet, IFlagsetQuestion } from "../../../../interfaces";
+import { Country, FlagSet, FlagSetTile, Question, Options } from "../../../../mirage/models";
 
 export default function EditFlagset() {
     const router = useRouter()
     
-    const [selectedFlag, setSelectedFlag] = useState<IFlagSet | undefined>(undefined);
+    const [selectedFlag, setSelectedFlag] = useState<FlagSet | undefined>(undefined);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
-    const [flagsetQuestions, setFlagsetQuestions] = useState<[]>([]);
+    const [flagSetTiles, setFlagSetTiles] = useState<FlagSetTile[]>([]);
+
+    // add new flag modal state
+    const [newTileSelectedCountry, setNewTileSelectedCountry] = useState<Country | undefined>(undefined);
+    const [newTileQuestionDetails, setNewTileQuestionDetails] = useState<Question | undefined>(undefined)
+
+    const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
+    const [isFlagConfirmed, setIsFlagConfirmed] = useState<boolean>(false);
+    const [isQuestionConfirmed, setIsQuestionConfirmed] = useState<boolean>(false);
     
     const deleteModal = useRef<HTMLDialogElement>(null)
 
@@ -27,10 +37,47 @@ export default function EditFlagset() {
                 if(json.flagSet.flagSetTile.length > 0) {
                     setHasFlagsetQuestions(true);
                 }
-                setFlagsetQuestions(json.flagSet.flagSetTile);
+                setFlagSetTiles(json.flagSet.flagSetTile);
             })
         } catch(e) {
             console.log(e);
+        }
+    }
+
+    async function addTile() {
+        const options = newTileQuestionDetails?.options.map((option, index) => {
+            return {id: index+1, text: option}
+        })
+
+        try {
+            fetch(`/api/question/confirm/${router.query.id}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    question: {
+                        question: newTileQuestionDetails?.question,
+                        answer: newTileQuestionDetails?.answer,
+                        options: options
+                    },
+                    countryId: newTileSelectedCountry?.id,
+                    flagSetId: selectedFlag?.id
+                })
+            })
+            .then((res) => res.json())
+            .then((json) => {
+                // console.log(json);
+                setSelectedFlag(json.flagSet);
+                if(json.flagSet.flagSetTile.length > 0) {
+                    setHasFlagsetQuestions(true);
+                }
+                setFlagSetTiles(json.flagSet.flagSetTile);
+                setIsAddingTile(false);
+                setIsFlagConfirmed(false);
+                setIsQuestionConfirmed(false);
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            alert('Question added to flag set!')
         }
     }
 
@@ -47,6 +94,17 @@ export default function EditFlagset() {
     function deleteFlagSet() {
         fetch(`/api/flagsets/delete/${selectedFlag?.id}`, {method: 'DELETE'});
         router.push('/teachers/flags');
+    }
+
+    function handleDeleteTile(id: string) {
+        fetch(`/api/flagSet/tile/${id}/delete`, {method: 'DELETE'})
+        const filteredTiles = flagSetTiles.filter((tile: FlagSetTile) => {
+            console.log('logging the tiles: ', tile)
+            return tile.id !== id;
+        })
+        setFlagSetTiles(filteredTiles);
+        console.log(id);
+        console.log('You are deleting this tile')
     }
 
     function cancelDelete() {
@@ -172,25 +230,121 @@ export default function EditFlagset() {
                                 </section>
                                 </>
                         )}
+                        <button onClick={() => {setIsAddingTile(true)}}>+</button>
+                        {isAddingTile && (
+                            <article className={styles.add_new_question_container}>
+                                <div style={{position: 'relative'}}>
+
+                                <p style={{textAlign: 'center'}}>Welcome to adding a new question</p>
+                                <button style={{position: 'absolute', right: '0', top: '0'}}onClick={() => {
+                                    setIsAddingTile(false);
+                                    setIsFlagConfirmed(false);
+                                    setIsQuestionConfirmed(false);
+                                    setNewTileSelectedCountry(undefined)
+                                    setNewTileQuestionDetails(undefined)
+                                }}>
+                                    Cancel
+                                </button>
+                                </div>
+                                {!isFlagConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        <NewTileFlagSelector 
+                                            updateId={setNewTileSelectedCountry}
+                                        ></NewTileFlagSelector>
+                                        <div>
+                                            <p>Selected Flag: {newTileSelectedCountry?.name}</p>
+                                        </div>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                                        <button onClick={() => {setIsFlagConfirmed(true)}}>Next Step</button>
+                                        </div>
+                                    </div>
+                                )}
+                                {isFlagConfirmed && !isQuestionConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        <h3 style={{textAlign: 'center'}}>Make Question</h3>
+                                        <NewTileQuestionDetails 
+                                            setDetails={setNewTileQuestionDetails} 
+                                            setQuestionConfirmed={setIsQuestionConfirmed}
+                                            setFlagConfirmed={setIsFlagConfirmed}
+                                        ></NewTileQuestionDetails>
+                                    </div>
+                                )}
+                                {isFlagConfirmed && isQuestionConfirmed && (
+                                    <div className={`${styles.add_new_question_step_container}`}>
+                                        {/* this is where we have all our state variables prepared */}
+                                        {/* everything will be packaged into a response for the API endpoint */}
+                                        {/* state will be cleared after */}
+                                        <h3 style={{textAlign: 'center'}}>Review and Confirm</h3>
+                                        <p>Your flag is {newTileSelectedCountry?.name}</p>
+                                        <p>Question details</p>
+                                        <p>Question: {newTileQuestionDetails?.question}</p>
+                                        <p>Answer: {newTileQuestionDetails?.answer}</p>
+                                        <div>
+                                            {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
+                                                <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
+                                            ))}
+                                        </div>
+                                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                                            <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
+                                            <button onClick={addTile}>
+                                                Confirm and Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </article>
+                        )}
                         {hasFlagsetQuestions? (
-                            flagsetQuestions.map((question: IFlagsetQuestion) => (
+                            flagSetTiles.map((question: FlagSetTile) => (
                                 <article 
                                     key={`fs-q-${question.id}`} 
                                     className={styles.question_front_back_container}
                                 >
+                                    <button onClick={() => {handleDeleteTile(question.id)}}>Delete</button>
                                     <div style={{ position: 'relative', width: '30%'}}>
-                                        <h3 style={{ textAlign: 'center' }}>Front Side</h3>
-                                        <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
-                                            <Image
-                                                alt={`A picture of the ${question.country} flag`}
-                                                src={question.flag}
-                                                layout='fill'
-                                                objectFit="cover"
-                                            ></Image>
+                                        <div style={{ position: 'relative'}}>
+                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Front {question.id}</h3>
+                                            <button                                                     
+                                                onClick={() => {console.log('You clicked edit front side')}} 
+                                                className={`material-symbols-outlined ${styles.edit_flagset_info_button}`}
+                                            >
+                                                <span>edit</span>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <p>{question.country.name}</p>
+                                            <div style={{ position: 'relative', width: '100%', aspectRatio: '4 / 3'}}>
+                                                <Image
+                                                    alt={`A picture of the ${question.country.name} flag`}
+                                                    src={question.country.flag}
+                                                    layout='fill'
+                                                    objectFit="cover"
+                                                ></Image>
+                                            </div>
                                         </div>
                                     </div>
                                     <div style={{ width: '70%'}}>
-                                        <h3 style={{ textAlign: 'center' }}>Back Side</h3>
+                                        <div style={{ position: 'relative'}}>
+                                            <h3 style={{ textAlign: 'center', fontSize: '24px', }}>Back</h3>
+                                            <button                                                     
+                                                onClick={() => {console.log('You clicked edit back side')}} 
+                                                className={`material-symbols-outlined ${styles.edit_flagset_info_button}`}
+                                            >
+                                                <span>edit</span>
+                                            </button>
+                                        </div>
+                                        <p>Question: {question.question.question}</p>
+                                        {question.question.options && (
+                                            <>
+                                                <p>Options:</p>
+                                                <ul>
+                                                    <li>Answer: {question.question.answer}</li>
+                                                        {question.question.options.map((option, index) => (
+                                                            <li key={`option${index}-${option.id}`}>Option {index+1}: {option.text}</li>
+                                                        ))}
+                                                </ul>
+                                            </>
+                                        )}
                                     </div>
                                 </article>
                             ))

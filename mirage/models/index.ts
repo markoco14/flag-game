@@ -4,18 +4,18 @@ export type FlagSet = {
     level: string,
     week: string,
     // day: string,
-    // dayOfWeek: string,
+    dayOfWeek: string,
     date: string,
     status: string,
     // teacher_id: string,
-    flagSetTiles: FlagSetTile["id"][],
+    flagSetTile: FlagSetTile[],
 }
 
 export type FlagSetTile = {
     id: string,
-    flagset: FlagSet["id"],
-    country: Country["id"],
-    question: Question["id"]
+    flagset: FlagSet,
+    country: Country,
+    question: Question,
 }
 
 export type Question = {
@@ -23,14 +23,19 @@ export type Question = {
     type: string,
     question: string,
     answer: string,
-    wrong: string[],
+    options: Options[],
     reason: string,
+}
+
+export type Options = {
+    id: number,
+    text: string,
 }
 
 export type Country = {
     id: string,
     name: string,
-    image: string,
+    flag: string,
 }
 
 export enum QuestionTypeEnum {

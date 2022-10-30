@@ -1,53 +1,53 @@
 const countries = [
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/ae.svg',
-        country: 'UAE',
-        id: 1,
+        flag: 'https://flagicons.lipis.dev/flags/1x1/ae.svg',
+        id: '1',
+        name: 'UAE',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/ch.svg',
-        country: 'Switzerland',
-        id: 2
+        flag: 'https://flagicons.lipis.dev/flags/1x1/ch.svg',
+        id: '2',
+        name: 'Switzerland',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/af.svg',
-        country: 'Afghanistan',
-        id: 3
+        flag: 'https://flagicons.lipis.dev/flags/1x1/af.svg',
+        id: '3',
+        name: 'Afghanistan',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/ar.svg',
-        country: 'Argentina',
-        id: 4
+        flag: 'https://flagicons.lipis.dev/flags/1x1/ar.svg',
+        id: '4',
+        name: 'Argentina',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/au.svg',
-        country: 'Australia',
-        id: 5
+        flag: 'https://flagicons.lipis.dev/flags/1x1/au.svg',
+        id: '5',
+        name: 'Australia',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/az.svg',
-        country: 'Azerbaijan',
-        id: 6
+        flag: 'https://flagicons.lipis.dev/flags/1x1/az.svg',
+        id: '6',
+        name: 'Azerbaijan',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/ca.svg',
-        country: 'Canada',
-        id: 7
+        flag: 'https://flagicons.lipis.dev/flags/1x1/ca.svg',
+        id: '7',
+        name: 'Canada',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/bm.svg',
-        country: 'Bermuda',
-        id: 8
+        flag: 'https://flagicons.lipis.dev/flags/1x1/bm.svg',
+        id: '8',
+        name: 'Bermuda',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/bo.svg',
-        country: 'Bolivia',
-        id: 9
+        flag: 'https://flagicons.lipis.dev/flags/1x1/bo.svg',
+        id: '9',
+        name: 'Bolivia',
     },
     {
-        image: 'https://flagicons.lipis.dev/flags/1x1/de.svg',
-        country: 'Germany',
-        id: 10
+        flag: 'https://flagicons.lipis.dev/flags/1x1/de.svg',
+        id: '10',
+        name: 'Germany',
     }
 ];
 
