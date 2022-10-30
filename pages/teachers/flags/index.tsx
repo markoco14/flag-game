@@ -60,7 +60,7 @@ const FlagsHome: NextPage = () => {
                         if (flag.dayOfWeek === day) {
                           return (
                             <li key={flag.id}>
-                              <Link href="./flags/play">
+                              <Link href={`./flags/play/${flag.id}`}>
                                 <a>{flag.title.slice(0,8)}</a>
                               </Link>
                             </li>
@@ -82,7 +82,7 @@ const FlagsHome: NextPage = () => {
                   <li key={`flag-${flag.id}`} className={`${styles.flex} ${styles.flex_between}`}>
                     {flag.title} Tiles: {flag.flagSetTile.length}
                     <div className={`${styles.flex} ${styles.flex_gap}`}>
-                      <Link href="./flags/play"><a>Play</a></Link>
+                      <Link href={`./flags/play/${flag.id}`}><a>Play</a></Link>
                       <Link href={`./flags/edit/${flag.id}`}><a>Edit</a></Link>
                     </div> 
                   </li>
@@ -97,8 +97,6 @@ const FlagsHome: NextPage = () => {
                   layout='fill'
                   objectFit='cover'
                   alt="An image of a flagboard"
-                  // width={100} 
-                  // height={100}
                 />
               </div>
                 <h2>

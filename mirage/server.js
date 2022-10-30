@@ -155,13 +155,15 @@ export function makeServer( {environment = "test"} = {}) {
                 flagSet.update({flagSetTileIds: attrs.tileId});
 
                 return schema.flagSets.find(request.params.id);
-            })
+            });
          
             // play page API endpoints
 
             this.get("/api/flags/play", game);
 
-            this.get("/api/flags/play/:id", gameCopy);
+            this.get("/api/flags/play/:id", (schema, request) => {
+                return schema.flagSets.find(request.params.id)
+            });
         }
     })
 
