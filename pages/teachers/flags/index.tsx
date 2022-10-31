@@ -4,29 +4,17 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
+import FlagCalendar from '../../../components/FlagCalendar'
 import { useState, useEffect } from 'react'
 import { FlagSet } from '../../../mirage/models'
-import { startOfWeek, lastDayOfWeek, isAfter, isBefore, parseISO } from 'date-fns'
 
 const FlagsHome: NextPage = () => {
   const [recentFlags, setRecentFlags] = useState<FlagSet[] | []>([]);
-  const [thisWeeksFlags, setThisWeeksFlags] = useState<FlagSet[] | undefined>(undefined);
-  const workDays = ['Monday', 'Wednesday', 'Thursday', 'Friday']
 
   useEffect(() => {
     fetch("/api/flags/flagsets")
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
-      const date = new Date();
-      const firstDay = startOfWeek(date);
-      const lastDay = lastDayOfWeek(date);
-      const thisWeek = json.flagSets.filter((flag: FlagSet) => {
-        if (isAfter(parseISO(flag.date), firstDay) && isBefore(parseISO(flag.date), lastDay)) {
-          return flag;
-        }
-      })
-      setThisWeeksFlags(thisWeek);
       setRecentFlags(json.flagSets);
     })
   }, [])
@@ -48,31 +36,7 @@ const FlagsHome: NextPage = () => {
         <DashboardNav></DashboardNav>
         <section className={`${styles.dashboard_content}`}>
           <h1>Welcome Back, Teacher Mark</h1>
-          {/* <FlagCalendar></FlagCalendar>    */}
-          <article>
-            <div className={`${styles.card}`}>
-              <div className={`${styles.grid} ${styles.flag_calendar_grid}`}>
-                {workDays.map((day) => (
-                  <div key={day}>
-                    <p>{day}</p>
-                    <ul>
-                      {thisWeeksFlags?.map((flag) => {
-                        if (flag.dayOfWeek === day) {
-                          return (
-                            <li key={flag.id}>
-                              <Link href={`./flags/play/${flag.id}`}>
-                                <a>{flag.title.slice(0,8)}</a>
-                              </Link>
-                            </li>
-                          )
-                        }
-                      })}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </article>       
+          <FlagCalendar></FlagCalendar>   
           <div className={`${styles.flex} ${styles.flex_between} ${styles.flex_grow} ${styles.flex_gap}`}>
             {/* <FlagList></FlagList> */}
             <article className={`${styles.card}`}>
@@ -97,7 +61,7 @@ const FlagsHome: NextPage = () => {
                   layout='fill'
                   objectFit='cover'
                   alt="An image of a flagboard"
-                />
+                 />
               </div>
                 <h2>
                   <Link href="flags/create"><a>Create</a></Link>

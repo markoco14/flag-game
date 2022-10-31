@@ -5,6 +5,7 @@ export type FlagSet = {
     week: string,
     // day: string,
     dayOfWeek: string,
+    class: string,
     date: string,
     status: string,
     // teacher_id: string,

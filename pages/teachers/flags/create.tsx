@@ -44,6 +44,7 @@ export default function CreateFlags() {
                 level: levelNumber,
                 week: weekNumber,
                 date: date,
+                dayOfWeek: dayOfWeek,
                 status: 'WIP',
             }),
         })
