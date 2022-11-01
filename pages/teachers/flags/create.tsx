@@ -1,15 +1,15 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
 import NewFlagSetDetails from '../../../components/create/NewFlagSetDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { useState } from 'react'
-import { FlagSet, FlagSetTile, Country, Question, Options } from '../../../mirage/models/index'
+import { FlagSet, FlagSetTile } from '../../../mirage/models/index'
 import AddNewTile from '../../../components/AddNewTile'
+import TileFrontAndBack from '../../../components/TileFrontAndBack'
 
 export default function CreateFlags() {
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
@@ -20,6 +20,17 @@ export default function CreateFlags() {
     const [flagSetTiles, setFlagSetTiles] = useState<FlagSetTile[] | []>([]);
 
     const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
+
+    function handleDeleteTile(id: string) {
+        fetch(`/api/flagSet/tile/${id}/delete`, {method: 'DELETE'})
+        const filteredTiles = flagSetTiles.filter((tile: FlagSetTile) => {
+            console.log('logging the tiles: ', tile)
+            return tile.id !== id;
+        })
+        setFlagSetTiles(filteredTiles);
+        console.log(id);
+        console.log('You are deleting this tile')
+    }
     
     return (
     <div>
@@ -80,8 +91,13 @@ export default function CreateFlags() {
                             <div className={styles.create_flags_interface}>
                                 <button onClick={() => {setIsAddingTile(true)}}>Add New Tile</button>
                                 {flagSetTiles.length ? (
-                                    <p>There are tiles in this flag set</p>
-                                ) : (
+                                    flagSetTiles.map((question: FlagSetTile) => 
+                                        <TileFrontAndBack 
+                                            key={`fs-q-${question.id}`}
+                                            tile={question}
+                                            handleDeleteTile={handleDeleteTile}
+                                        ></TileFrontAndBack>
+                                )) : (
                                     <p>There are no tiles in this flag set</p>
                                 )}
                             </div>
