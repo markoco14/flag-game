@@ -1,30 +1,85 @@
-import styles from '../styles/Home.module.css'
-import { useState } from 'react';
-import { parseISO, format, isTuesday, isSaturday, isSunday } from 'date-fns'
+import styles from '../../styles/Home.module.css'
+import { useState, FormEvent, useRef } from 'react';
+import { format, isSaturday, isSunday, isTuesday, parseISO } from 'date-fns'
 
 type IFlagDetails = {
-    createFlagSet: Function,
-    isTitleSet: boolean,
-    title: string | undefined
+    setIsTitleSet: Function,
+    setFlagSetTitle: Function,
+    setNewFlagSet: Function,
+    setIsFlagSetCreated: Function,
 }
 
-export default function FlagDetails( props: IFlagDetails ) {
-    const [levelNumber, setLevelNumber] = useState<string | undefined>('');
-    const [weekNumber, setWeekNumber] = useState<string | undefined>('');
-    const [dayNumber, setDayNumber] = useState<string | undefined>('');
-    const [dayOfWeek, setDayOfWeek] = useState<string | undefined>('');
+export default function NewFlagSetDetails( props: IFlagDetails ) {
+    const [levelNumber, setLevelNumber] = useState<string>('');
+    const [weekNumber, setWeekNumber] = useState<string>('');
+    const [dayNumber, setDayNumber] = useState<string>('');
+    const [dayOfWeek, setDayOfWeek] = useState<string>('');
     const [date, setDate] = useState<string>('');
 
     const [classTime, setClassTime] = useState<string | undefined>('');
 
     function getInfoFromSelectedDate(date: string) {
         setDayOfWeek(format(new Date(date), 'EEEE'))
+
         if (['Monday', 'Wednesday'].includes(format(new Date(date), 'EEEE'))) {
             setDayNumber('1');
         } else {
             setDayNumber('2');
         }
+
         setDate(date)
+    }
+
+    function createNewFlagSet(e: FormEvent, levelNumber: string, weekNumber: string, classTime: string, date: string ) {
+        e.preventDefault();
+        const parsedDate: Date = parseISO(date);
+
+        if (levelNumber === '') {
+            alert('You forget to set the level!');
+            return;
+        }
+        
+        if (weekNumber === '') {
+            alert('You forget to set the week number!')
+            return;
+        }
+        if (classTime === '') {
+            alert('You forget to set the class time!')
+            return;
+        }
+        if (date === '') {
+            alert('You forget to set the date!')
+            return;
+        }
+
+        if (isTuesday(parsedDate) || isSaturday(parsedDate) || isSunday(parsedDate)) {
+            alert('You need to choose a Monday, Wednesday, Thursday, or Friday!');
+            return;
+        }
+
+        const title = `L${levelNumber} W${weekNumber} D${dayNumber} ${dayOfWeek} (${date})`;
+        
+        fetch('/api/flags/flagSet/create', {
+            method: "POST",
+            body: JSON.stringify({
+                title: title,
+                level: levelNumber,
+                week: weekNumber,
+                date: date,
+                day: dayNumber,
+                dayOfWeek: dayOfWeek,
+                class: classTime,
+                status: 'WIP',
+            }),
+        })
+        .then((res)=> res.json())
+        .then((json) => {
+            console.log(json)
+            props.setNewFlagSet(json);
+        })
+        props.setIsFlagSetCreated(true);
+        props.setIsTitleSet(true);
+        props.setFlagSetTitle(title);
     }
 
     // I'm probably going to useRef instead of useState here
@@ -32,13 +87,7 @@ export default function FlagDetails( props: IFlagDetails ) {
 
     return (
         <>
-            <div 
-                className={`${styles.flex} ${styles.flex_between}`} 
-                style={{ padding: '0 1rem', marginBottom: '1rem'}}
-            >
-                <h2>Flagset Name: {props.title}</h2>
-                <span>Qusetions: 0</span>
-            </div>
+            
             <div className={`${styles.flex} ${styles.flex_between}`}>
                 <h3>Details</h3>
                 <button
@@ -49,9 +98,8 @@ export default function FlagDetails( props: IFlagDetails ) {
                     </span>
                 </button>
             </div>
-            {!props.isTitleSet && (
                 <form
-                    onSubmit={(e) => {props.createFlagSet(e, levelNumber, weekNumber, dayNumber, dayOfWeek, date, classTime)}}
+                    onSubmit={(e) => {createNewFlagSet(e, levelNumber, weekNumber, classTime, date,)}}
                 >
                     <div className={styles.flex_column}>
                         <label>Level</label>
@@ -90,16 +138,6 @@ export default function FlagDetails( props: IFlagDetails ) {
                         <button type="submit">Save</button>
                     </div>
                 </form>
-            )}
-            {props.isTitleSet && (
-                <div>
-                    <p>Level: {levelNumber}</p>
-                    <p>Week: {weekNumber}</p>
-                    <p>Day: {dayNumber}</p>
-                    <p>Day of Week: {dayOfWeek}</p>
-                    <button onClick={() => {console.log('You clicked the update button')}}>Update</button>
-                </div>
-            )}
         </>
     );
 }

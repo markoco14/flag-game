@@ -4,59 +4,24 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../../../styles/Home.module.css'
 import DashboardNav from '../../../components/DashboardNav'
-import FlagDetails from '../../../components/SetNewFlagsetTitle'
+import NewFlagSetDetails from '../../../components/create/NewFlagSetDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { FormEvent, useEffect, useState } from 'react'
-import { parseISO, isTuesday, isSaturday, isSunday } from 'date-fns'
+import { useEffect, useState } from 'react'
 import { IFlagsetQuestion } from '../../../interfaces'
 import { FlagSet, FlagSetTile, Country } from '../../../mirage/models/index'
 
 
 export default function CreateFlags() {
-    const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
     const [availableFlags, setAvailableFlags] = useState<Country[] | []>([]);
     const [selectedFlags, setSelectedFlags] = useState<Country[] | []>([]);
-    const [flagsName, setFlagsName] = useState<string | undefined>(undefined);
 
-    const [isSetCreated, setIsSetCreated] = useState<FlagSet | undefined>(undefined);
+    const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
+    const [flagSetTitle, setFlagSetTitle] = useState<string | undefined>(undefined);
+    const [isSetCreated, setIsSetCreated] = useState<boolean>(false);
     const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
-
-    function createNewFlagset(e: FormEvent, levelNumber: string, weekNumber: string, dayNumber: string, dayOfWeek: string, date: string, classTime: string) {
-        console.log(classTime)
-        console.log(date);
-        console.log(parseISO(date));
-        const parsedDate: Date = parseISO(date);
-        e.preventDefault();
-        if (levelNumber === '' || weekNumber === '' || dayNumber === '' || dayOfWeek === '' || date === '') {
-            alert('You forget to set the flag set title');
-            return;
-        }
-
-        if (isTuesday(parsedDate) || isSaturday(parsedDate) || isSunday(parsedDate)) {
-            alert('You need to choose a Monday, Wednesday, Thursday, or Friday');
-            return;
-        }
-        const title = `L${levelNumber} W${weekNumber} D${dayNumber} ${dayOfWeek} (${date})`
-        fetch('/api/flags/flagSet/create', {
-            method: "POST",
-            body: JSON.stringify({
-                title: title,
-                level: levelNumber,
-                week: weekNumber,
-                date: date,
-                dayOfWeek: dayOfWeek,
-                class: classTime,
-                status: 'WIP',
-            }),
-        })
-        .then((res)=> res.json())
-        .then((json) => {
-            setIsSetCreated(json);
-        })
-        setIsTitleSet(true);
-        setFlagsName(title)
-    }
+    
+    const [newFlagSet, setNewFlagSet] = useState<FlagSet | undefined>(undefined);
 
     function addTileToFlagSet(flag: Country) {
         console.log('You are adding a tile!')
@@ -70,7 +35,7 @@ export default function CreateFlags() {
         //             week: '1',
         //             date: '7',
         //             status: 'WIP',
-        //             flagSetTile: [...flagSetTiles, '1']
+        //             flagSetTitle: [...flagSetTiles, '1']
         //         }
         //     )
         // })
@@ -78,10 +43,10 @@ export default function CreateFlags() {
         // if (!selectedFlags.find((selectedFlag) => {
         //     return selectedFlag.id === flag.id;
         // })) {
-            fetch('/api/flags/flagSetTile/create', {
+            fetch('/api/flags/flagSetTitle/create', {
                 method: "POST",
                 body: JSON.stringify({
-                    flagSetId: isSetCreated?.id,
+                    flagSetId: newFlagSet?.id,
                     countryId: '1',
                 }),
             })
@@ -140,11 +105,30 @@ export default function CreateFlags() {
                     <section className={`${styles.create_flags_container}`}>
                         <div className={styles.create_flags_interface}>
                             <h1>Create New Flag Set</h1>
-                            <FlagDetails 
-                                createFlagSet={createNewFlagset}
-                                isTitleSet={isTitleSet}   
-                                title={flagsName}
-                            ></FlagDetails>
+                            <div 
+                                className={`${styles.flex} ${styles.flex_between}`} 
+                                style={{ padding: '0 1rem', marginBottom: '1rem'}}
+                            >
+                                <h2>Flagset Name: {flagSetTitle}</h2>
+                                <span>Qusetions: 0</span>
+                            </div>
+                            {!isTitleSet ? (
+                                <NewFlagSetDetails 
+                                    setIsTitleSet={setIsTitleSet}
+                                    setFlagSetTitle={setFlagSetTitle}
+                                    setNewFlagSet={setNewFlagSet}
+                                    setIsFlagSetCreated={setIsSetCreated}
+                                ></NewFlagSetDetails>
+                            ) : (
+                                <div>
+                                    <p>Level: {newFlagSet?.level}</p>
+                                    <p>Week: {newFlagSet?.week}</p>
+                                    <p>Day: {newFlagSet?.day}</p>
+                                    <p>Day of Week: {newFlagSet?.dayOfWeek}</p>
+                                    <button onClick={() => {console.log('You clicked the update button')}}>Update</button>
+                                </div>
+                            )}
+                            
                         </div>
                     </section>
                     {isSetCreated && (
