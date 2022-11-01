@@ -7,83 +7,19 @@ import DashboardNav from '../../../components/DashboardNav'
 import NewFlagSetDetails from '../../../components/create/NewFlagSetDetails'
 import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
-import { useEffect, useState } from 'react'
-import { IFlagsetQuestion } from '../../../interfaces'
-import { FlagSet, FlagSetTile, Country } from '../../../mirage/models/index'
-
+import { useState } from 'react'
+import { FlagSet, FlagSetTile, Country, Question, Options } from '../../../mirage/models/index'
+import AddNewTile from '../../../components/AddNewTile'
 
 export default function CreateFlags() {
-    const [availableFlags, setAvailableFlags] = useState<Country[] | []>([]);
-    const [selectedFlags, setSelectedFlags] = useState<Country[] | []>([]);
-
     const [isTitleSet, setIsTitleSet] = useState<boolean>(false);
     const [flagSetTitle, setFlagSetTitle] = useState<string | undefined>(undefined);
     const [isSetCreated, setIsSetCreated] = useState<boolean>(false);
-    const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
     
     const [newFlagSet, setNewFlagSet] = useState<FlagSet | undefined>(undefined);
+    const [flagSetTiles, setFlagSetTiles] = useState<FlagSetTile[] | []>([]);
 
-    function addTileToFlagSet(flag: Country) {
-        console.log('You are adding a tile!')
-        console.log(flag);
-        // fetch("/api/flags/flagSet/updateTiles", {
-        //     method: "PATCH",
-        //     body: JSON.stringify(
-        //         {
-        //             title: 'hello',
-        //             level: '1',
-        //             week: '1',
-        //             date: '7',
-        //             status: 'WIP',
-        //             flagSetTitle: [...flagSetTiles, '1']
-        //         }
-        //     )
-        // })
-        // fetch('/api')
-        // if (!selectedFlags.find((selectedFlag) => {
-        //     return selectedFlag.id === flag.id;
-        // })) {
-            fetch('/api/flags/flagSetTitle/create', {
-                method: "POST",
-                body: JSON.stringify({
-                    flagSetId: newFlagSet?.id,
-                    countryId: '1',
-                }),
-            })
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json)
-                // console.log('flagset id', json.flagSetId, 'tile id', json.id)
-                // updateFlagSetTiles(json);
-            });
-        //     setSelectedFlags([...selectedFlags, flag])
-        // } else {
-        //     alert('That flag is already selected')
-        // }
-    }
-
-    function updateFlagSetTiles() {
-    //    console.log(json);
-        // console.log(isSetCreated);
-        console.log('You pressed the create tile button')
-    }
-
-    function deleteFlagsetQuestion(flag: Country) {
-        const updatedFlags = selectedFlags.filter((selectedFlag) => {
-            return selectedFlag.id !== flag.id;
-        })
-        setSelectedFlags(updatedFlags);
-    }
-
-    useEffect(() => {
-        fetch('/api/flags/countries')
-        .then((res) => res.json())
-        .then((json) => {
-            console.log(json);
-            setAvailableFlags(json)
-        })
-    
-    }, [])
+    const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
     
     return (
     <div>
@@ -110,7 +46,7 @@ export default function CreateFlags() {
                                 style={{ padding: '0 1rem', marginBottom: '1rem'}}
                             >
                                 <h2>Flagset Name: {flagSetTitle}</h2>
-                                <span>Qusetions: 0</span>
+                                <span>Questions: {flagSetTiles.length}</span>
                             </div>
                             {!isTitleSet ? (
                                 <NewFlagSetDetails 
@@ -131,81 +67,25 @@ export default function CreateFlags() {
                             
                         </div>
                     </section>
+                    {isAddingTile && (
+                        <AddNewTile
+                            setIsAddingTile={setIsAddingTile}
+                            flagSet={newFlagSet}
+                            setNewFlagSet={setNewFlagSet}
+                            setFlagSetTiles={setFlagSetTiles}
+                        ></AddNewTile>
+                    )}
                     {isSetCreated && (
-                    <>
-                    <section className={`${styles.create_flags_container}`}>
-                        <div className={styles.create_flags_interface}>
-                            <h2>Choose your flags</h2>
-                            <div style={{ display: 'flex', }}>
-                                <div style={{ overflow: 'hidden', minWidth: '30%' }}>
-                                    <p>Selected Flags: {selectedFlags.length ? selectedFlags.length : 0}</p>
-                                    {(selectedFlags?.length > 0) && (
-                                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem'}}>
-                                            <ul>
-                                            {selectedFlags.map((flag: Country) => (
-                                                <li 
-                                                    style={{background: 'WhiteSmoke', borderRadius: '5px', padding: '0.5rem 1rem',}}
-                                                    key={`selected-flag-${flag.id}`}
-                                                    onClick={() => {deleteFlagsetQuestion(flag)}}
-                                                >{flag.name}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                                <div style={{ overflow: 'hidden', maxHeight: '40vh'}}>
-                                    <article style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
-                                        {(availableFlags?.length > 0) ? (
-                                            <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', overflowY: 'scroll'}}>
-                                                {availableFlags.map((flag: Country) => (
-                                                    <div 
-                                                        key={`available-flag-${flag.id}`}
-                                                        style={{ position: 'relative', width: '100px', aspectRatio: '1 / 1'}}
-                                                        onClick={() => {addTileToFlagSet(flag)}}
-                                                    >
-                                                        <Image
-                                                            alt={`An image of the ${flag.name} country flag.`}
-                                                            src={flag.flag}
-                                                            layout='fill'
-                                                            objectFit='cover'
-                                                        ></Image>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p>Loading....</p>
-                                        )}
-                                    </article>
-                                </div>
-                            </div>
-                            <button onClick={() => {console.log('You clicked save flags')}}>Save</button>
-                        </div>
-                    </section>
-                    {/* {(selectedFlags.length > 0) && (
-                        <section className={`${styles.create_flags_container}`}>
+                        <section className={styles.create_flags_container}>
                             <div className={styles.create_flags_interface}>
-                                <h2>Add Your Questions</h2>
-                                {selectedFlags.map((flag) => (
-                                    <article key={`flag-${flag.id}`}>
-                                        <button onClick={() => {deleteFlagsetQuestion(flag)}}>Delete</button>
-                                        <button onClick={() => {() => {console.log('edit flag')}}}>Edit</button>
-                                        <div
-                                    className={`${styles.flex} ${styles.flex_gap} ${styles.flex_between}`}>
-                                        
-                                        <div style={{width: '30%', border: 'solid 2px black'}}>
-                                            <h3 style={{textAlign: 'center'}}>Front side</h3>
-                                            <div>{flag.name}</div>
-                                        </div>
-                                        <div style={{width: '70%', border: 'solid 2px black'}}>
-                                            <h3 style={{textAlign: 'center'}}>Back side</h3>
-                                        </div>
-                                        </div>
-                                    </article>
-                                ))}
+                                <button onClick={() => {setIsAddingTile(true)}}>Add New Tile</button>
+                                {flagSetTiles.length ? (
+                                    <p>There are tiles in this flag set</p>
+                                ) : (
+                                    <p>There are no tiles in this flag set</p>
+                                )}
                             </div>
                         </section>
-                    )} */}
-                    </>
                     )}
                 </div>
             </div>
