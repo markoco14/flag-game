@@ -14,9 +14,9 @@ export default function NewFlagSetDetails( props: IFlagDetails ) {
     const [weekNumber, setWeekNumber] = useState<string>('');
     const [dayNumber, setDayNumber] = useState<string>('');
     const [dayOfWeek, setDayOfWeek] = useState<string>('');
+    const [classTime, setClassTime] = useState<string>('');
     const [date, setDate] = useState<string>('');
 
-    const [classTime, setClassTime] = useState<string | undefined>('');
 
     function getInfoFromSelectedDate(date: string) {
         setDayOfWeek(format(new Date(date), 'EEEE'))
