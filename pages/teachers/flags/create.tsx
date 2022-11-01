@@ -9,7 +9,7 @@ import FlagQuestionsList from '../../../components/FlagQuestionsList'
 import FlagSetQuestions from '../../../components/FlagSetQuestions'
 import { FormEvent, useEffect, useState } from 'react'
 import { parseISO, isTuesday, isSaturday, isSunday } from 'date-fns'
-import { Flag, IFlagSet, IFlagsetQuestion } from '../../../interfaces'
+import { IFlagsetQuestion } from '../../../interfaces'
 import { FlagSet, FlagSetTile, Country } from '../../../mirage/models/index'
 
 
@@ -22,7 +22,8 @@ export default function CreateFlags() {
     const [isSetCreated, setIsSetCreated] = useState<FlagSet | undefined>(undefined);
     const [flagsetQuestions, setFlagsetQuestions] = useState<IFlagsetQuestion[] | undefined>(undefined);
 
-    function createNewFlagset(e: FormEvent, levelNumber: string, weekNumber: string, dayNumber: string, dayOfWeek: string, date: string) {
+    function createNewFlagset(e: FormEvent, levelNumber: string, weekNumber: string, dayNumber: string, dayOfWeek: string, date: string, classTime: string) {
+        console.log(classTime)
         console.log(date);
         console.log(parseISO(date));
         const parsedDate: Date = parseISO(date);
@@ -45,6 +46,7 @@ export default function CreateFlags() {
                 week: weekNumber,
                 date: date,
                 dayOfWeek: dayOfWeek,
+                class: classTime,
                 status: 'WIP',
             }),
         })
@@ -102,23 +104,11 @@ export default function CreateFlags() {
     }
 
     function deleteFlagsetQuestion(flag: Country) {
-        // print flag to check it's the right flag
-        // console.log(flag);
-        // fetch(`/api/flags/flagSetTile/delete/${flag.id}`, {method: 'DELETE'})
         const updatedFlags = selectedFlags.filter((selectedFlag) => {
-            // console.log(selectedFlag.id);
-            // console.log(flag.id);
-            // console.log(selectedFlag.id === flag.id);
             return selectedFlag.id !== flag.id;
         })
-        // console.log("updated flags:", updatedFlags);
         setSelectedFlags(updatedFlags);
     }
-
-    // create flag set question functions
-
-    
-
 
     useEffect(() => {
         fetch('/api/flags/countries')
@@ -139,8 +129,6 @@ export default function CreateFlags() {
         </Head>
         <header>
         <nav className={`${styles.primary_nav}`}>
-            {/* <Link href="/teachers"><a>Dashboard</a></Link> */}
-          {/* <Link href="/teachers/flags"><a>Flags</a></Link> */}
           <Link href="/teachers/flags/#"><a>Profile</a></Link>
           <Link href="/"><a>Log Out</a></Link>
         </nav>

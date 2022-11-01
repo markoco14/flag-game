@@ -1,5 +1,6 @@
 import styles from '../styles/Home.module.css'
 import { useState } from 'react';
+import { parseISO, format, isTuesday, isSaturday, isSunday } from 'date-fns'
 
 type IFlagDetails = {
     createFlagSet: Function,
@@ -13,6 +14,21 @@ export default function FlagDetails( props: IFlagDetails ) {
     const [dayNumber, setDayNumber] = useState<string | undefined>('');
     const [dayOfWeek, setDayOfWeek] = useState<string | undefined>('');
     const [date, setDate] = useState<string>('');
+
+    const [classTime, setClassTime] = useState<string | undefined>('');
+
+    function getInfoFromSelectedDate(date: string) {
+        setDayOfWeek(format(new Date(date), 'EEEE'))
+        if (['Monday', 'Wednesday'].includes(format(new Date(date), 'EEEE'))) {
+            setDayNumber('1');
+        } else {
+            setDayNumber('2');
+        }
+        setDate(date)
+    }
+
+    // I'm probably going to useRef instead of useState here
+    // to save the re-renders
 
     return (
         <>
@@ -35,7 +51,7 @@ export default function FlagDetails( props: IFlagDetails ) {
             </div>
             {!props.isTitleSet && (
                 <form
-                    onSubmit={(e) => {props.createFlagSet(e, levelNumber, weekNumber, dayNumber, dayOfWeek, date)}}
+                    onSubmit={(e) => {props.createFlagSet(e, levelNumber, weekNumber, dayNumber, dayOfWeek, date, classTime)}}
                 >
                     <div className={styles.flex_column}>
                         <label>Level</label>
@@ -51,28 +67,21 @@ export default function FlagDetails( props: IFlagDetails ) {
                             onChange={(e) => {setWeekNumber(e.target.value)}}
                             type="number" />
                     </div>
-                    <div className={styles.flex_column}>
-                        <label>Day (#)</label>
-                        <input
-                            onChange={(e) => {setDayNumber(e.target.value)}}
-                            type="number" />
-                    </div>
-                    <div className={styles.flex_column}>
-                        <label>Day (of Week)</label>
-                        <select 
-                            onChange={(e) => {setDayOfWeek(e.target.value)}}
-                        >
-                            <option value="">Choose Day</option>
-                            <option value="Monday">Monday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                        </select>
-                    </div>
+                    <fieldset>
+                        <legend>Choose class time</legend>
+                        <div>
+                            <label htmlFor="firstClass">1:15 - 3:45</label>
+                            <input onChange={(e) => {setClassTime(e.target.value)}}type="radio" id="firstClass" name="classTime" value="1"/>
+                        </div>
+                        <div>
+                            <label htmlFor="secondClass">4:10 - 7:10</label>
+                            <input onChange={(e) => {setClassTime(e.target.value)}}type="radio" id="secondClass" name="classTime" value="2"/>
+                        </div>
+                    </fieldset>
                     <div className={styles.flex_column}>
                         <label>Date</label>
                         <input 
-                            onChange={(e) => {setDate(e.target.value)}}
+                            onChange={(e) => {getInfoFromSelectedDate(e.target.value)}}
                             type='date'
                         >
                         </input>
