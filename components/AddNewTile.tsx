@@ -24,27 +24,50 @@ export default function AddNewTile( props: AddNewTileProps ) {
         })
 
         try {
-            fetch(`/api/question/confirm/${props.flagSet?.id}`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    question: {
-                        question: newTileQuestionDetails?.question,
-                        answer: newTileQuestionDetails?.answer,
-                        options: options
-                    },
-                    countryId: newTileSelectedCountry?.id,
-                    flagSetId: props.flagSet?.id
+            newTileQuestionDetails?.type === 'MC' ? 
+                fetch(`/api/question/confirm/${props.flagSet?.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        question: {
+                            type: newTileQuestionDetails?.type,
+                            question: newTileQuestionDetails?.question,
+                            answer: newTileQuestionDetails?.answer,
+                            options: options
+                        },
+                        countryId: newTileSelectedCountry?.id,
+                        flagSetId: props.flagSet?.id
+                    })
                 })
-            })
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json);
-                props.setNewFlagSet(json.flagSet);
-                props.setFlagSetTiles(json.flagSet.flagSetTile);
-                props.setIsAddingTile(false);
-                setIsFlagConfirmed(false);
-                setIsQuestionConfirmed(false);
-            })
+                .then((res) => res.json())
+                .then((json) => {
+                    console.log(json);
+                    props.setNewFlagSet(json.flagSet);
+                    props.setFlagSetTiles(json.flagSet.flagSetTile);
+                    props.setIsAddingTile(false);
+                    setIsFlagConfirmed(false);
+                    setIsQuestionConfirmed(false);
+                })
+             : 
+                fetch(`/api/question/confirm/${props.flagSet?.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        question: {
+                            type: newTileQuestionDetails?.type,
+                            question: newTileQuestionDetails?.question,
+                        },
+                        countryId: newTileSelectedCountry?.id,
+                        flagSetId: props.flagSet?.id
+                    })
+                })
+                .then((res) => res.json())
+                .then((json) => {
+                    console.log(json);
+                    props.setNewFlagSet(json.flagSet);
+                    props.setFlagSetTiles(json.flagSet.flagSetTile);
+                    props.setIsAddingTile(false);
+                    setIsFlagConfirmed(false);
+                    setIsQuestionConfirmed(false);
+                })
         } catch (error) {
             console.log(error);
         } finally {
@@ -99,14 +122,22 @@ export default function AddNewTile( props: AddNewTileProps ) {
                             {/* state will be cleared after */}
                             <h3 style={{textAlign: 'center'}}>Review and Confirm</h3>
                             <p>Your flag is {newTileSelectedCountry?.name}</p>
-                            <p>Question details</p>
-                            <p>Question: {newTileQuestionDetails?.question}</p>
-                            <p>Answer: {newTileQuestionDetails?.answer}</p>
-                            <div>
-                                {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
-                                    <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
-                                ))}
-                            </div>
+                            <fieldset>
+                                <legend>Question details</legend>
+                                <p>Type: {newTileQuestionDetails?.type}</p>
+                                {/* <p>Question: {newTileQuestionDetails?.question}</p> */}
+                                <p>Question: {newTileQuestionDetails?.question}</p>
+                                {newTileQuestionDetails?.type === 'MC' ? (
+                                    <>
+                                        <p>Answer: {newTileQuestionDetails?.answer}</p>
+                                        <div>
+                                            {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
+                                                <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (null)}
+                            </fieldset>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
                                 <button onClick={addTile}>

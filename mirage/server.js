@@ -116,6 +116,7 @@ export function makeServer( {environment = "test"} = {}) {
 
                 // create a question
                 const newQuestion = schema.db.questions.insert({
+                    type: attrs.question.type,
                     question: attrs.question.question,
                     answer: attrs.question.answer,
                     options: attrs.question.options,
