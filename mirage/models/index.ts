@@ -22,6 +22,7 @@ export type FlagSetTile = {
 export type Question = {
     id: string,
     type: string,
+    image: string,
     question: string,
     answer: string,
     options: Options[],
