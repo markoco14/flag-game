@@ -24,7 +24,7 @@ export type Question = {
     type: string,
     image: string,
     question: string,
-    answer: string,
+    answer: number,
     options: Option[],
     reason: string,
 }
