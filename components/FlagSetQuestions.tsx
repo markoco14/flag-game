@@ -1,8 +1,8 @@
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
-import { IQuestions, IOptions } from "../interfaces";
 import Image from 'next/image';
+import { Question, Option } from '../mirage/models';
 
 export default function FlagSetQuestions() {
     const [flagSetQuestions, setFlagSetQuestions] = useState<[]>([]);
@@ -98,21 +98,21 @@ export default function FlagSetQuestions() {
                 </article>
             )}
             {flagSetQuestions && (
-                flagSetQuestions?.map((question: IQuestions) => (
+                flagSetQuestions?.map((question: Question) => (
 
                 <article key={question.id} style={{ padding: '0 1rem',}}>
-                    <p>Country: {question.country}</p>
+                    {/* <p>Country: {question.country}</p> */}
                     <div className={`${styles.flex} ${styles.flex_between}`}>
                         <p>Question: {question.question}</p>
                         <div className={`${styles.flex} ${styles.flex_gap}`}>
                             <button>Preview</button>
                             <button onClick={handleOpenEditModal}>Edit</button>
-                            <button onClick={() => handleDeleteQuestion(question.id)}>Delete</button>
+                            {/* <button onClick={() => handleDeleteQuestion(question.id)}>Delete</button> */}
                         </div>
                     </div>
                     <div>
                         <p>Answer: {question.answer}</p>
-                        {question.options.map((option: IOptions) => (
+                        {question.options.map((option: Option) => (
                             <p key={option.id}>Option: {option.text}</p>
                         ))}
                     </div>

@@ -25,11 +25,11 @@ export type Question = {
     image: string,
     question: string,
     answer: string,
-    options: Options[],
+    options: Option[],
     reason: string,
 }
 
-export type Options = {
+export type Option = {
     id: number,
     text: string,
 }

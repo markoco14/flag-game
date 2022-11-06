@@ -1,8 +1,4 @@
 import { belongsTo, hasMany, createServer, Model, RestSerializer  } from "miragejs"
-// import questions from './fixtures/old/questions'
-import game from './fixtures/old/game'
-import gameCopy from './fixtures/old/gameCopy'
-
 import searchImages from './fixtures/searchImages'
 import questions from'./fixtures/questions'
 import countries from './fixtures/countries'
@@ -165,8 +161,6 @@ export function makeServer( {environment = "test"} = {}) {
             });
          
             // play page API endpoints
-
-            this.get("/api/flags/play", game);
 
             this.get("/api/flags/play/:id", (schema, request) => {
                 return schema.flagSets.find(request.params.id)

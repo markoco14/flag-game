@@ -1,20 +1,17 @@
 import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useEffect, useState } from "react";
-import { IQuestions } from "../interfaces";
+import {Question} from '../mirage/models';
 
 export default function FlagQuestionsList() {
-    const [originalQuestions, setOriginalQuestions] = useState<IQuestions[] | []>([])
-    const [displayedQuestions, setDisplayedQuestions] = useState<IQuestions[] | []>([])
+    const [originalQuestions, setOriginalQuestions] = useState<Question[] | []>([])
+    const [displayedQuestions, setDisplayedQuestions] = useState<Question[] | []>([])
 
     useEffect(() => {
         fetch("/api/questions")
         .then((res) => res.json())
         .then((json) => {
           setOriginalQuestions(json);
-        //   setDisplayedQuestions(json.questions.filter((question: IQuestions) => {
-        //     return question.level === '5'
-        //   }));
           setDisplayedQuestions(json);
         })
     }, [])
@@ -24,12 +21,7 @@ export default function FlagQuestionsList() {
         if (level === '0') {
             const filteredQuestions = originalQuestions;
             setDisplayedQuestions(filteredQuestions);
-        } else {
-            const filteredQuestions = originalQuestions.filter((question) => {
-                return question.level === level;
-            });
-            setDisplayedQuestions(filteredQuestions);
-        }
+        } 
     }
 
     return (
