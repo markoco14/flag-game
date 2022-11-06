@@ -125,24 +125,39 @@ export default function FlagBoard(props: FlagBoardProps) {
                     ) : (null)}
                 </div>
             </dialog>
-            <div className={styles.flags}>
-                {props.flagSet?.map((flag) => (
-                    <div 
-                        key={flag.id}
-                        onClick={() => {displayFlag(flag)}}
-                        className={styles.flag_board_tile}
-                    >
-                        <div className={styles.flag_image_container}>
-                            <Image 
-                                src={flag.country.flag}
-                                alt={`The flag of ${flag.country.name}`}
-                                layout='fill'
-                            />
-                        </div>
-                        <p className={styles.flag_country_name}>{flag.country.name}</p>
+                {props.flagSet?.length > 0 ? (
+                    <div className={styles.flags}>
+                        {props.flagSet?.map((flag) => (
+                            <div 
+                                key={flag.id}
+                                onClick={() => {displayFlag(flag)}}
+                                className={styles.flag_board_tile}
+                            >
+                                <div className={styles.flag_image_container}>
+                                    <Image 
+                                        src={flag.country.flag}
+                                        alt={`The flag of ${flag.country.name}`}
+                                        layout='fill'
+                                    />
+                                </div>
+                                <p className={styles.flag_country_name}>{flag.country.name}</p>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                ) : (
+                    <h2 
+                        style={{
+                            minHeight: '100vh', 
+                            display: 'grid', 
+                            gridTemplateColumns: '1/2', 
+                            gridTemplateRows: '1/2', 
+                            placeContent: 'center',
+                            fontSize:'5rem',
+                            textAlign: 'center'
+                    }}>
+                        No flags left. <br></br> Refresh to play again!
+                    </h2>
+                )}
         </>
     );
 }
