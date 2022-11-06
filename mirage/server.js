@@ -3,6 +3,7 @@ import { belongsTo, hasMany, createServer, Model, RestSerializer  } from "mirage
 import game from './fixtures/old/game'
 import gameCopy from './fixtures/old/gameCopy'
 
+import searchImages from './fixtures/searchImages'
 import questions from'./fixtures/questions'
 import countries from './fixtures/countries'
 import flagSets from './fixtures/flagSets'
@@ -39,13 +40,15 @@ export function makeServer( {environment = "test"} = {}) {
             }),
             question: Model.extend({}),
             country: Model.extend({}),
+            searchImage: Model.extend({}),
         },
 
         fixtures: {
             questions,
             flagSets,
             countries,
-            flagSetTiles
+            flagSetTiles,
+            searchImages,
         },
 
         routes() {
@@ -62,6 +65,8 @@ export function makeServer( {environment = "test"} = {}) {
             );
             
             // create page API endpoints
+
+            this.get("/api/searchImages", searchImages);
 
             this.get("/api/flags/countries", countries)
             

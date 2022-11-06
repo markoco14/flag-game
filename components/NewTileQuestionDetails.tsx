@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type NewTileQuestionDetailsProps = {
     setDetails: Function,
@@ -8,6 +8,7 @@ type NewTileQuestionDetailsProps = {
 
 export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProps) {
     const [questionType, setQuestionType] = useState<string>('MC');
+    const [searchImages, setSearchImages] = useState<[]>([]);
 
     const questionRef = useRef<HTMLInputElement>(null);
     const answerRef = useRef<HTMLInputElement>(null);
@@ -37,6 +38,22 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
         props.setQuestionConfirmed(true)
         console.log('You set the details')
     }
+
+    async function fetchSearchImages() {
+        await fetch("api/searchImages")
+        .then((res) => res.json())
+        .then((json) => {
+            console.log(json);
+        });
+    }
+
+    useEffect(() => {
+        fetch("/api/searchImages")
+        .then((res) => res.json())
+        .then((json) => {
+            console.log(json);
+        });
+    }, []);
 
     return (
         <>

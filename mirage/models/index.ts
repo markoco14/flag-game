@@ -40,6 +40,10 @@ export type Country = {
     flag: string,
 }
 
+export type SearchImage = {
+    image: string,
+}
+
 export enum QuestionTypeEnum {
     MC,
     Prompt,
