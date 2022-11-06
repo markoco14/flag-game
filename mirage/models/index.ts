@@ -32,6 +32,7 @@ export type Question = {
 export type Option = {
     id: number,
     text: string,
+    image: string | null,
 }
 
 export type Country = {
