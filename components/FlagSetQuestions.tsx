@@ -2,7 +2,7 @@ import styles from '../styles/Home.module.css'
 import "../node_modules/flag-icons/css/flag-icons.min.css";
 import { useState, useRef } from "react";
 import Image from 'next/image';
-import { Question, Options } from '../mirage/models';
+import { Question, Option } from '../mirage/models';
 
 export default function FlagSetQuestions() {
     const [flagSetQuestions, setFlagSetQuestions] = useState<[]>([]);
