@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import SearchImage from './create/SearchImageSelector';
+import SearchImageSelector from './create/SearchImageSelector';
 
 type NewTileQuestionDetailsProps = {
     setDetails: Function,
@@ -8,10 +8,16 @@ type NewTileQuestionDetailsProps = {
 }
 
 export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProps) {
-    const [questionType, setQuestionType] = useState<string>('MC');
+    const [questionType, setQuestionType] = useState<string>('0');
     const [searchImages, setSearchImages] = useState<[]>([]);
     const [isSearchingImage, setIsSearchingImage] = useState<boolean>(false);
     const [selectedImage, setSelectedImage] = useState<string>('');
+
+    // Image MC option state
+    const [imgAnswer, setImgAnswer] = useState<string>('')
+    const [imgOption1, setImgOption1] = useState<string>('')
+    const [imgOption2, setImgOption2] = useState<string>('')
+    const [imgOption3, setImgOption3] = useState<string>('')
 
     const questionRef = useRef<HTMLInputElement>(null);
     const answerRef = useRef<HTMLInputElement>(null);
@@ -56,8 +62,9 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
             <div>
                 <label>Type</label>
                 <select onChange={e => setQuestionType(e.target.value)}>
-                    <option value="MC">MC</option>
-                    <option value="Prompt">Prompt</option>
+                    <option value="0">MC</option>
+                    <option value="1">Prompt</option>
+                    <option value="2">Image MC</option>
                 </select>
             </div>
             <div>
@@ -71,13 +78,13 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                     </button>
                 </div>
                 {isSearchingImage ? (
-                    <SearchImage
+                    <SearchImageSelector
                         images={searchImages}
                         setImage={setSelectedImage}
-                    ></SearchImage>
+                    ></SearchImageSelector>
                 ) : (null)}
             </div>
-            {questionType === 'MC' ? (
+            {questionType === '0' ? (
                 <>
                     <div>
                         <label>Choice (Answer)</label>
@@ -94,6 +101,39 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                     <div>
                         <label>Choice (Wrong)</label>
                         <input ref={option3Ref} type="text"/>
+                    </div>
+                </>
+            ) : (null)}
+            {questionType === '2' ? (
+                <>
+                    <div>
+                        <label>Choice (Answer)</label>
+                        {/* <input ref={answerRef} type="text"/> */}
+                        <SearchImageSelector
+                            images={searchImages}
+                            setImage={setImgAnswer}
+                        ></SearchImageSelector>
+                    </div>
+                    <div>
+                        <label>Choice (Wrong)</label>
+                        <SearchImageSelector
+                            images={searchImages}
+                            setImage={setImgOption1}
+                        ></SearchImageSelector>
+                    </div>
+                    <div>
+                        <label>Choice (Wrong)</label>
+                        <SearchImageSelector
+                            images={searchImages}
+                            setImage={setImgOption2}
+                        ></SearchImageSelector>
+                    </div>
+                    <div>
+                        <label>Choice (Wrong)</label>
+                        <SearchImageSelector
+                            images={searchImages}
+                            setImage={setImgOption3}
+                        ></SearchImageSelector>
                     </div>
                 </>
             ) : (null)}

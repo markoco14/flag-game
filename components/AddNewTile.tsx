@@ -24,53 +24,58 @@ export default function AddNewTile( props: AddNewTileProps ) {
             return {id: index+1, text: option}
         })
 
+        
         try {
-            newTileQuestionDetails?.type === 'MC' ? 
-                fetch(`/api/question/confirm/${props.flagSet?.id}`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        question: {
-                            type: newTileQuestionDetails?.type,
-                            image: newTileQuestionDetails?.image,
-                            question: newTileQuestionDetails?.question,
-                            answer: newTileQuestionDetails?.answer,
-                            options: options
-                        },
-                        countryId: newTileSelectedCountry?.id,
-                        flagSetId: props.flagSet?.id
+            switch(newTileQuestionDetails?.type) {
+                case '1':
+                    await fetch(`/api/question/confirm/${props.flagSet?.id}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            question: {
+                                type: 'Prompt',
+                                image: newTileQuestionDetails?.image,
+                                question: newTileQuestionDetails?.question,
+                            },
+                            countryId: newTileSelectedCountry?.id,
+                            flagSetId: props.flagSet?.id
+                        })
                     })
-                })
-                .then((res) => res.json())
-                .then((json) => {
-                    console.log(json);
-                    props.setNewFlagSet(json.flagSet);
-                    props.setFlagSetTiles(json.flagSet.flagSetTile);
-                    props.setIsAddingTile(false);
-                    setIsFlagConfirmed(false);
-                    setIsQuestionConfirmed(false);
-                })
-             : 
-                fetch(`/api/question/confirm/${props.flagSet?.id}`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        question: {
-                            type: newTileQuestionDetails?.type,
-                            image: newTileQuestionDetails?.image,
-                            question: newTileQuestionDetails?.question,
-                        },
-                        countryId: newTileSelectedCountry?.id,
-                        flagSetId: props.flagSet?.id
+                    .then((res) => res.json())
+                    .then((json) => {
+                        console.log(json);
+                        props.setNewFlagSet(json.flagSet);
+                        props.setFlagSetTiles(json.flagSet.flagSetTile);
+                        props.setIsAddingTile(false);
+                        setIsFlagConfirmed(false);
+                        setIsQuestionConfirmed(false);
+                    });
+                    return;
+                default:
+                    await fetch(`/api/question/confirm/${props.flagSet?.id}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            question: {
+                                type: 'MC',
+                                image: newTileQuestionDetails?.image,
+                                question: newTileQuestionDetails?.question,
+                                answer: newTileQuestionDetails?.answer,
+                                options: options
+                            },
+                            countryId: newTileSelectedCountry?.id,
+                            flagSetId: props.flagSet?.id
+                        })
                     })
-                })
-                .then((res) => res.json())
-                .then((json) => {
-                    console.log(json);
-                    props.setNewFlagSet(json.flagSet);
-                    props.setFlagSetTiles(json.flagSet.flagSetTile);
-                    props.setIsAddingTile(false);
-                    setIsFlagConfirmed(false);
-                    setIsQuestionConfirmed(false);
-                })
+                    .then((res) => res.json())
+                    .then((json) => {
+                        console.log(json);
+                        props.setNewFlagSet(json.flagSet);
+                        props.setFlagSetTiles(json.flagSet.flagSetTile);
+                        props.setIsAddingTile(false);
+                        setIsFlagConfirmed(false);
+                        setIsQuestionConfirmed(false);
+                    })
+                    return;
+            }   
         } catch (error) {
             console.log(error);
         } finally {
