@@ -112,7 +112,7 @@ export default function FlagSetQuestions() {
                     </div>
                     <div>
                         <p>Answer: {question.answer}</p>
-                        {question.options.map((option: Options) => (
+                        {question.options.map((option: Option) => (
                             <p key={option.id}>Option: {option.text}</p>
                         ))}
                     </div>
