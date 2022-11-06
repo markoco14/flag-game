@@ -2,7 +2,7 @@ import styles from '../styles/Home.module.css'
 import NewTileFlagSelector from './NewTileFlagSelector';
 import NewTileQuestionDetails from './NewTileQuestionDetails';
 import { useState } from 'react';
-import { Country, FlagSet, Options, Question } from '../mirage/models';
+import { Country, FlagSet, Option, Question } from '../mirage/models';
 import Image from 'next/image';
 
 type AddNewTileProps = {
@@ -152,7 +152,7 @@ export default function AddNewTile( props: AddNewTileProps ) {
                                         <>
                                             <p>Answer: {newTileQuestionDetails?.answer}</p>
                                             <div>
-                                                {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
+                                                {newTileQuestionDetails?.options?.map((option: Option, index: number) => (
                                                     <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
                                                 ))}
                                             </div>
