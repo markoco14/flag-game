@@ -4,7 +4,7 @@ import styles from '../../../../styles/Home.module.css'
 import DashboardNav from '../../../../components/DashboardNav'
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { Country, FlagSet, FlagSetTile, Question, Options } from "../../../../mirage/models";
+import { FlagSet, FlagSetTile } from "../../../../mirage/models";
 import AddNewTile from "../../../../components/AddNewTile";
 import TileFrontAndBack from "../../../../components/TileFrontAndBack";
 
@@ -12,16 +12,9 @@ export default function EditFlagset() {
     const router = useRouter()
     
     const [selectedFlag, setSelectedFlag] = useState<FlagSet | undefined>(undefined);
-    const [hasFlagsetQuestions, setHasFlagsetQuestions] = useState<boolean>(false);
     const [flagSetTiles, setFlagSetTiles] = useState<FlagSetTile[]>([]);
 
-    // add new flag modal state
-    const [newTileSelectedCountry, setNewTileSelectedCountry] = useState<Country | undefined>(undefined);
-    const [newTileQuestionDetails, setNewTileQuestionDetails] = useState<Question | undefined>(undefined)
-
     const [isAddingTile, setIsAddingTile] = useState<boolean>(false);
-    const [isFlagConfirmed, setIsFlagConfirmed] = useState<boolean>(false);
-    const [isQuestionConfirmed, setIsQuestionConfirmed] = useState<boolean>(false);
     
     const deleteModal = useRef<HTMLDialogElement>(null)
 
@@ -31,9 +24,6 @@ export default function EditFlagset() {
             .then((res) => res.json())
             .then((json) => {
                 setSelectedFlag(json.flagSet);
-                if(json.flagSet.flagSetTile.length > 0) {
-                    setHasFlagsetQuestions(true);
-                }
                 setFlagSetTiles(json.flagSet.flagSetTile);
             })
         } catch(e) {
@@ -191,7 +181,7 @@ export default function EditFlagset() {
                                 setFlagSetTiles={setFlagSetTiles}
                             ></AddNewTile>
                         ) : (null)}
-                        {hasFlagsetQuestions ? (
+                        {flagSetTiles.length > 0 ? (
                             flagSetTiles.map((question: FlagSetTile) => (
                                 <TileFrontAndBack 
                                     key={`fs-q-${question.id}`}
