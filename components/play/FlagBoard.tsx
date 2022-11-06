@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styles from '../../styles/Home.module.css'
 import { useState, useRef } from 'react';
-import { FlagSetTile } from '../../mirage/models';
+import { FlagSetTile, Option } from '../../mirage/models';
 import TileQuestionTypeSwitch from "./TileQuestionTypeSwitch";
 
 type FlagBoardProps = {
@@ -49,8 +49,8 @@ export default function FlagBoard(props: FlagBoardProps) {
         props.removeFlag(selectedFlag?.id);
     }
     
-    function handleCheckAnswer(e: any) {
-        if(e.target.textContent === selectedFlag?.question.answer) {
+    function handleCheckAnswer(e: any, option: Option) {
+        if(option.id === selectedFlag?.question.answer) {
             // console.log('That is the right answer')
             e.target.style.backgroundColor = 'rgb(94, 255, 94)';
             e.target.style.cursor = 'not-allowed';

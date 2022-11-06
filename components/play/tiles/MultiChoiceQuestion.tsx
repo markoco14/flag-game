@@ -30,7 +30,7 @@ export default function MultiChoiceQuestion(props: MultiChoiceQuestionProps) {
                     {props.tile.question.options.map((option) => (
                         <button 
                             key={option.id}
-                            onClick={(e) => props.checkAnswer(e)}
+                            onClick={(e) => props.checkAnswer(e, option)}
                             className={styles.flag_option_container}
                             disabled={false}
                         >
