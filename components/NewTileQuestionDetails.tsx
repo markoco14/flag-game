@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import SearchImage from './create/SearchImageSelector';
 
 type NewTileQuestionDetailsProps = {
     setDetails: Function,
@@ -9,6 +10,8 @@ type NewTileQuestionDetailsProps = {
 export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProps) {
     const [questionType, setQuestionType] = useState<string>('MC');
     const [searchImages, setSearchImages] = useState<[]>([]);
+    const [isSearchingImage, setIsSearchingImage] = useState<boolean>(false);
+    const [selectedImage, setSelectedImage] = useState<string>('');
 
     const questionRef = useRef<HTMLInputElement>(null);
     const answerRef = useRef<HTMLInputElement>(null);
@@ -24,13 +27,9 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
     // unless I can make state variables and ref variables dynamically
 
     function handleSetDetails() {
-        console.log(questionRef.current?.value)
-        console.log(answerRef.current?.value)
-        console.log(option1Ref.current?.value)
-        console.log(option2Ref.current?.value)
-        console.log(option3Ref.current?.value)
         props.setDetails({
             type: questionType,
+            image: selectedImage,
             question: questionRef?.current?.value,
             answer: answerRef?.current?.value,
             options: [option1Ref?.current?.value, option2Ref?.current?.value, option3Ref?.current?.value]
@@ -40,19 +39,15 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
     }
 
     async function fetchSearchImages() {
-        await fetch("api/searchImages")
+        await fetch("/api/searchImages")
         .then((res) => res.json())
         .then((json) => {
-            console.log(json);
+            setSearchImages(json);
         });
     }
 
     useEffect(() => {
-        fetch("/api/searchImages")
-        .then((res) => res.json())
-        .then((json) => {
-            console.log(json);
-        });
+        fetchSearchImages()
     }, []);
 
     return (
@@ -68,6 +63,19 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
             <div>
                 <label>Question</label>
                 <input ref={questionRef} type="text"/>
+                <div>
+                    <button onClick={() => {
+                        !isSearchingImage ? setIsSearchingImage(true) : setIsSearchingImage(false)
+                    }}>
+                        Image
+                    </button>
+                </div>
+                {isSearchingImage ? (
+                    <SearchImage
+                        images={searchImages}
+                        setImage={setSelectedImage}
+                    ></SearchImage>
+                ) : (null)}
             </div>
             {questionType === 'MC' ? (
                 <>

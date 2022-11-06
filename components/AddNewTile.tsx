@@ -3,6 +3,7 @@ import NewTileFlagSelector from './NewTileFlagSelector';
 import NewTileQuestionDetails from './NewTileQuestionDetails';
 import { useState } from 'react';
 import { Country, FlagSet, Options, Question } from '../mirage/models';
+import Image from 'next/image';
 
 type AddNewTileProps = {
     setIsAddingTile: Function,
@@ -30,6 +31,7 @@ export default function AddNewTile( props: AddNewTileProps ) {
                     body: JSON.stringify({
                         question: {
                             type: newTileQuestionDetails?.type,
+                            image: newTileQuestionDetails?.image,
                             question: newTileQuestionDetails?.question,
                             answer: newTileQuestionDetails?.answer,
                             options: options
@@ -53,6 +55,7 @@ export default function AddNewTile( props: AddNewTileProps ) {
                     body: JSON.stringify({
                         question: {
                             type: newTileQuestionDetails?.type,
+                            image: newTileQuestionDetails?.image,
                             question: newTileQuestionDetails?.question,
                         },
                         countryId: newTileSelectedCountry?.id,
@@ -116,28 +119,47 @@ export default function AddNewTile( props: AddNewTileProps ) {
                     </div>
                     )}
                     {isFlagConfirmed && isQuestionConfirmed && (
-                        <div className={`${styles.add_new_question_step_container}`}>
-                            {/* this is where we have all our state variables prepared */}
-                            {/* everything will be packaged into a response for the API endpoint */}
-                            {/* state will be cleared after */}
+                        <div >
                             <h3 style={{textAlign: 'center'}}>Review and Confirm</h3>
-                            <p>Your flag is {newTileSelectedCountry?.name}</p>
-                            <fieldset>
-                                <legend>Question details</legend>
-                                <p>Type: {newTileQuestionDetails?.type}</p>
-                                {/* <p>Question: {newTileQuestionDetails?.question}</p> */}
-                                <p>Question: {newTileQuestionDetails?.question}</p>
-                                {newTileQuestionDetails?.type === 'MC' ? (
-                                    <>
-                                        <p>Answer: {newTileQuestionDetails?.answer}</p>
-                                        <div>
-                                            {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
-                                                <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
-                                            ))}
-                                        </div>
-                                    </>
-                                ) : (null)}
-                            </fieldset>
+                            <div className={`${styles.question_front_back_container}`}>
+                                <div>
+                                    <p>Your flag is {newTileSelectedCountry?.name}</p>
+                                    {newTileSelectedCountry?.flag ? (
+                                        <Image
+                                            alt={`A picture of a dog`}
+                                            src={newTileSelectedCountry.flag}
+                                            width={100}
+                                            height={100}
+                                            objectFit="cover"
+                                        ></Image>
+                                    ) : (null)}
+                                </div>
+                                
+                                <fieldset style={{width: '100%'}}>
+                                    <legend>Question details</legend>
+                                    <p>Type: {newTileQuestionDetails?.type}</p>
+                                    <p>Question: {newTileQuestionDetails?.question}</p>
+                                    {newTileQuestionDetails?.image ? (
+                                        <Image
+                                            alt={`A picture of a dog`}
+                                            src={newTileQuestionDetails.image}
+                                            width={100}
+                                            height={100}
+                                            objectFit="cover"
+                                        ></Image>
+                                    ) : (null)}
+                                    {newTileQuestionDetails?.type === 'MC' ? (
+                                        <>
+                                            <p>Answer: {newTileQuestionDetails?.answer}</p>
+                                            <div>
+                                                {newTileQuestionDetails?.options?.map((option: Options, index: number) => (
+                                                    <p key={index+1}>{`Option ${index+1}: ${option}`}</p>
+                                                ))}
+                                            </div>
+                                        </>
+                                    ) : (null)}
+                                </fieldset>
+                            </div>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <button onClick={() => {setIsQuestionConfirmed(false)}}>Back</button>
                                 <button onClick={addTile}>

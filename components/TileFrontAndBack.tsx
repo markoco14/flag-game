@@ -47,6 +47,13 @@ export default function TileFrontAndBack(props: TileFrontAndBackProps) {
                 </div>
                 <p>Type: {props.tile.question.type}</p>
                 <p>Question: {props.tile.question.question}</p>
+                <Image
+                    alt={`A picture of a dog`}
+                    src={props.tile.question.image}
+                    width={100}
+                    height={100}
+                    objectFit="cover"
+                ></Image>
                 {props.tile.question.options && (
                     <>
                         <fieldset>
