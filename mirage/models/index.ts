@@ -22,6 +22,7 @@ export type FlagSetTile = {
 export type Question = {
     id: string,
     type: string,
+    image: string,
     question: string,
     answer: string,
     options: Options[],
@@ -37,6 +38,10 @@ export type Country = {
     id: string,
     name: string,
     flag: string,
+}
+
+export type SearchImage = {
+    image: string,
 }
 
 export enum QuestionTypeEnum {

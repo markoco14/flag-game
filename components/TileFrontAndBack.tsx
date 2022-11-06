@@ -45,16 +45,19 @@ export default function TileFrontAndBack(props: TileFrontAndBackProps) {
                         <span>edit</span>
                     </button>
                 </div>
+                <p>Type: {props.tile.question.type}</p>
                 <p>Question: {props.tile.question.question}</p>
                 {props.tile.question.options && (
                     <>
-                        <p>Options:</p>
-                        <ul>
-                            <li>Answer: {props.tile.question.answer}</li>
-                            {props.tile.question.options.map((option, index) => (
-                                <li key={`option${index}-${option.id}`}>Option {index+1}: {option.text}</li>
-                            ))}
-                        </ul>
+                        <fieldset>
+                            <legend>Options:</legend>
+                            <ul>
+                                <li>Answer: {props.tile.question.answer}</li>
+                                {props.tile.question.options.map((option, index) => (
+                                    <li key={`option${index}-${option.id}`}>Option {index+1}: {option.text}</li>
+                                ))}
+                            </ul>
+                        </fieldset>
                     </>
                 )}
             </div>

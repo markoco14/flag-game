@@ -14,14 +14,20 @@ export default function PlayFlags() {
         fetch(`/api/flags/play/${id}`)
         .then((res) => res.json())
         .then((json) => {
+            console.log(json)
+            json.flagSet.flagSetTile.forEach((tile: FlagSetTile) => {
+                if (tile.question.type === 'MC') {
+                    tile.question.options.push({id: 4, text: tile.question.answer})
+                }
+            })
             setFlagSet(json.flagSet.flagSetTile)
         })
     }
 
     function handleRemoveFlag(selectedFlag: string) {
         const filteredFlags = flagSet.filter((flag: FlagSetTile) => {
-            console.log(flag.id);
-            console.log(selectedFlag)
+            // console.log(flag.id);
+            // console.log(selectedFlag)
             return flag.id !== selectedFlag
         });
         setFlagSet(filteredFlags);
