@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styles from '../../styles/Home.module.css'
 import { useState, useRef } from 'react';
-import { FlagSetTile, Question, Option } from '../../mirage/models';
+import { FlagSetTile } from '../../mirage/models';
 
 type FlagBoardProps = {
     flagSet: FlagSetTile[],
@@ -15,8 +15,6 @@ export default function FlagBoard(props: FlagBoardProps) {
     const [selectedFlag, setSelectedFlag] = useState< FlagSetTile | undefined >(undefined);
     const [isBackSide, setIsBackSide] = useState<boolean>(false);
     const selectedFlagModal = useRef<HTMLDialogElement>(null);
-    const [gameOptions, setGameOptions] = useState<[]>([]);
-    const [choiceResponseMessage, setChoiceResponseMessage] = useState<string>('');
 
     const correct = {
         backgroundColor: 'rgb(94, 255, 94)',
@@ -64,11 +62,6 @@ export default function FlagBoard(props: FlagBoardProps) {
             e.target.disabled = true;
             alert('No! That is NOT the correct!')
         }
-    }
-    function handleSetTileOptions(tile: FlagSetTile | undefined) {
-        const answer: Option = {id: 4, text: tile?.question?.answer}
-        tile?.question?.options?.push(answer);
-        console.log(tile);
     }
 
     return (
