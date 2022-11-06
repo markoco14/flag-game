@@ -21,9 +21,10 @@ export default function AddNewTile( props: AddNewTileProps ) {
 
     async function addTile() {
         const options = newTileQuestionDetails?.options.map((option, index) => {
-            return {id: index+1, text: option}
+            return {id: index+1, text: option.text, image: option.image}
         })
-
+        console.log(options)
+        // return;
         
         try {
             switch(newTileQuestionDetails?.type) {
@@ -49,6 +50,31 @@ export default function AddNewTile( props: AddNewTileProps ) {
                         setIsFlagConfirmed(false);
                         setIsQuestionConfirmed(false);
                     });
+                    return;
+                case '2':
+                    await fetch(`/api/question/confirm/${props.flagSet?.id}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            question: {
+                                type: 'Image MC',
+                                image: null,
+                                question: newTileQuestionDetails?.question,
+                                answer: newTileQuestionDetails?.answer,
+                                options: options
+                            },
+                            countryId: newTileSelectedCountry?.id,
+                            flagSetId: props.flagSet?.id
+                        })
+                    })
+                    .then((res) => res.json())
+                    .then((json) => {
+                        console.log(json);
+                        props.setNewFlagSet(json.flagSet);
+                        props.setFlagSetTiles(json.flagSet.flagSetTile);
+                        props.setIsAddingTile(false);
+                        setIsFlagConfirmed(false);
+                        setIsQuestionConfirmed(false);
+                    })
                     return;
                 default:
                     await fetch(`/api/question/confirm/${props.flagSet?.id}`, {

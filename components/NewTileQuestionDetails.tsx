@@ -14,10 +14,10 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
     const [selectedImage, setSelectedImage] = useState<string>('');
 
     // Image MC option state
-    const [imgAnswer, setImgAnswer] = useState<string>('')
-    const [imgOption1, setImgOption1] = useState<string>('')
-    const [imgOption2, setImgOption2] = useState<string>('')
-    const [imgOption3, setImgOption3] = useState<string>('')
+    const [imgAnswer, setImgAnswer] = useState<string | null>(null)
+    const [imgOption1, setImgOption1] = useState<string | null>(null)
+    const [imgOption2, setImgOption2] = useState<string | null>(null)
+    const [imgOption3, setImgOption3] = useState<string | null>(null)
 
     const questionRef = useRef<HTMLInputElement>(null);
     const answerRef = useRef<HTMLInputElement>(null);
@@ -37,8 +37,25 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
             type: questionType,
             image: selectedImage,
             question: questionRef?.current?.value,
-            answer: answerRef?.current?.value,
-            options: [option1Ref?.current?.value, option2Ref?.current?.value, option3Ref?.current?.value]
+            answer: 1,
+            options: [
+                {
+                    text: answerRef?.current?.value,
+                    image: imgAnswer,
+                }, 
+                {
+                    text: option1Ref?.current?.value,
+                    image: imgOption1,
+                }, 
+                {
+                    text: option2Ref?.current?.value,
+                    image: imgOption2,
+                }, 
+                {
+                    text: option3Ref?.current?.value,
+                    image: imgOption3,
+                },
+            ]
         })
         props.setQuestionConfirmed(true)
         console.log('You set the details')
@@ -70,18 +87,22 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
             <div>
                 <label>Question</label>
                 <input ref={questionRef} type="text"/>
-                <div>
-                    <button onClick={() => {
-                        !isSearchingImage ? setIsSearchingImage(true) : setIsSearchingImage(false)
-                    }}>
-                        Image
-                    </button>
-                </div>
-                {isSearchingImage ? (
-                    <SearchImageSelector
-                        images={searchImages}
-                        setImage={setSelectedImage}
-                    ></SearchImageSelector>
+                {questionType === '0' ? (
+                    <>
+                        <div>
+                            <button onClick={() => {
+                                !isSearchingImage ? setIsSearchingImage(true) : setIsSearchingImage(false)
+                            }}>
+                                Image
+                            </button>
+                        </div>
+                        {isSearchingImage ? (
+                            <SearchImageSelector
+                                images={searchImages}
+                                setImage={setSelectedImage}
+                            ></SearchImageSelector>
+                        ) : (null)}
+                    </>
                 ) : (null)}
             </div>
             {questionType === '0' ? (
@@ -108,7 +129,7 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                 <>
                     <div>
                         <label>Choice (Answer)</label>
-                        {/* <input ref={answerRef} type="text"/> */}
+                        <input ref={answerRef} type="text"/>
                         <SearchImageSelector
                             images={searchImages}
                             setImage={setImgAnswer}
@@ -116,6 +137,7 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                     </div>
                     <div>
                         <label>Choice (Wrong)</label>
+                        <input ref={option1Ref} type="text"/>
                         <SearchImageSelector
                             images={searchImages}
                             setImage={setImgOption1}
@@ -123,6 +145,7 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                     </div>
                     <div>
                         <label>Choice (Wrong)</label>
+                        <input ref={option2Ref} type="text"/>
                         <SearchImageSelector
                             images={searchImages}
                             setImage={setImgOption2}
@@ -130,6 +153,7 @@ export default function NewTileQuestionDetails(props: NewTileQuestionDetailsProp
                     </div>
                     <div>
                         <label>Choice (Wrong)</label>
+                        <input ref={option3Ref} type="text"/>
                         <SearchImageSelector
                             images={searchImages}
                             setImage={setImgOption3}

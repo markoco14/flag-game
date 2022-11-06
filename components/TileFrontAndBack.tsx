@@ -47,21 +47,35 @@ export default function TileFrontAndBack(props: TileFrontAndBackProps) {
                 </div>
                 <p>Type: {props.tile.question.type}</p>
                 <p>Question: {props.tile.question.question}</p>
-                <Image
-                    alt={`A picture of a dog`}
-                    src={props.tile.question.image}
-                    width={100}
-                    height={100}
-                    objectFit="cover"
-                ></Image>
+                {props.tile.question.image ? (
+                    
+                    <Image
+                        alt={`A picture of a dog`}
+                        src={props.tile.question.image}
+                        width={100}
+                        height={100}
+                        objectFit="cover"
+                    ></Image>
+                ) : (null)}
                 {props.tile.question.options && (
                     <>
                         <fieldset>
                             <legend>Options:</legend>
                             <ul>
-                                <li>Answer: {props.tile.question.answer}</li>
                                 {props.tile.question.options.map((option, index) => (
-                                    <li key={`option${index}-${option.id}`}>Option {index+1}: {option.text}</li>
+                                    <div key={`option${index}-${option.id}`}
+                                        style={{display: 'flex'}}>
+                                        <li>Option {index+1}: {option.text}</li>
+                                        {option.image ? (
+                                            <Image
+                                                alt={`A picture of a dog`}
+                                                src={option.image}
+                                                width={50}
+                                                height={50}
+                                                objectFit="cover"
+                                            ></Image>
+                                        ) : (null)}
+                                    </div>
                                 ))}
                             </ul>
                         </fieldset>
