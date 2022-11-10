@@ -24,7 +24,7 @@ export type Question = {
     type: string,
     image: string,
     question: string,
-    answer: string,
+    answer: number,
     options: Option[],
     reason: string,
 }
@@ -32,6 +32,7 @@ export type Question = {
 export type Option = {
     id: number,
     text: string,
+    image: string,
 }
 
 export type Country = {

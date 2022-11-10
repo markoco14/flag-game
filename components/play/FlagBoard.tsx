@@ -1,7 +1,8 @@
 import Image from "next/image";
 import styles from '../../styles/Home.module.css'
 import { useState, useRef } from 'react';
-import { FlagSetTile } from '../../mirage/models';
+import { FlagSetTile, Option } from '../../mirage/models';
+import TileQuestionTypeSwitch from "./TileQuestionTypeSwitch";
 
 type FlagBoardProps = {
     flagSet: FlagSetTile[],
@@ -48,16 +49,16 @@ export default function FlagBoard(props: FlagBoardProps) {
         props.removeFlag(selectedFlag?.id);
     }
     
-    function handleCheckAnswer(e: any) {
-        if(e.target.textContent === selectedFlag?.question.answer) {
+    function handleCheckAnswer(e: any, option: Option) {
+        if(option.id === selectedFlag?.question.answer) {
             // console.log('That is the right answer')
-            e.target.style.backgroundColor = 'rgb(94, 255, 94)';
+            e.target.style.backgroundColor = 'rgba(94, 255, 94, 0.7)';
             e.target.style.cursor = 'not-allowed';
             e.target.disabled = true;
             alert('Correct! Great job!')
         } else {
             // console.log('That is the wrong answer')
-            e.target.style.backgroundColor = 'rgb(255,71,71)';
+            e.target.style.backgroundColor = 'rgba(255,71,71, 0.7)';
             e.target.style.cursor = 'not-allowed';
             e.target.disabled = true;
             alert('No! That is NOT the correct!')
@@ -85,36 +86,13 @@ export default function FlagBoard(props: FlagBoardProps) {
                     </>
                 )}
                 {isBackSide && selectedFlag && (
-                    <>
-                        <div className={styles.question_image_container}>
-                            <Image 
-                                className={styles.selected_flag_image}
-                                src={selectedFlag?.question.image}
-                                layout='fill'
-                                objectFit='cover'
-                                objectPosition='center'
-                                alt={`A large image of a cute puppy.`}
-                            />
-                        </div>
-                        <p 
-                            className={styles.flag_question_container}
-                        >
-                            {selectedFlag?.question.question}
-                        </p>
-                        {selectedFlag.question.options ? (
-                            <div className={styles.flag_option_grid}>
-                                {selectedFlag.question.options.map((option) => (
-                                    <button 
-                                        key={option.id}
-                                        onClick={(e) => handleCheckAnswer(e)}
-                                        className={styles.flag_option_container}
-                                        disabled={false}
-                                    >
-                                        {option.text}
-                                    </button>
-                                ))}
-                            </div>
-                        ) : (null)}
+                    <>  
+                    {selectedFlag ? (
+                        <TileQuestionTypeSwitch
+                            tile={selectedFlag}
+                            checkAnswer={handleCheckAnswer}
+                        ></TileQuestionTypeSwitch>
+                    ) : (null)}
                     </>
                 )}
                 <div className={styles.two_button_bar}>
