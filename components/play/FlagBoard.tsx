@@ -52,13 +52,13 @@ export default function FlagBoard(props: FlagBoardProps) {
     function handleCheckAnswer(e: any, option: Option) {
         if(option.id === selectedFlag?.question.answer) {
             // console.log('That is the right answer')
-            e.target.style.backgroundColor = 'rgb(94, 255, 94)';
+            e.target.style.backgroundColor = 'rgba(94, 255, 94, 0.7)';
             e.target.style.cursor = 'not-allowed';
             e.target.disabled = true;
             alert('Correct! Great job!')
         } else {
             // console.log('That is the wrong answer')
-            e.target.style.backgroundColor = 'rgb(255,71,71)';
+            e.target.style.backgroundColor = 'rgba(255,71,71, 0.7)';
             e.target.style.cursor = 'not-allowed';
             e.target.disabled = true;
             alert('No! That is NOT the correct!')

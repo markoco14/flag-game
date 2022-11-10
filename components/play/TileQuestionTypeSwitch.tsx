@@ -1,4 +1,4 @@
-import { PromptQuestion, MultiChoiceQuestion } from './tiles';
+import { PromptQuestion, MultiChoiceQuestion, ImageMCQuestion } from './tiles';
 import { FlagSetTile } from '../../mirage/models';
 
 type TileQuestionTypeSwitchProps = {
@@ -17,6 +17,11 @@ export default function TileQuestionTypeSwitch(props: TileQuestionTypeSwitchProp
             return <PromptQuestion
                 tile={props.tile}
             ></PromptQuestion>
+        case 'Image MC':
+            return <ImageMCQuestion
+                tile={props.tile}
+                checkAnswer={props.checkAnswer}
+            ></ImageMCQuestion>
         default: 
             return <h2>The question type does not match any declared types.</h2>
     }
